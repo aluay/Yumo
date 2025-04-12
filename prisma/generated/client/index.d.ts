@@ -33,6 +33,11 @@ export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
  * 
  */
 export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTokenPayload>
+/**
+ * Model Script
+ * 
+ */
+export type Script = $Result.DefaultSelection<Prisma.$ScriptPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -198,6 +203,16 @@ export class PrismaClient<
     * ```
     */
   get verificationToken(): Prisma.VerificationTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.script`: Exposes CRUD operations for the **Script** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Scripts
+    * const scripts = await prisma.script.findMany()
+    * ```
+    */
+  get script(): Prisma.ScriptDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -641,7 +656,8 @@ export namespace Prisma {
     User: 'User',
     Account: 'Account',
     Session: 'Session',
-    VerificationToken: 'VerificationToken'
+    VerificationToken: 'VerificationToken',
+    Script: 'Script'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -660,7 +676,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "script"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -960,6 +976,80 @@ export namespace Prisma {
           }
         }
       }
+      Script: {
+        payload: Prisma.$ScriptPayload<ExtArgs>
+        fields: Prisma.ScriptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ScriptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ScriptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>
+          }
+          findFirst: {
+            args: Prisma.ScriptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ScriptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>
+          }
+          findMany: {
+            args: Prisma.ScriptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>[]
+          }
+          create: {
+            args: Prisma.ScriptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>
+          }
+          createMany: {
+            args: Prisma.ScriptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ScriptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>[]
+          }
+          delete: {
+            args: Prisma.ScriptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>
+          }
+          update: {
+            args: Prisma.ScriptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>
+          }
+          deleteMany: {
+            args: Prisma.ScriptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ScriptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ScriptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>[]
+          }
+          upsert: {
+            args: Prisma.ScriptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScriptPayload>
+          }
+          aggregate: {
+            args: Prisma.ScriptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateScript>
+          }
+          groupBy: {
+            args: Prisma.ScriptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ScriptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ScriptCountArgs<ExtArgs>
+            result: $Utils.Optional<ScriptCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1048,6 +1138,7 @@ export namespace Prisma {
     account?: AccountOmit
     session?: SessionOmit
     verificationToken?: VerificationTokenOmit
+    script?: ScriptOmit
   }
 
   /* Types for Logging */
@@ -1144,11 +1235,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     accounts: number
     sessions: number
+    Script: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    Script?: boolean | UserCountOutputTypeCountScriptArgs
   }
 
   // Custom InputTypes
@@ -1174,6 +1267,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountScriptArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScriptWhereInput
   }
 
 
@@ -1381,6 +1481,7 @@ export namespace Prisma {
     image?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    Script?: boolean | User$ScriptArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1412,6 +1513,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    Script?: boolean | User$ScriptArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1422,6 +1524,7 @@ export namespace Prisma {
     objects: {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
+      Script: Prisma.$ScriptPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -1825,6 +1928,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Script<T extends User$ScriptArgs<ExtArgs> = {}>(args?: Subset<T, User$ScriptArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2292,6 +2396,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.Script
+   */
+  export type User$ScriptArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    where?: ScriptWhereInput
+    orderBy?: ScriptOrderByWithRelationInput | ScriptOrderByWithRelationInput[]
+    cursor?: ScriptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ScriptScalarFieldEnum | ScriptScalarFieldEnum[]
   }
 
   /**
@@ -5553,6 +5681,1152 @@ export namespace Prisma {
 
 
   /**
+   * Model Script
+   */
+
+  export type AggregateScript = {
+    _count: ScriptCountAggregateOutputType | null
+    _avg: ScriptAvgAggregateOutputType | null
+    _sum: ScriptSumAggregateOutputType | null
+    _min: ScriptMinAggregateOutputType | null
+    _max: ScriptMaxAggregateOutputType | null
+  }
+
+  export type ScriptAvgAggregateOutputType = {
+    id: number | null
+    authorId: number | null
+  }
+
+  export type ScriptSumAggregateOutputType = {
+    id: number | null
+    authorId: number | null
+  }
+
+  export type ScriptMinAggregateOutputType = {
+    id: number | null
+    title: string | null
+    language: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    authorId: number | null
+  }
+
+  export type ScriptMaxAggregateOutputType = {
+    id: number | null
+    title: string | null
+    language: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    authorId: number | null
+  }
+
+  export type ScriptCountAggregateOutputType = {
+    id: number
+    title: number
+    content: number
+    language: number
+    tags: number
+    createdAt: number
+    updatedAt: number
+    authorId: number
+    _all: number
+  }
+
+
+  export type ScriptAvgAggregateInputType = {
+    id?: true
+    authorId?: true
+  }
+
+  export type ScriptSumAggregateInputType = {
+    id?: true
+    authorId?: true
+  }
+
+  export type ScriptMinAggregateInputType = {
+    id?: true
+    title?: true
+    language?: true
+    createdAt?: true
+    updatedAt?: true
+    authorId?: true
+  }
+
+  export type ScriptMaxAggregateInputType = {
+    id?: true
+    title?: true
+    language?: true
+    createdAt?: true
+    updatedAt?: true
+    authorId?: true
+  }
+
+  export type ScriptCountAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    language?: true
+    tags?: true
+    createdAt?: true
+    updatedAt?: true
+    authorId?: true
+    _all?: true
+  }
+
+  export type ScriptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Script to aggregate.
+     */
+    where?: ScriptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Scripts to fetch.
+     */
+    orderBy?: ScriptOrderByWithRelationInput | ScriptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ScriptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Scripts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Scripts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Scripts
+    **/
+    _count?: true | ScriptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ScriptAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ScriptSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ScriptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ScriptMaxAggregateInputType
+  }
+
+  export type GetScriptAggregateType<T extends ScriptAggregateArgs> = {
+        [P in keyof T & keyof AggregateScript]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateScript[P]>
+      : GetScalarType<T[P], AggregateScript[P]>
+  }
+
+
+
+
+  export type ScriptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScriptWhereInput
+    orderBy?: ScriptOrderByWithAggregationInput | ScriptOrderByWithAggregationInput[]
+    by: ScriptScalarFieldEnum[] | ScriptScalarFieldEnum
+    having?: ScriptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ScriptCountAggregateInputType | true
+    _avg?: ScriptAvgAggregateInputType
+    _sum?: ScriptSumAggregateInputType
+    _min?: ScriptMinAggregateInputType
+    _max?: ScriptMaxAggregateInputType
+  }
+
+  export type ScriptGroupByOutputType = {
+    id: number
+    title: string
+    content: JsonValue
+    language: string
+    tags: string[]
+    createdAt: Date
+    updatedAt: Date
+    authorId: number | null
+    _count: ScriptCountAggregateOutputType | null
+    _avg: ScriptAvgAggregateOutputType | null
+    _sum: ScriptSumAggregateOutputType | null
+    _min: ScriptMinAggregateOutputType | null
+    _max: ScriptMaxAggregateOutputType | null
+  }
+
+  type GetScriptGroupByPayload<T extends ScriptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ScriptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ScriptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ScriptGroupByOutputType[P]>
+            : GetScalarType<T[P], ScriptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ScriptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    language?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    authorId?: boolean
+    author?: boolean | Script$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["script"]>
+
+  export type ScriptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    language?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    authorId?: boolean
+    author?: boolean | Script$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["script"]>
+
+  export type ScriptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    language?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    authorId?: boolean
+    author?: boolean | Script$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["script"]>
+
+  export type ScriptSelectScalar = {
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    language?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    authorId?: boolean
+  }
+
+  export type ScriptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "language" | "tags" | "createdAt" | "updatedAt" | "authorId", ExtArgs["result"]["script"]>
+  export type ScriptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    author?: boolean | Script$authorArgs<ExtArgs>
+  }
+  export type ScriptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    author?: boolean | Script$authorArgs<ExtArgs>
+  }
+  export type ScriptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    author?: boolean | Script$authorArgs<ExtArgs>
+  }
+
+  export type $ScriptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Script"
+    objects: {
+      author: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      title: string
+      content: Prisma.JsonValue
+      language: string
+      tags: string[]
+      createdAt: Date
+      updatedAt: Date
+      authorId: number | null
+    }, ExtArgs["result"]["script"]>
+    composites: {}
+  }
+
+  type ScriptGetPayload<S extends boolean | null | undefined | ScriptDefaultArgs> = $Result.GetResult<Prisma.$ScriptPayload, S>
+
+  type ScriptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ScriptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ScriptCountAggregateInputType | true
+    }
+
+  export interface ScriptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Script'], meta: { name: 'Script' } }
+    /**
+     * Find zero or one Script that matches the filter.
+     * @param {ScriptFindUniqueArgs} args - Arguments to find a Script
+     * @example
+     * // Get one Script
+     * const script = await prisma.script.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ScriptFindUniqueArgs>(args: SelectSubset<T, ScriptFindUniqueArgs<ExtArgs>>): Prisma__ScriptClient<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Script that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ScriptFindUniqueOrThrowArgs} args - Arguments to find a Script
+     * @example
+     * // Get one Script
+     * const script = await prisma.script.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ScriptFindUniqueOrThrowArgs>(args: SelectSubset<T, ScriptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ScriptClient<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Script that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScriptFindFirstArgs} args - Arguments to find a Script
+     * @example
+     * // Get one Script
+     * const script = await prisma.script.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ScriptFindFirstArgs>(args?: SelectSubset<T, ScriptFindFirstArgs<ExtArgs>>): Prisma__ScriptClient<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Script that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScriptFindFirstOrThrowArgs} args - Arguments to find a Script
+     * @example
+     * // Get one Script
+     * const script = await prisma.script.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ScriptFindFirstOrThrowArgs>(args?: SelectSubset<T, ScriptFindFirstOrThrowArgs<ExtArgs>>): Prisma__ScriptClient<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Scripts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScriptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Scripts
+     * const scripts = await prisma.script.findMany()
+     * 
+     * // Get first 10 Scripts
+     * const scripts = await prisma.script.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const scriptWithIdOnly = await prisma.script.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ScriptFindManyArgs>(args?: SelectSubset<T, ScriptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Script.
+     * @param {ScriptCreateArgs} args - Arguments to create a Script.
+     * @example
+     * // Create one Script
+     * const Script = await prisma.script.create({
+     *   data: {
+     *     // ... data to create a Script
+     *   }
+     * })
+     * 
+     */
+    create<T extends ScriptCreateArgs>(args: SelectSubset<T, ScriptCreateArgs<ExtArgs>>): Prisma__ScriptClient<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Scripts.
+     * @param {ScriptCreateManyArgs} args - Arguments to create many Scripts.
+     * @example
+     * // Create many Scripts
+     * const script = await prisma.script.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ScriptCreateManyArgs>(args?: SelectSubset<T, ScriptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Scripts and returns the data saved in the database.
+     * @param {ScriptCreateManyAndReturnArgs} args - Arguments to create many Scripts.
+     * @example
+     * // Create many Scripts
+     * const script = await prisma.script.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Scripts and only return the `id`
+     * const scriptWithIdOnly = await prisma.script.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ScriptCreateManyAndReturnArgs>(args?: SelectSubset<T, ScriptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Script.
+     * @param {ScriptDeleteArgs} args - Arguments to delete one Script.
+     * @example
+     * // Delete one Script
+     * const Script = await prisma.script.delete({
+     *   where: {
+     *     // ... filter to delete one Script
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ScriptDeleteArgs>(args: SelectSubset<T, ScriptDeleteArgs<ExtArgs>>): Prisma__ScriptClient<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Script.
+     * @param {ScriptUpdateArgs} args - Arguments to update one Script.
+     * @example
+     * // Update one Script
+     * const script = await prisma.script.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ScriptUpdateArgs>(args: SelectSubset<T, ScriptUpdateArgs<ExtArgs>>): Prisma__ScriptClient<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Scripts.
+     * @param {ScriptDeleteManyArgs} args - Arguments to filter Scripts to delete.
+     * @example
+     * // Delete a few Scripts
+     * const { count } = await prisma.script.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ScriptDeleteManyArgs>(args?: SelectSubset<T, ScriptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Scripts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScriptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Scripts
+     * const script = await prisma.script.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ScriptUpdateManyArgs>(args: SelectSubset<T, ScriptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Scripts and returns the data updated in the database.
+     * @param {ScriptUpdateManyAndReturnArgs} args - Arguments to update many Scripts.
+     * @example
+     * // Update many Scripts
+     * const script = await prisma.script.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Scripts and only return the `id`
+     * const scriptWithIdOnly = await prisma.script.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ScriptUpdateManyAndReturnArgs>(args: SelectSubset<T, ScriptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Script.
+     * @param {ScriptUpsertArgs} args - Arguments to update or create a Script.
+     * @example
+     * // Update or create a Script
+     * const script = await prisma.script.upsert({
+     *   create: {
+     *     // ... data to create a Script
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Script we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ScriptUpsertArgs>(args: SelectSubset<T, ScriptUpsertArgs<ExtArgs>>): Prisma__ScriptClient<$Result.GetResult<Prisma.$ScriptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Scripts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScriptCountArgs} args - Arguments to filter Scripts to count.
+     * @example
+     * // Count the number of Scripts
+     * const count = await prisma.script.count({
+     *   where: {
+     *     // ... the filter for the Scripts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ScriptCountArgs>(
+      args?: Subset<T, ScriptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ScriptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Script.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScriptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ScriptAggregateArgs>(args: Subset<T, ScriptAggregateArgs>): Prisma.PrismaPromise<GetScriptAggregateType<T>>
+
+    /**
+     * Group by Script.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScriptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ScriptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ScriptGroupByArgs['orderBy'] }
+        : { orderBy?: ScriptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ScriptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetScriptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Script model
+   */
+  readonly fields: ScriptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Script.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ScriptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    author<T extends Script$authorArgs<ExtArgs> = {}>(args?: Subset<T, Script$authorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Script model
+   */
+  interface ScriptFieldRefs {
+    readonly id: FieldRef<"Script", 'Int'>
+    readonly title: FieldRef<"Script", 'String'>
+    readonly content: FieldRef<"Script", 'Json'>
+    readonly language: FieldRef<"Script", 'String'>
+    readonly tags: FieldRef<"Script", 'String[]'>
+    readonly createdAt: FieldRef<"Script", 'DateTime'>
+    readonly updatedAt: FieldRef<"Script", 'DateTime'>
+    readonly authorId: FieldRef<"Script", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Script findUnique
+   */
+  export type ScriptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * Filter, which Script to fetch.
+     */
+    where: ScriptWhereUniqueInput
+  }
+
+  /**
+   * Script findUniqueOrThrow
+   */
+  export type ScriptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * Filter, which Script to fetch.
+     */
+    where: ScriptWhereUniqueInput
+  }
+
+  /**
+   * Script findFirst
+   */
+  export type ScriptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * Filter, which Script to fetch.
+     */
+    where?: ScriptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Scripts to fetch.
+     */
+    orderBy?: ScriptOrderByWithRelationInput | ScriptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Scripts.
+     */
+    cursor?: ScriptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Scripts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Scripts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Scripts.
+     */
+    distinct?: ScriptScalarFieldEnum | ScriptScalarFieldEnum[]
+  }
+
+  /**
+   * Script findFirstOrThrow
+   */
+  export type ScriptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * Filter, which Script to fetch.
+     */
+    where?: ScriptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Scripts to fetch.
+     */
+    orderBy?: ScriptOrderByWithRelationInput | ScriptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Scripts.
+     */
+    cursor?: ScriptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Scripts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Scripts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Scripts.
+     */
+    distinct?: ScriptScalarFieldEnum | ScriptScalarFieldEnum[]
+  }
+
+  /**
+   * Script findMany
+   */
+  export type ScriptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * Filter, which Scripts to fetch.
+     */
+    where?: ScriptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Scripts to fetch.
+     */
+    orderBy?: ScriptOrderByWithRelationInput | ScriptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Scripts.
+     */
+    cursor?: ScriptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Scripts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Scripts.
+     */
+    skip?: number
+    distinct?: ScriptScalarFieldEnum | ScriptScalarFieldEnum[]
+  }
+
+  /**
+   * Script create
+   */
+  export type ScriptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Script.
+     */
+    data: XOR<ScriptCreateInput, ScriptUncheckedCreateInput>
+  }
+
+  /**
+   * Script createMany
+   */
+  export type ScriptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Scripts.
+     */
+    data: ScriptCreateManyInput | ScriptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Script createManyAndReturn
+   */
+  export type ScriptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * The data used to create many Scripts.
+     */
+    data: ScriptCreateManyInput | ScriptCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Script update
+   */
+  export type ScriptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Script.
+     */
+    data: XOR<ScriptUpdateInput, ScriptUncheckedUpdateInput>
+    /**
+     * Choose, which Script to update.
+     */
+    where: ScriptWhereUniqueInput
+  }
+
+  /**
+   * Script updateMany
+   */
+  export type ScriptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Scripts.
+     */
+    data: XOR<ScriptUpdateManyMutationInput, ScriptUncheckedUpdateManyInput>
+    /**
+     * Filter which Scripts to update
+     */
+    where?: ScriptWhereInput
+    /**
+     * Limit how many Scripts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Script updateManyAndReturn
+   */
+  export type ScriptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * The data used to update Scripts.
+     */
+    data: XOR<ScriptUpdateManyMutationInput, ScriptUncheckedUpdateManyInput>
+    /**
+     * Filter which Scripts to update
+     */
+    where?: ScriptWhereInput
+    /**
+     * Limit how many Scripts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Script upsert
+   */
+  export type ScriptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Script to update in case it exists.
+     */
+    where: ScriptWhereUniqueInput
+    /**
+     * In case the Script found by the `where` argument doesn't exist, create a new Script with this data.
+     */
+    create: XOR<ScriptCreateInput, ScriptUncheckedCreateInput>
+    /**
+     * In case the Script was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ScriptUpdateInput, ScriptUncheckedUpdateInput>
+  }
+
+  /**
+   * Script delete
+   */
+  export type ScriptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+    /**
+     * Filter which Script to delete.
+     */
+    where: ScriptWhereUniqueInput
+  }
+
+  /**
+   * Script deleteMany
+   */
+  export type ScriptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Scripts to delete
+     */
+    where?: ScriptWhereInput
+    /**
+     * Limit how many Scripts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Script.author
+   */
+  export type Script$authorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Script without action
+   */
+  export type ScriptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Script
+     */
+    select?: ScriptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Script
+     */
+    omit?: ScriptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScriptInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5614,12 +6888,33 @@ export namespace Prisma {
   export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
 
 
+  export const ScriptScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    content: 'content',
+    language: 'language',
+    tags: 'tags',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    authorId: 'authorId'
+  };
+
+  export type ScriptScalarFieldEnum = (typeof ScriptScalarFieldEnum)[keyof typeof ScriptScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -5636,6 +6931,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -5686,6 +6990,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -5713,6 +7031,7 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
+    Script?: ScriptListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -5723,6 +7042,7 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
+    Script?: ScriptOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -5736,6 +7056,7 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
+    Script?: ScriptListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -5950,6 +7271,78 @@ export namespace Prisma {
     expires?: DateTimeWithAggregatesFilter<"VerificationToken"> | Date | string
   }
 
+  export type ScriptWhereInput = {
+    AND?: ScriptWhereInput | ScriptWhereInput[]
+    OR?: ScriptWhereInput[]
+    NOT?: ScriptWhereInput | ScriptWhereInput[]
+    id?: IntFilter<"Script"> | number
+    title?: StringFilter<"Script"> | string
+    content?: JsonFilter<"Script">
+    language?: StringFilter<"Script"> | string
+    tags?: StringNullableListFilter<"Script">
+    createdAt?: DateTimeFilter<"Script"> | Date | string
+    updatedAt?: DateTimeFilter<"Script"> | Date | string
+    authorId?: IntNullableFilter<"Script"> | number | null
+    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type ScriptOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    language?: SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    authorId?: SortOrderInput | SortOrder
+    author?: UserOrderByWithRelationInput
+  }
+
+  export type ScriptWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: ScriptWhereInput | ScriptWhereInput[]
+    OR?: ScriptWhereInput[]
+    NOT?: ScriptWhereInput | ScriptWhereInput[]
+    title?: StringFilter<"Script"> | string
+    content?: JsonFilter<"Script">
+    language?: StringFilter<"Script"> | string
+    tags?: StringNullableListFilter<"Script">
+    createdAt?: DateTimeFilter<"Script"> | Date | string
+    updatedAt?: DateTimeFilter<"Script"> | Date | string
+    authorId?: IntNullableFilter<"Script"> | number | null
+    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type ScriptOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    language?: SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    authorId?: SortOrderInput | SortOrder
+    _count?: ScriptCountOrderByAggregateInput
+    _avg?: ScriptAvgOrderByAggregateInput
+    _max?: ScriptMaxOrderByAggregateInput
+    _min?: ScriptMinOrderByAggregateInput
+    _sum?: ScriptSumOrderByAggregateInput
+  }
+
+  export type ScriptScalarWhereWithAggregatesInput = {
+    AND?: ScriptScalarWhereWithAggregatesInput | ScriptScalarWhereWithAggregatesInput[]
+    OR?: ScriptScalarWhereWithAggregatesInput[]
+    NOT?: ScriptScalarWhereWithAggregatesInput | ScriptScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Script"> | number
+    title?: StringWithAggregatesFilter<"Script"> | string
+    content?: JsonWithAggregatesFilter<"Script">
+    language?: StringWithAggregatesFilter<"Script"> | string
+    tags?: StringNullableListFilter<"Script">
+    createdAt?: DateTimeWithAggregatesFilter<"Script"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Script"> | Date | string
+    authorId?: IntNullableWithAggregatesFilter<"Script"> | number | null
+  }
+
   export type UserCreateInput = {
     name: string
     email: string
@@ -5957,6 +7350,7 @@ export namespace Prisma {
     image?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    Script?: ScriptCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -5967,6 +7361,7 @@ export namespace Prisma {
     image?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Script?: ScriptUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUpdateInput = {
@@ -5976,6 +7371,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    Script?: ScriptUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -5986,6 +7382,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Script?: ScriptUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -6202,6 +7599,79 @@ export namespace Prisma {
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ScriptCreateInput = {
+    title: string
+    content: JsonNullValueInput | InputJsonValue
+    language: string
+    tags?: ScriptCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    author?: UserCreateNestedOneWithoutScriptInput
+  }
+
+  export type ScriptUncheckedCreateInput = {
+    id?: number
+    title: string
+    content: JsonNullValueInput | InputJsonValue
+    language: string
+    tags?: ScriptCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    authorId?: number | null
+  }
+
+  export type ScriptUpdateInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    language?: StringFieldUpdateOperationsInput | string
+    tags?: ScriptUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    author?: UserUpdateOneWithoutScriptNestedInput
+  }
+
+  export type ScriptUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    language?: StringFieldUpdateOperationsInput | string
+    tags?: ScriptUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    authorId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ScriptCreateManyInput = {
+    id?: number
+    title: string
+    content: JsonNullValueInput | InputJsonValue
+    language: string
+    tags?: ScriptCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    authorId?: number | null
+  }
+
+  export type ScriptUpdateManyMutationInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    language?: StringFieldUpdateOperationsInput | string
+    tags?: ScriptUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScriptUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    language?: StringFieldUpdateOperationsInput | string
+    tags?: ScriptUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    authorId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -6266,6 +7736,12 @@ export namespace Prisma {
     none?: SessionWhereInput
   }
 
+  export type ScriptListRelationFilter = {
+    every?: ScriptWhereInput
+    some?: ScriptWhereInput
+    none?: ScriptWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -6276,6 +7752,10 @@ export namespace Prisma {
   }
 
   export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ScriptOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -6547,6 +8027,107 @@ export namespace Prisma {
     token?: SortOrder
     expires?: SortOrder
   }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type ScriptCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    language?: SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type ScriptAvgOrderByAggregateInput = {
+    id?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type ScriptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    language?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type ScriptMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    language?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type ScriptSumOrderByAggregateInput = {
+    id?: SortOrder
+    authorId?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
 
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
@@ -6562,6 +8143,13 @@ export namespace Prisma {
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
+  export type ScriptCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<ScriptCreateWithoutAuthorInput, ScriptUncheckedCreateWithoutAuthorInput> | ScriptCreateWithoutAuthorInput[] | ScriptUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ScriptCreateOrConnectWithoutAuthorInput | ScriptCreateOrConnectWithoutAuthorInput[]
+    createMany?: ScriptCreateManyAuthorInputEnvelope
+    connect?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -6574,6 +8162,13 @@ export namespace Prisma {
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type ScriptUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<ScriptCreateWithoutAuthorInput, ScriptUncheckedCreateWithoutAuthorInput> | ScriptCreateWithoutAuthorInput[] | ScriptUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ScriptCreateOrConnectWithoutAuthorInput | ScriptCreateOrConnectWithoutAuthorInput[]
+    createMany?: ScriptCreateManyAuthorInputEnvelope
+    connect?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -6616,6 +8211,20 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
+  export type ScriptUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<ScriptCreateWithoutAuthorInput, ScriptUncheckedCreateWithoutAuthorInput> | ScriptCreateWithoutAuthorInput[] | ScriptUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ScriptCreateOrConnectWithoutAuthorInput | ScriptCreateOrConnectWithoutAuthorInput[]
+    upsert?: ScriptUpsertWithWhereUniqueWithoutAuthorInput | ScriptUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: ScriptCreateManyAuthorInputEnvelope
+    set?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+    disconnect?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+    delete?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+    connect?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+    update?: ScriptUpdateWithWhereUniqueWithoutAuthorInput | ScriptUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: ScriptUpdateManyWithWhereWithoutAuthorInput | ScriptUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: ScriptScalarWhereInput | ScriptScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -6650,6 +8259,20 @@ export namespace Prisma {
     update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type ScriptUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<ScriptCreateWithoutAuthorInput, ScriptUncheckedCreateWithoutAuthorInput> | ScriptCreateWithoutAuthorInput[] | ScriptUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ScriptCreateOrConnectWithoutAuthorInput | ScriptCreateOrConnectWithoutAuthorInput[]
+    upsert?: ScriptUpsertWithWhereUniqueWithoutAuthorInput | ScriptUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: ScriptCreateManyAuthorInputEnvelope
+    set?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+    disconnect?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+    delete?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+    connect?: ScriptWhereUniqueInput | ScriptWhereUniqueInput[]
+    update?: ScriptUpdateWithWhereUniqueWithoutAuthorInput | ScriptUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: ScriptUpdateManyWithWhereWithoutAuthorInput | ScriptUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: ScriptScalarWhereInput | ScriptScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutAccountsInput = {
@@ -6690,6 +8313,31 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSessionsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type ScriptCreatetagsInput = {
+    set: string[]
+  }
+
+  export type UserCreateNestedOneWithoutScriptInput = {
+    create?: XOR<UserCreateWithoutScriptInput, UserUncheckedCreateWithoutScriptInput>
+    connectOrCreate?: UserCreateOrConnectWithoutScriptInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ScriptUpdatetagsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type UserUpdateOneWithoutScriptNestedInput = {
+    create?: XOR<UserCreateWithoutScriptInput, UserUncheckedCreateWithoutScriptInput>
+    connectOrCreate?: UserCreateOrConnectWithoutScriptInput
+    upsert?: UserUpsertWithoutScriptInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutScriptInput, UserUpdateWithoutScriptInput>, UserUncheckedUpdateWithoutScriptInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -6879,6 +8527,29 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type AccountCreateWithoutUserInput = {
     type: string
@@ -6936,6 +8607,35 @@ export namespace Prisma {
 
   export type SessionCreateManyUserInputEnvelope = {
     data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ScriptCreateWithoutAuthorInput = {
+    title: string
+    content: JsonNullValueInput | InputJsonValue
+    language: string
+    tags?: ScriptCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ScriptUncheckedCreateWithoutAuthorInput = {
+    id?: number
+    title: string
+    content: JsonNullValueInput | InputJsonValue
+    language: string
+    tags?: ScriptCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ScriptCreateOrConnectWithoutAuthorInput = {
+    where: ScriptWhereUniqueInput
+    create: XOR<ScriptCreateWithoutAuthorInput, ScriptUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type ScriptCreateManyAuthorInputEnvelope = {
+    data: ScriptCreateManyAuthorInput | ScriptCreateManyAuthorInput[]
     skipDuplicates?: boolean
   }
 
@@ -6999,12 +8699,43 @@ export namespace Prisma {
     expires?: DateTimeFilter<"Session"> | Date | string
   }
 
+  export type ScriptUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: ScriptWhereUniqueInput
+    update: XOR<ScriptUpdateWithoutAuthorInput, ScriptUncheckedUpdateWithoutAuthorInput>
+    create: XOR<ScriptCreateWithoutAuthorInput, ScriptUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type ScriptUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: ScriptWhereUniqueInput
+    data: XOR<ScriptUpdateWithoutAuthorInput, ScriptUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type ScriptUpdateManyWithWhereWithoutAuthorInput = {
+    where: ScriptScalarWhereInput
+    data: XOR<ScriptUpdateManyMutationInput, ScriptUncheckedUpdateManyWithoutAuthorInput>
+  }
+
+  export type ScriptScalarWhereInput = {
+    AND?: ScriptScalarWhereInput | ScriptScalarWhereInput[]
+    OR?: ScriptScalarWhereInput[]
+    NOT?: ScriptScalarWhereInput | ScriptScalarWhereInput[]
+    id?: IntFilter<"Script"> | number
+    title?: StringFilter<"Script"> | string
+    content?: JsonFilter<"Script">
+    language?: StringFilter<"Script"> | string
+    tags?: StringNullableListFilter<"Script">
+    createdAt?: DateTimeFilter<"Script"> | Date | string
+    updatedAt?: DateTimeFilter<"Script"> | Date | string
+    authorId?: IntNullableFilter<"Script"> | number | null
+  }
+
   export type UserCreateWithoutAccountsInput = {
     name: string
     email: string
     emailVerified?: Date | string | null
     image?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
+    Script?: ScriptCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -7014,6 +8745,7 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    Script?: ScriptUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -7038,6 +8770,7 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    Script?: ScriptUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -7047,6 +8780,7 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    Script?: ScriptUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -7055,6 +8789,7 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
+    Script?: ScriptCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -7064,6 +8799,7 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Script?: ScriptUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -7088,6 +8824,7 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    Script?: ScriptUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -7097,6 +8834,61 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Script?: ScriptUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserCreateWithoutScriptInput = {
+    name: string
+    email: string
+    emailVerified?: Date | string | null
+    image?: string | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutScriptInput = {
+    id?: number
+    name: string
+    email: string
+    emailVerified?: Date | string | null
+    image?: string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutScriptInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutScriptInput, UserUncheckedCreateWithoutScriptInput>
+  }
+
+  export type UserUpsertWithoutScriptInput = {
+    update: XOR<UserUpdateWithoutScriptInput, UserUncheckedUpdateWithoutScriptInput>
+    create: XOR<UserCreateWithoutScriptInput, UserUncheckedCreateWithoutScriptInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutScriptInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutScriptInput, UserUncheckedUpdateWithoutScriptInput>
+  }
+
+  export type UserUpdateWithoutScriptInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutScriptInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -7117,6 +8909,16 @@ export namespace Prisma {
     id: string
     sessionToken: string
     expires: Date | string
+  }
+
+  export type ScriptCreateManyAuthorInput = {
+    id?: number
+    title: string
+    content: JsonNullValueInput | InputJsonValue
+    language: string
+    tags?: ScriptCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -7176,6 +8978,35 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sessionToken?: StringFieldUpdateOperationsInput | string
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScriptUpdateWithoutAuthorInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    language?: StringFieldUpdateOperationsInput | string
+    tags?: ScriptUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScriptUncheckedUpdateWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    language?: StringFieldUpdateOperationsInput | string
+    tags?: ScriptUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScriptUncheckedUpdateManyWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: JsonNullValueInput | InputJsonValue
+    language?: StringFieldUpdateOperationsInput | string
+    tags?: ScriptUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

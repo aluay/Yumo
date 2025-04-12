@@ -7,7 +7,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  output   = "./generated/client"
 }
 
 model User {
@@ -18,6 +18,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Script        Script[]
 }
 
 model Account {
@@ -52,4 +53,16 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Script {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   Json // TipTap editor json schema
+  language  String
+  tags      String[] // Array of strings for tags
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  Int?
+  author    User?    @relation(fields: [authorId], references: [id])
 }
