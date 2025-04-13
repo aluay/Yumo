@@ -1,5 +1,3 @@
-//datasource
-
 datasource db {
   url      = env("DATABASE_URL")
   provider = "postgresql"
@@ -7,7 +5,6 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated/client"
 }
 
 model User {
@@ -56,13 +53,31 @@ model VerificationToken {
 }
 
 model Script {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   Json // TipTap editor json schema
-  language  String
-  tags      String[] // Array of strings for tags
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  authorId  Int?
-  author    User?    @relation(fields: [authorId], references: [id])
+  id           Int              @id @default(autoincrement())
+  title        String
+  description  String?
+  content      Json // TipTap editor schema
+  language     String
+  tags         String[]
+  difficulty   DifficultyLevel?
+  dependencies String[]
+  status       ScriptStatus     @default(PUBLISHED)
+  likes        Int              @default(0)
+  views        Int              @default(0)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  authorId Int?
+  author   User? @relation(fields: [authorId], references: [id])
+}
+
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum ScriptStatus {
+  DRAFT
+  PUBLISHED
 }

@@ -40,6 +40,36 @@ export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTok
 export type Script = $Result.DefaultSelection<Prisma.$ScriptPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const DifficultyLevel: {
+  BEGINNER: 'BEGINNER',
+  INTERMEDIATE: 'INTERMEDIATE',
+  ADVANCED: 'ADVANCED'
+};
+
+export type DifficultyLevel = (typeof DifficultyLevel)[keyof typeof DifficultyLevel]
+
+
+export const ScriptStatus: {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+};
+
+export type ScriptStatus = (typeof ScriptStatus)[keyof typeof ScriptStatus]
+
+}
+
+export type DifficultyLevel = $Enums.DifficultyLevel
+
+export const DifficultyLevel: typeof $Enums.DifficultyLevel
+
+export type ScriptStatus = $Enums.ScriptStatus
+
+export const ScriptStatus: typeof $Enums.ScriptStatus
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -5694,18 +5724,27 @@ export namespace Prisma {
 
   export type ScriptAvgAggregateOutputType = {
     id: number | null
+    likes: number | null
+    views: number | null
     authorId: number | null
   }
 
   export type ScriptSumAggregateOutputType = {
     id: number | null
+    likes: number | null
+    views: number | null
     authorId: number | null
   }
 
   export type ScriptMinAggregateOutputType = {
     id: number | null
     title: string | null
+    description: string | null
     language: string | null
+    difficulty: $Enums.DifficultyLevel | null
+    status: $Enums.ScriptStatus | null
+    likes: number | null
+    views: number | null
     createdAt: Date | null
     updatedAt: Date | null
     authorId: number | null
@@ -5714,7 +5753,12 @@ export namespace Prisma {
   export type ScriptMaxAggregateOutputType = {
     id: number | null
     title: string | null
+    description: string | null
     language: string | null
+    difficulty: $Enums.DifficultyLevel | null
+    status: $Enums.ScriptStatus | null
+    likes: number | null
+    views: number | null
     createdAt: Date | null
     updatedAt: Date | null
     authorId: number | null
@@ -5723,9 +5767,15 @@ export namespace Prisma {
   export type ScriptCountAggregateOutputType = {
     id: number
     title: number
+    description: number
     content: number
     language: number
     tags: number
+    difficulty: number
+    dependencies: number
+    status: number
+    likes: number
+    views: number
     createdAt: number
     updatedAt: number
     authorId: number
@@ -5735,18 +5785,27 @@ export namespace Prisma {
 
   export type ScriptAvgAggregateInputType = {
     id?: true
+    likes?: true
+    views?: true
     authorId?: true
   }
 
   export type ScriptSumAggregateInputType = {
     id?: true
+    likes?: true
+    views?: true
     authorId?: true
   }
 
   export type ScriptMinAggregateInputType = {
     id?: true
     title?: true
+    description?: true
     language?: true
+    difficulty?: true
+    status?: true
+    likes?: true
+    views?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -5755,7 +5814,12 @@ export namespace Prisma {
   export type ScriptMaxAggregateInputType = {
     id?: true
     title?: true
+    description?: true
     language?: true
+    difficulty?: true
+    status?: true
+    likes?: true
+    views?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -5764,9 +5828,15 @@ export namespace Prisma {
   export type ScriptCountAggregateInputType = {
     id?: true
     title?: true
+    description?: true
     content?: true
     language?: true
     tags?: true
+    difficulty?: true
+    dependencies?: true
+    status?: true
+    likes?: true
+    views?: true
     createdAt?: true
     updatedAt?: true
     authorId?: true
@@ -5862,9 +5932,15 @@ export namespace Prisma {
   export type ScriptGroupByOutputType = {
     id: number
     title: string
+    description: string | null
     content: JsonValue
     language: string
     tags: string[]
+    difficulty: $Enums.DifficultyLevel | null
+    dependencies: string[]
+    status: $Enums.ScriptStatus
+    likes: number
+    views: number
     createdAt: Date
     updatedAt: Date
     authorId: number | null
@@ -5892,9 +5968,15 @@ export namespace Prisma {
   export type ScriptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
+    description?: boolean
     content?: boolean
     language?: boolean
     tags?: boolean
+    difficulty?: boolean
+    dependencies?: boolean
+    status?: boolean
+    likes?: boolean
+    views?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -5904,9 +5986,15 @@ export namespace Prisma {
   export type ScriptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
+    description?: boolean
     content?: boolean
     language?: boolean
     tags?: boolean
+    difficulty?: boolean
+    dependencies?: boolean
+    status?: boolean
+    likes?: boolean
+    views?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -5916,9 +6004,15 @@ export namespace Prisma {
   export type ScriptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
+    description?: boolean
     content?: boolean
     language?: boolean
     tags?: boolean
+    difficulty?: boolean
+    dependencies?: boolean
+    status?: boolean
+    likes?: boolean
+    views?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
@@ -5928,15 +6022,21 @@ export namespace Prisma {
   export type ScriptSelectScalar = {
     id?: boolean
     title?: boolean
+    description?: boolean
     content?: boolean
     language?: boolean
     tags?: boolean
+    difficulty?: boolean
+    dependencies?: boolean
+    status?: boolean
+    likes?: boolean
+    views?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     authorId?: boolean
   }
 
-  export type ScriptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "language" | "tags" | "createdAt" | "updatedAt" | "authorId", ExtArgs["result"]["script"]>
+  export type ScriptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "content" | "language" | "tags" | "difficulty" | "dependencies" | "status" | "likes" | "views" | "createdAt" | "updatedAt" | "authorId", ExtArgs["result"]["script"]>
   export type ScriptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     author?: boolean | Script$authorArgs<ExtArgs>
   }
@@ -5955,9 +6055,15 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       title: string
+      description: string | null
       content: Prisma.JsonValue
       language: string
       tags: string[]
+      difficulty: $Enums.DifficultyLevel | null
+      dependencies: string[]
+      status: $Enums.ScriptStatus
+      likes: number
+      views: number
       createdAt: Date
       updatedAt: Date
       authorId: number | null
@@ -6387,9 +6493,15 @@ export namespace Prisma {
   interface ScriptFieldRefs {
     readonly id: FieldRef<"Script", 'Int'>
     readonly title: FieldRef<"Script", 'String'>
+    readonly description: FieldRef<"Script", 'String'>
     readonly content: FieldRef<"Script", 'Json'>
     readonly language: FieldRef<"Script", 'String'>
     readonly tags: FieldRef<"Script", 'String[]'>
+    readonly difficulty: FieldRef<"Script", 'DifficultyLevel'>
+    readonly dependencies: FieldRef<"Script", 'String[]'>
+    readonly status: FieldRef<"Script", 'ScriptStatus'>
+    readonly likes: FieldRef<"Script", 'Int'>
+    readonly views: FieldRef<"Script", 'Int'>
     readonly createdAt: FieldRef<"Script", 'DateTime'>
     readonly updatedAt: FieldRef<"Script", 'DateTime'>
     readonly authorId: FieldRef<"Script", 'Int'>
@@ -6891,9 +7003,15 @@ export namespace Prisma {
   export const ScriptScalarFieldEnum: {
     id: 'id',
     title: 'title',
+    description: 'description',
     content: 'content',
     language: 'language',
     tags: 'tags',
+    difficulty: 'difficulty',
+    dependencies: 'dependencies',
+    status: 'status',
+    likes: 'likes',
+    views: 'views',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     authorId: 'authorId'
@@ -7000,6 +7118,34 @@ export namespace Prisma {
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'DifficultyLevel'
+   */
+  export type EnumDifficultyLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DifficultyLevel'>
+    
+
+
+  /**
+   * Reference to a field of type 'DifficultyLevel[]'
+   */
+  export type ListEnumDifficultyLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DifficultyLevel[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ScriptStatus'
+   */
+  export type EnumScriptStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScriptStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ScriptStatus[]'
+   */
+  export type ListEnumScriptStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScriptStatus[]'>
     
 
 
@@ -7277,9 +7423,15 @@ export namespace Prisma {
     NOT?: ScriptWhereInput | ScriptWhereInput[]
     id?: IntFilter<"Script"> | number
     title?: StringFilter<"Script"> | string
+    description?: StringNullableFilter<"Script"> | string | null
     content?: JsonFilter<"Script">
     language?: StringFilter<"Script"> | string
     tags?: StringNullableListFilter<"Script">
+    difficulty?: EnumDifficultyLevelNullableFilter<"Script"> | $Enums.DifficultyLevel | null
+    dependencies?: StringNullableListFilter<"Script">
+    status?: EnumScriptStatusFilter<"Script"> | $Enums.ScriptStatus
+    likes?: IntFilter<"Script"> | number
+    views?: IntFilter<"Script"> | number
     createdAt?: DateTimeFilter<"Script"> | Date | string
     updatedAt?: DateTimeFilter<"Script"> | Date | string
     authorId?: IntNullableFilter<"Script"> | number | null
@@ -7289,9 +7441,15 @@ export namespace Prisma {
   export type ScriptOrderByWithRelationInput = {
     id?: SortOrder
     title?: SortOrder
+    description?: SortOrderInput | SortOrder
     content?: SortOrder
     language?: SortOrder
     tags?: SortOrder
+    difficulty?: SortOrderInput | SortOrder
+    dependencies?: SortOrder
+    status?: SortOrder
+    likes?: SortOrder
+    views?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrderInput | SortOrder
@@ -7304,9 +7462,15 @@ export namespace Prisma {
     OR?: ScriptWhereInput[]
     NOT?: ScriptWhereInput | ScriptWhereInput[]
     title?: StringFilter<"Script"> | string
+    description?: StringNullableFilter<"Script"> | string | null
     content?: JsonFilter<"Script">
     language?: StringFilter<"Script"> | string
     tags?: StringNullableListFilter<"Script">
+    difficulty?: EnumDifficultyLevelNullableFilter<"Script"> | $Enums.DifficultyLevel | null
+    dependencies?: StringNullableListFilter<"Script">
+    status?: EnumScriptStatusFilter<"Script"> | $Enums.ScriptStatus
+    likes?: IntFilter<"Script"> | number
+    views?: IntFilter<"Script"> | number
     createdAt?: DateTimeFilter<"Script"> | Date | string
     updatedAt?: DateTimeFilter<"Script"> | Date | string
     authorId?: IntNullableFilter<"Script"> | number | null
@@ -7316,9 +7480,15 @@ export namespace Prisma {
   export type ScriptOrderByWithAggregationInput = {
     id?: SortOrder
     title?: SortOrder
+    description?: SortOrderInput | SortOrder
     content?: SortOrder
     language?: SortOrder
     tags?: SortOrder
+    difficulty?: SortOrderInput | SortOrder
+    dependencies?: SortOrder
+    status?: SortOrder
+    likes?: SortOrder
+    views?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrderInput | SortOrder
@@ -7335,9 +7505,15 @@ export namespace Prisma {
     NOT?: ScriptScalarWhereWithAggregatesInput | ScriptScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Script"> | number
     title?: StringWithAggregatesFilter<"Script"> | string
+    description?: StringNullableWithAggregatesFilter<"Script"> | string | null
     content?: JsonWithAggregatesFilter<"Script">
     language?: StringWithAggregatesFilter<"Script"> | string
     tags?: StringNullableListFilter<"Script">
+    difficulty?: EnumDifficultyLevelNullableWithAggregatesFilter<"Script"> | $Enums.DifficultyLevel | null
+    dependencies?: StringNullableListFilter<"Script">
+    status?: EnumScriptStatusWithAggregatesFilter<"Script"> | $Enums.ScriptStatus
+    likes?: IntWithAggregatesFilter<"Script"> | number
+    views?: IntWithAggregatesFilter<"Script"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Script"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Script"> | Date | string
     authorId?: IntNullableWithAggregatesFilter<"Script"> | number | null
@@ -7601,9 +7777,15 @@ export namespace Prisma {
 
   export type ScriptCreateInput = {
     title: string
+    description?: string | null
     content: JsonNullValueInput | InputJsonValue
     language: string
     tags?: ScriptCreatetagsInput | string[]
+    difficulty?: $Enums.DifficultyLevel | null
+    dependencies?: ScriptCreatedependenciesInput | string[]
+    status?: $Enums.ScriptStatus
+    likes?: number
+    views?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     author?: UserCreateNestedOneWithoutScriptInput
@@ -7612,9 +7794,15 @@ export namespace Prisma {
   export type ScriptUncheckedCreateInput = {
     id?: number
     title: string
+    description?: string | null
     content: JsonNullValueInput | InputJsonValue
     language: string
     tags?: ScriptCreatetagsInput | string[]
+    difficulty?: $Enums.DifficultyLevel | null
+    dependencies?: ScriptCreatedependenciesInput | string[]
+    status?: $Enums.ScriptStatus
+    likes?: number
+    views?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId?: number | null
@@ -7622,9 +7810,15 @@ export namespace Prisma {
 
   export type ScriptUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     content?: JsonNullValueInput | InputJsonValue
     language?: StringFieldUpdateOperationsInput | string
     tags?: ScriptUpdatetagsInput | string[]
+    difficulty?: NullableEnumDifficultyLevelFieldUpdateOperationsInput | $Enums.DifficultyLevel | null
+    dependencies?: ScriptUpdatedependenciesInput | string[]
+    status?: EnumScriptStatusFieldUpdateOperationsInput | $Enums.ScriptStatus
+    likes?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     author?: UserUpdateOneWithoutScriptNestedInput
@@ -7633,9 +7827,15 @@ export namespace Prisma {
   export type ScriptUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     content?: JsonNullValueInput | InputJsonValue
     language?: StringFieldUpdateOperationsInput | string
     tags?: ScriptUpdatetagsInput | string[]
+    difficulty?: NullableEnumDifficultyLevelFieldUpdateOperationsInput | $Enums.DifficultyLevel | null
+    dependencies?: ScriptUpdatedependenciesInput | string[]
+    status?: EnumScriptStatusFieldUpdateOperationsInput | $Enums.ScriptStatus
+    likes?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -7644,9 +7844,15 @@ export namespace Prisma {
   export type ScriptCreateManyInput = {
     id?: number
     title: string
+    description?: string | null
     content: JsonNullValueInput | InputJsonValue
     language: string
     tags?: ScriptCreatetagsInput | string[]
+    difficulty?: $Enums.DifficultyLevel | null
+    dependencies?: ScriptCreatedependenciesInput | string[]
+    status?: $Enums.ScriptStatus
+    likes?: number
+    views?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId?: number | null
@@ -7654,9 +7860,15 @@ export namespace Prisma {
 
   export type ScriptUpdateManyMutationInput = {
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     content?: JsonNullValueInput | InputJsonValue
     language?: StringFieldUpdateOperationsInput | string
     tags?: ScriptUpdatetagsInput | string[]
+    difficulty?: NullableEnumDifficultyLevelFieldUpdateOperationsInput | $Enums.DifficultyLevel | null
+    dependencies?: ScriptUpdatedependenciesInput | string[]
+    status?: EnumScriptStatusFieldUpdateOperationsInput | $Enums.ScriptStatus
+    likes?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7664,9 +7876,15 @@ export namespace Prisma {
   export type ScriptUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     content?: JsonNullValueInput | InputJsonValue
     language?: StringFieldUpdateOperationsInput | string
     tags?: ScriptUpdatetagsInput | string[]
+    difficulty?: NullableEnumDifficultyLevelFieldUpdateOperationsInput | $Enums.DifficultyLevel | null
+    dependencies?: ScriptUpdatedependenciesInput | string[]
+    status?: EnumScriptStatusFieldUpdateOperationsInput | $Enums.ScriptStatus
+    likes?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -8059,6 +8277,20 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
+  export type EnumDifficultyLevelNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DifficultyLevel | EnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DifficultyLevel[] | ListEnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DifficultyLevel[] | ListEnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDifficultyLevelNullableFilter<$PrismaModel> | $Enums.DifficultyLevel | null
+  }
+
+  export type EnumScriptStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ScriptStatus | EnumScriptStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ScriptStatus[] | ListEnumScriptStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ScriptStatus[] | ListEnumScriptStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumScriptStatusFilter<$PrismaModel> | $Enums.ScriptStatus
+  }
+
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
@@ -8067,9 +8299,15 @@ export namespace Prisma {
   export type ScriptCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     content?: SortOrder
     language?: SortOrder
     tags?: SortOrder
+    difficulty?: SortOrder
+    dependencies?: SortOrder
+    status?: SortOrder
+    likes?: SortOrder
+    views?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -8077,13 +8315,20 @@ export namespace Prisma {
 
   export type ScriptAvgOrderByAggregateInput = {
     id?: SortOrder
+    likes?: SortOrder
+    views?: SortOrder
     authorId?: SortOrder
   }
 
   export type ScriptMaxOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     language?: SortOrder
+    difficulty?: SortOrder
+    status?: SortOrder
+    likes?: SortOrder
+    views?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -8092,7 +8337,12 @@ export namespace Prisma {
   export type ScriptMinOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
+    description?: SortOrder
     language?: SortOrder
+    difficulty?: SortOrder
+    status?: SortOrder
+    likes?: SortOrder
+    views?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     authorId?: SortOrder
@@ -8100,6 +8350,8 @@ export namespace Prisma {
 
   export type ScriptSumOrderByAggregateInput = {
     id?: SortOrder
+    likes?: SortOrder
+    views?: SortOrder
     authorId?: SortOrder
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> =
@@ -8127,6 +8379,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type EnumDifficultyLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DifficultyLevel | EnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DifficultyLevel[] | ListEnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DifficultyLevel[] | ListEnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDifficultyLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.DifficultyLevel | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDifficultyLevelNullableFilter<$PrismaModel>
+    _max?: NestedEnumDifficultyLevelNullableFilter<$PrismaModel>
+  }
+
+  export type EnumScriptStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ScriptStatus | EnumScriptStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ScriptStatus[] | ListEnumScriptStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ScriptStatus[] | ListEnumScriptStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumScriptStatusWithAggregatesFilter<$PrismaModel> | $Enums.ScriptStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumScriptStatusFilter<$PrismaModel>
+    _max?: NestedEnumScriptStatusFilter<$PrismaModel>
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -8319,6 +8591,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type ScriptCreatedependenciesInput = {
+    set: string[]
+  }
+
   export type UserCreateNestedOneWithoutScriptInput = {
     create?: XOR<UserCreateWithoutScriptInput, UserUncheckedCreateWithoutScriptInput>
     connectOrCreate?: UserCreateOrConnectWithoutScriptInput
@@ -8328,6 +8604,19 @@ export namespace Prisma {
   export type ScriptUpdatetagsInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type NullableEnumDifficultyLevelFieldUpdateOperationsInput = {
+    set?: $Enums.DifficultyLevel | null
+  }
+
+  export type ScriptUpdatedependenciesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type EnumScriptStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ScriptStatus
   }
 
   export type UserUpdateOneWithoutScriptNestedInput = {
@@ -8527,6 +8816,20 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
+
+  export type NestedEnumDifficultyLevelNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DifficultyLevel | EnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DifficultyLevel[] | ListEnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DifficultyLevel[] | ListEnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDifficultyLevelNullableFilter<$PrismaModel> | $Enums.DifficultyLevel | null
+  }
+
+  export type NestedEnumScriptStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ScriptStatus | EnumScriptStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ScriptStatus[] | ListEnumScriptStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ScriptStatus[] | ListEnumScriptStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumScriptStatusFilter<$PrismaModel> | $Enums.ScriptStatus
+  }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -8549,6 +8852,26 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumDifficultyLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DifficultyLevel | EnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DifficultyLevel[] | ListEnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DifficultyLevel[] | ListEnumDifficultyLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDifficultyLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.DifficultyLevel | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDifficultyLevelNullableFilter<$PrismaModel>
+    _max?: NestedEnumDifficultyLevelNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumScriptStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ScriptStatus | EnumScriptStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ScriptStatus[] | ListEnumScriptStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ScriptStatus[] | ListEnumScriptStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumScriptStatusWithAggregatesFilter<$PrismaModel> | $Enums.ScriptStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumScriptStatusFilter<$PrismaModel>
+    _max?: NestedEnumScriptStatusFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -8612,9 +8935,15 @@ export namespace Prisma {
 
   export type ScriptCreateWithoutAuthorInput = {
     title: string
+    description?: string | null
     content: JsonNullValueInput | InputJsonValue
     language: string
     tags?: ScriptCreatetagsInput | string[]
+    difficulty?: $Enums.DifficultyLevel | null
+    dependencies?: ScriptCreatedependenciesInput | string[]
+    status?: $Enums.ScriptStatus
+    likes?: number
+    views?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8622,9 +8951,15 @@ export namespace Prisma {
   export type ScriptUncheckedCreateWithoutAuthorInput = {
     id?: number
     title: string
+    description?: string | null
     content: JsonNullValueInput | InputJsonValue
     language: string
     tags?: ScriptCreatetagsInput | string[]
+    difficulty?: $Enums.DifficultyLevel | null
+    dependencies?: ScriptCreatedependenciesInput | string[]
+    status?: $Enums.ScriptStatus
+    likes?: number
+    views?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8721,9 +9056,15 @@ export namespace Prisma {
     NOT?: ScriptScalarWhereInput | ScriptScalarWhereInput[]
     id?: IntFilter<"Script"> | number
     title?: StringFilter<"Script"> | string
+    description?: StringNullableFilter<"Script"> | string | null
     content?: JsonFilter<"Script">
     language?: StringFilter<"Script"> | string
     tags?: StringNullableListFilter<"Script">
+    difficulty?: EnumDifficultyLevelNullableFilter<"Script"> | $Enums.DifficultyLevel | null
+    dependencies?: StringNullableListFilter<"Script">
+    status?: EnumScriptStatusFilter<"Script"> | $Enums.ScriptStatus
+    likes?: IntFilter<"Script"> | number
+    views?: IntFilter<"Script"> | number
     createdAt?: DateTimeFilter<"Script"> | Date | string
     updatedAt?: DateTimeFilter<"Script"> | Date | string
     authorId?: IntNullableFilter<"Script"> | number | null
@@ -8914,9 +9255,15 @@ export namespace Prisma {
   export type ScriptCreateManyAuthorInput = {
     id?: number
     title: string
+    description?: string | null
     content: JsonNullValueInput | InputJsonValue
     language: string
     tags?: ScriptCreatetagsInput | string[]
+    difficulty?: $Enums.DifficultyLevel | null
+    dependencies?: ScriptCreatedependenciesInput | string[]
+    status?: $Enums.ScriptStatus
+    likes?: number
+    views?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8982,9 +9329,15 @@ export namespace Prisma {
 
   export type ScriptUpdateWithoutAuthorInput = {
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     content?: JsonNullValueInput | InputJsonValue
     language?: StringFieldUpdateOperationsInput | string
     tags?: ScriptUpdatetagsInput | string[]
+    difficulty?: NullableEnumDifficultyLevelFieldUpdateOperationsInput | $Enums.DifficultyLevel | null
+    dependencies?: ScriptUpdatedependenciesInput | string[]
+    status?: EnumScriptStatusFieldUpdateOperationsInput | $Enums.ScriptStatus
+    likes?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8992,9 +9345,15 @@ export namespace Prisma {
   export type ScriptUncheckedUpdateWithoutAuthorInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     content?: JsonNullValueInput | InputJsonValue
     language?: StringFieldUpdateOperationsInput | string
     tags?: ScriptUpdatetagsInput | string[]
+    difficulty?: NullableEnumDifficultyLevelFieldUpdateOperationsInput | $Enums.DifficultyLevel | null
+    dependencies?: ScriptUpdatedependenciesInput | string[]
+    status?: EnumScriptStatusFieldUpdateOperationsInput | $Enums.ScriptStatus
+    likes?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9002,9 +9361,15 @@ export namespace Prisma {
   export type ScriptUncheckedUpdateManyWithoutAuthorInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     content?: JsonNullValueInput | InputJsonValue
     language?: StringFieldUpdateOperationsInput | string
     tags?: ScriptUpdatetagsInput | string[]
+    difficulty?: NullableEnumDifficultyLevelFieldUpdateOperationsInput | $Enums.DifficultyLevel | null
+    dependencies?: ScriptUpdatedependenciesInput | string[]
+    status?: EnumScriptStatusFieldUpdateOperationsInput | $Enums.ScriptStatus
+    likes?: IntFieldUpdateOperationsInput | number
+    views?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

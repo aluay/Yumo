@@ -11,5 +11,9 @@ export default function SignInButton() {
 		}
 	};
 
-	return <Button onClick={handleSignIn}>Sign In</Button>;
+	return (
+		<Button size="sm" onClick={handleSignIn}>
+			Sign In
+		</Button>
+	);
 }

@@ -1,11 +1,24 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { scriptSchema } from "@/lib/schemas/scriptSchema";
+import { auth } from "@/app/auth";
 
 // Get all scripts
 export async function GET() {
+	const session = await auth();
+
 	try {
-		const scripts = await prisma.script.findMany();
+		const scripts = await prisma.script.findMany({
+			take: session?.user ? undefined : 10, // Only load recent 10 scripts for unauthenticated users
+			include: {
+				author: {
+					select: {
+						name: true,
+						image: true,
+					},
+				},
+			},
+		});
 		return NextResponse.json(scripts);
 	} catch (error) {
 		console.error("Failed to fetch scripts:", error);

@@ -156,9 +156,15 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
 exports.Prisma.ScriptScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  description: 'description',
   content: 'content',
   language: 'language',
   tags: 'tags',
+  difficulty: 'difficulty',
+  dependencies: 'dependencies',
+  status: 'status',
+  likes: 'likes',
+  views: 'views',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   authorId: 'authorId'
@@ -188,7 +194,16 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.DifficultyLevel = exports.$Enums.DifficultyLevel = {
+  BEGINNER: 'BEGINNER',
+  INTERMEDIATE: 'INTERMEDIATE',
+  ADVANCED: 'ADVANCED'
+};
 
+exports.ScriptStatus = exports.$Enums.ScriptStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
