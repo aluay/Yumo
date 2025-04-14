@@ -2,7 +2,7 @@
 import { ModeToggle } from "@/components/shared/ModeToggle";
 import Link from "next/link";
 import SignInButton from "../auth/SignInButton";
-import SignOutButton from "../auth/SignOutButton";
+import ProfileDropdown from "@/components/shared/ProfileDropdown";
 import { useSession } from "next-auth/react";
 
 export default function NavBar() {
@@ -11,10 +11,14 @@ export default function NavBar() {
 	return (
 		<nav className="w-full flex items-center justify-between">
 			<Link href="/">ScriptHub</Link>
-			<div className="flex gap-4">
+			<div className="flex items-center gap-4">
 				<ModeToggle />
-				<div className="hidden lg:block">
-					{session?.user ? <SignOutButton /> : <SignInButton />}
+				<div>
+					{session?.user ? (
+						<ProfileDropdown user={session.user} />
+					) : (
+						<SignInButton />
+					)}
 				</div>
 			</div>
 		</nav>
