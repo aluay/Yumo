@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { scriptSchema } from "@/lib/schemas/scriptSchema";
+import { scriptSchema, scriptPayloadSchema } from "@/lib/schemas/scriptSchema";
 import { auth } from "@/app/auth";
 
 // Get all scripts
@@ -18,8 +18,24 @@ export async function GET() {
 					},
 				},
 			},
+			orderBy: { createdAt: "desc" },
 		});
-		return NextResponse.json(scripts);
+
+		const safeScripts = scripts.map((s) => ({
+			...s,
+			createdAt: s.createdAt.toISOString(),
+			updatedAt: s.updatedAt.toISOString(),
+		}));
+
+		const result = scriptPayloadSchema.array().safeParse(safeScripts);
+		if (!result.success) {
+			return NextResponse.json(
+				{ error: result.error.format() },
+				{ status: 500 }
+			);
+		}
+
+		return NextResponse.json(result.data);
 	} catch (error) {
 		console.error("Failed to fetch scripts:", error);
 		return NextResponse.json(
@@ -31,25 +47,24 @@ export async function GET() {
 
 // Create new script
 export async function POST(request: Request) {
-	try {
-		const body = await request.json();
-		const parsed = scriptSchema.safeParse(body);
-
-		if (!parsed.success) {
-			const errorMessages = parsed.error.errors.map((err) => err.message);
-			return NextResponse.json({ error: errorMessages }, { status: 400 });
-		}
-
-		const newScript = await prisma.script.create({
-			data: parsed.data,
-		});
-
-		return NextResponse.json(newScript, { status: 201 });
-	} catch (error) {
-		console.error("Failed to create new script:", error);
-		return NextResponse.json(
-			{ error: "Internal Server Error" },
-			{ status: 500 }
-		);
+	const session = await auth();
+	if (!session?.user) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
+
+	const body = await request.json();
+	const result = scriptSchema.safeParse(body);
+
+	if (!result.success) {
+		return NextResponse.json({ error: result.error.format() }, { status: 400 });
+	}
+
+	const newScript = await prisma.script.create({
+		data: {
+			...result.data,
+			authorId: Number(session.user.id),
+		},
+	});
+
+	return NextResponse.json(newScript, { status: 201 });
 }

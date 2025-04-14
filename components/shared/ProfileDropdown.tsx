@@ -35,7 +35,7 @@ export default function UserDropdown({
 					<User className="h-4 w-4" /> Dashboard
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={() => router.push("/new")}>
+				<DropdownMenuItem onClick={() => router.push("/dashboard/new")}>
 					<PlusCircle className="h-4 w-4" /> New Script
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />

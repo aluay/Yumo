@@ -56,7 +56,7 @@ model Script {
   id           Int              @id @default(autoincrement())
   title        String
   description  String?
-  content      Json // TipTap editor schema
+  content      Json? // TipTap editor schema
   language     String
   tags         String[]
   difficulty   DifficultyLevel?

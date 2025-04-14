@@ -14,7 +14,7 @@ import Link from "next/link";
 import { formatNumber, truncateText } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ThumbsUp, Eye } from "lucide-react";
-import { ScriptInput } from "@/lib/schemas/scriptSchema";
+import { scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
 import { getSafeVariant } from "@/lib/languageVariants";
 
 interface UserScriptsProps {
@@ -22,7 +22,7 @@ interface UserScriptsProps {
 }
 
 const UserScripts = ({ userId }: UserScriptsProps) => {
-	const [scripts, setScripts] = useState<ScriptInput[]>([]);
+	const [scripts, setScripts] = useState<scriptPayloadSchemaType[]>([]);
 
 	useEffect(() => {
 		async function fetchUserScripts() {
@@ -49,7 +49,9 @@ const UserScripts = ({ userId }: UserScriptsProps) => {
 						className="flex flex-col justify-between hover:border-zinc-500">
 						<CardHeader className="p-4 pb-0">
 							<CardTitle className="flex items-center justify-between font-normal text-[18px]">
-								<Link href={`/api/script/${script.id}`}>{script.title}</Link>
+								<Link href={`/dashboard/edit/${script.id}`}>
+									{script.title}
+								</Link>
 								<span className="text-xs text-muted-foreground leading-none">
 									{moment(script.createdAt).fromNow()}
 								</span>
@@ -65,7 +67,7 @@ const UserScripts = ({ userId }: UserScriptsProps) => {
 									{script.language}
 								</Badge>
 
-								{script.tags.map((tag, index) => (
+								{script.tags?.map((tag, index) => (
 									<Badge key={index} variant="outline">
 										{tag}
 									</Badge>

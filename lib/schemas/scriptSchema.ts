@@ -1,35 +1,37 @@
 import { z } from "zod";
-
-export const ScriptStatusEnum = z.enum(["DRAFT", "PUBLISHED"]);
-export const DifficultyLevelEnum = z.enum([
-	"BEGINNER",
-	"INTERMEDIATE",
-	"ADVANCED",
-]);
+import type { JSONContent } from "@tiptap/react";
 
 export const scriptSchema = z.object({
-	id: z.number().int().positive(),
-	title: z.string().min(1, "Title is required"),
+	title: z.string().min(1),
 	description: z.string().optional(),
-	content: z.record(z.any()),
-	language: z.string().min(1, "Language is required"),
-	tags: z.array(z.string()),
-	difficulty: DifficultyLevelEnum.optional(),
-	dependencies: z.array(z.string()).optional(),
-	status: ScriptStatusEnum.default("PUBLISHED"),
-	likes: z.number().int().default(0),
-	views: z.number().int().default(0),
-	createdAt: z.string(),
-	updatedAt: z.string(),
+	language: z.string().min(1),
+	tags: z.array(z.string()).optional(),
+	content: z
+		.custom<JSONContent>((val) => {
+			if (val === null) return true;
+			if (typeof val !== "object") return false;
+			return (val as JSONContent).type === "doc";
+		})
+		.nullable(),
 });
 
-export const scriptWithAuthorSchema = scriptSchema.extend({
+export type scriptSchemaType = z.infer<typeof scriptSchema>;
+
+// This schema is used when to validate scripts returned from the API
+export const scriptPayloadSchema = scriptSchema.extend({
+	id: z.number(),
+	createdAt: z.string(),
+	updatedAt: z.string(),
+	likes: z.number(),
+	views: z.number(),
 	author: z
 		.object({
 			name: z.string(),
 			image: z.string().nullable().optional(),
 		})
-		.nullable(),
+		.optional(),
 });
 
-export type ScriptInput = z.infer<typeof scriptWithAuthorSchema>;
+export type scriptPayloadSchemaType = z.infer<typeof scriptPayloadSchema>;
+
+export type scriptSchemaWithIdType = z.infer<typeof scriptPayloadSchema>;

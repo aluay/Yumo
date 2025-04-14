@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { getScripts } from "@/lib/api/api";
-import { ScriptInput } from "@/lib/schemas/scriptSchema";
+import { scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { ThumbsUp, Eye } from "lucide-react";
@@ -19,7 +19,7 @@ import {
 import { getSafeVariant } from "@/lib/languageVariants";
 
 const ScriptsMiniList = () => {
-	const [scripts, setScripts] = useState<ScriptInput[]>([]);
+	const [scripts, setScripts] = useState<scriptPayloadSchemaType[]>([]);
 
 	useEffect(() => {
 		getScripts().then((data) => setScripts(data));
@@ -53,7 +53,7 @@ const ScriptsMiniList = () => {
 									{script.language}
 								</Badge>
 
-								{script.tags.map((tag, index) => (
+								{script.tags?.map((tag, index) => (
 									<Badge key={index} variant="outline">
 										{tag}
 									</Badge>

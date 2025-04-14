@@ -1,3 +1,6 @@
+import prisma from "@/lib/prisma";
+import { type scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
+import type { JSONContent } from "@tiptap/react";
 // Get scripts from API and return them as JSON
 export const getScripts = async () => {
 	try {
@@ -32,3 +35,32 @@ export const getUserScripts = async (userId: number) => {
 		return [];
 	}
 };
+
+// Get a single script by id
+export async function getScriptById(
+	id: number,
+	userId: number
+): Promise<scriptPayloadSchemaType | null> {
+	const script = await prisma.script.findUnique({
+		where: {
+			id,
+			authorId: userId,
+		},
+	});
+
+	if (!script) return null;
+
+	return {
+		...script,
+		createdAt: script.createdAt.toISOString(),
+		updatedAt: script.updatedAt.toISOString(),
+		description: script.description ?? undefined,
+		tags: script.tags ?? [],
+		content:
+			script.content &&
+			typeof script.content === "object" &&
+			"type" in script.content
+				? (script.content as JSONContent)
+				: { type: "doc", content: [] },
+	};
+}

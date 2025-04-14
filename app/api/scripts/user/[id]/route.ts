@@ -1,27 +1,52 @@
-import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { scriptPayloadSchema } from "@/lib/schemas/scriptSchema";
 
+// Get all scripts
 export async function GET(
 	request: Request,
 	context: { params: Promise<{ id: string }> }
 ) {
-	const { id } = await context.params;
+	try {
+		const { id } = await context.params;
 
-	const numericId = parseInt(id);
-	if (isNaN(numericId)) {
-		return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-	}
+		const numericId = parseInt(id);
+		if (isNaN(numericId)) {
+			return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+		}
 
-	const scripts = await prisma.script.findMany({
-		where: { authorId: numericId },
-		orderBy: { createdAt: "desc" },
-	});
+		const scripts = await prisma.script.findMany({
+			where: { authorId: numericId },
+			orderBy: { createdAt: "desc" },
+		});
 
-	if (!scripts || scripts.length === 0) {
+		const safeScripts = scripts.map((s) => ({
+			...s,
+			createdAt: s.createdAt.toISOString(),
+			updatedAt: s.updatedAt.toISOString(),
+		}));
+
+		const result = scriptPayloadSchema.array().safeParse(safeScripts);
+		if (!result.success) {
+			return NextResponse.json(
+				{ error: result.error.format() },
+				{ status: 500 }
+			);
+		}
+
+		if (!result.data || result.data.length === 0) {
+			return NextResponse.json(
+				{ error: "No scripts found for this user" },
+				{ status: 404 }
+			);
+		}
+
+		return NextResponse.json(result.data);
+	} catch (error) {
+		console.error("Failed to fetch scripts:", error);
 		return NextResponse.json(
-			{ error: "No scripts found for this user" },
-			{ status: 404 }
+			{ error: "Internal Server Error" },
+			{ status: 500 }
 		);
 	}
-	return NextResponse.json(scripts);
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { scriptSchema } from "@/lib/schemas/scriptSchema";
+import { Prisma } from "@prisma/client";
 
 // Get a single script by id
 export async function GET(
@@ -26,7 +27,7 @@ export async function GET(
 }
 
 // Update a script by id
-export async function PUT(
+export async function PATCH(
 	request: Request,
 	context: { params: Promise<{ id: string }> }
 ) {
@@ -46,9 +47,15 @@ export async function PUT(
 			return NextResponse.json({ error: errorMessages }, { status: 400 });
 		}
 
+		const data = {
+			...parsed.data,
+			content:
+				parsed.data.content === null ? Prisma.JsonNull : parsed.data.content,
+		};
+
 		const updatedScript = await prisma.script.update({
 			where: { id: numericId },
-			data: parsed.data,
+			data,
 		});
 
 		return NextResponse.json(updatedScript, { status: 200 });
