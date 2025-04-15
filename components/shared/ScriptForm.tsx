@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Novel from "@/components/editor/Novel";
 import TagInput from "@/components/ui/tag-input";
+import CodeEditor from "@/components/shared/CodeMirror";
 
 interface ScriptFormProps {
 	defaultValues?: Partial<scriptSchemaWithIdType>;
@@ -86,6 +87,36 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 
 				<FormField
 					control={form.control}
+					name="language"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel className="font-bold">Language</FormLabel>
+							<FormControl>
+								<Input {...field} placeholder="e.g.TypeScript" />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				<FormField
+					control={form.control}
+					name="code"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Code</FormLabel>
+							<CodeEditor
+								value={field.value}
+								onChange={field.onChange}
+								language={form.watch("language")}
+							/>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				<FormField
+					control={form.control}
 					name="description"
 					render={({ field }) => (
 						<FormItem>
@@ -95,20 +126,6 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 									{...field}
 									placeholder="Add description that others will see at a glance"
 								/>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
-				<FormField
-					control={form.control}
-					name="language"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel className="font-bold">Language</FormLabel>
-							<FormControl>
-								<Input {...field} placeholder="e.g.TypeScript" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>

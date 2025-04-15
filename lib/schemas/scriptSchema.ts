@@ -6,6 +6,7 @@ export const scriptSchema = z.object({
 	description: z.string().optional(),
 	language: z.string().min(1),
 	tags: z.array(z.string()).optional(),
+	code: z.string().min(1, "Code is required"),
 	content: z
 		.custom<JSONContent>((val) => {
 			if (val === null) return true;

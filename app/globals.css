@@ -389,3 +389,7 @@ mark[style] > strong {
 	font-weight: 600;
 	line-height: 1.2;
 }
+
+.cm-editor {
+	background-color: transparent !important;
+}

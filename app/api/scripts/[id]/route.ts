@@ -51,6 +51,7 @@ export async function PATCH(
 			...parsed.data,
 			content:
 				parsed.data.content === null ? Prisma.JsonNull : parsed.data.content,
+			code: parsed.data.code,
 		};
 
 		const updatedScript = await prisma.script.update({

@@ -1,8 +1,9 @@
 import prisma from "@/lib/prisma";
 import { type scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
 import type { JSONContent } from "@tiptap/react";
+
 // Get scripts from API and return them as JSON
-export const getScripts = async () => {
+export const getScripts = async (): Promise<scriptPayloadSchemaType[]> => {
 	try {
 		const res = await fetch("/api/scripts");
 		if (!res.ok) throw new Error("Failed to fetch scripts");
@@ -22,7 +23,6 @@ export const getScripts = async () => {
 export const getUserScripts = async (userId: number) => {
 	try {
 		const res = await fetch(`/api/scripts/user/${userId}`);
-		console.log(userId);
 		if (!res.ok) throw new Error("Failed to fetch scripts");
 		const data = await res.json();
 		return data;

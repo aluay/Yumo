@@ -2,14 +2,17 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { scriptSchema, scriptPayloadSchema } from "@/lib/schemas/scriptSchema";
 import { auth } from "@/app/auth";
+import { Prisma } from "@prisma/client";
 
 // Get all scripts
 export async function GET() {
 	const session = await auth();
 
+	const take = session && session.user ? undefined : 10;
+	console.log(take);
 	try {
 		const scripts = await prisma.script.findMany({
-			take: session?.user ? undefined : 10, // Only load recent 10 scripts for unauthenticated users
+			take, // Only load recent 10 scripts for unauthenticated users
 			include: {
 				author: {
 					select: {
@@ -53,17 +56,22 @@ export async function POST(request: Request) {
 	}
 
 	const body = await request.json();
-	const result = scriptSchema.safeParse(body);
+	const parsed = scriptSchema.safeParse(body);
 
-	if (!result.success) {
-		return NextResponse.json({ error: result.error.format() }, { status: 400 });
+	if (!parsed.success) {
+		return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
 	}
 
+	const data = {
+		...parsed.data,
+		authorId: Number(session.user.id),
+		content:
+			parsed.data.content === null ? Prisma.JsonNull : parsed.data.content,
+		code: parsed.data.code,
+	};
+
 	const newScript = await prisma.script.create({
-		data: {
-			...result.data,
-			authorId: Number(session.user.id),
-		},
+		data,
 	});
 
 	return NextResponse.json(newScript, { status: 201 });
