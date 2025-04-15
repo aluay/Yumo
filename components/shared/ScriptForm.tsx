@@ -158,7 +158,7 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 					)}
 				/>
 
-				<Button type="submit">Create</Button>
+				<Button type="submit">Submit</Button>
 			</form>
 		</Form>
 	);
