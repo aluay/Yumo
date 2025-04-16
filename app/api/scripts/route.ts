@@ -9,7 +9,6 @@ export async function GET() {
 	const session = await auth();
 
 	const take = session && session.user ? undefined : 10;
-	console.log(take);
 	try {
 		const scripts = await prisma.script.findMany({
 			take, // Only load recent 10 scripts for unauthenticated users

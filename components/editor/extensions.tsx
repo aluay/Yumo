@@ -1,5 +1,5 @@
 import {
-	AIHighlight,
+	// AIHighlight,
 	CharacterCount,
 	CodeBlockLowlight,
 	Color,
@@ -25,18 +25,13 @@ import {
 import { cx } from "class-variance-authority";
 import { common, createLowlight } from "lowlight";
 
-const aiHighlight = AIHighlight;
+// const aiHighlight = AIHighlight;
 //You can overwrite the placeholder with your own configuration
 const placeholder = Placeholder.configure({
-	placeholder: "Start writing your script or type '/' for commands...",
+	placeholder: "Start writing your content or type '/' for commands...",
 });
-const tiptapLink = TiptapLink.configure({
-	HTMLAttributes: {
-		class: cx(
-			"text-muted-foreground underline underline-offset-[3px] hover:text-primary transition-colors cursor-pointer"
-		),
-	},
-});
+
+const tiptapLink = TiptapLink;
 
 const tiptapImage = TiptapImage.extend({
 	addProseMirrorPlugins() {
@@ -159,7 +154,7 @@ export const defaultExtensions = [
 	taskList,
 	taskItem,
 	horizontalRule,
-	aiHighlight,
+	// aiHighlight,
 	codeBlockLowlight,
 	youtube,
 	twitter,

@@ -28,7 +28,6 @@ const UserScripts = ({ userId }: UserScriptsProps) => {
 		async function fetchUserScripts() {
 			try {
 				const scriptsData = await getUserScripts(userId);
-				console.log(scriptsData);
 				setScripts(scriptsData);
 			} catch (error) {
 				console.error("Error fetching user scripts:", error);

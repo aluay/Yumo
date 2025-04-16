@@ -37,7 +37,7 @@ const ScriptsMiniList = () => {
 						className="flex flex-col justify-between hover:border-zinc-500">
 						<CardHeader className="p-4 pb-0">
 							<CardTitle className="flex items-center justify-between font-normal text-[18px]">
-								<Link href={`/api/script/${script.id}`}>{script.title}</Link>
+								<Link href={`/script/${script.id}`}>{script.title}</Link>
 								<span className="text-xs text-muted-foreground leading-none">
 									{moment(script.createdAt).fromNow()}
 								</span>

@@ -37,14 +37,16 @@ export const getUserScripts = async (userId: number) => {
 };
 
 // Get a single script by id
-export async function getScriptById(
-	id: number,
-	userId: number
-): Promise<scriptPayloadSchemaType | null> {
+export async function getScriptById(scriptId: number, userId?: number) {
 	const script = await prisma.script.findUnique({
 		where: {
-			id,
-			authorId: userId,
+			id: scriptId,
+			...(userId && { authorId: userId }),
+		},
+		include: {
+			author: {
+				select: { name: true, image: true },
+			},
 		},
 	});
 
@@ -62,5 +64,6 @@ export async function getScriptById(
 			"type" in script.content
 				? (script.content as JSONContent)
 				: { type: "doc", content: [] },
+		author: script.author ?? undefined,
 	};
 }

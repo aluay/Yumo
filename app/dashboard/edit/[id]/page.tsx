@@ -1,5 +1,5 @@
 import { auth } from "@/app/auth";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import PageLayout from "@/components/layouts/PageLayout";
 import ScriptForm from "@/components/shared/ScriptForm";
 import { getScriptById } from "@/lib/api/api";
@@ -13,8 +13,8 @@ export default async function EditScriptPage({
 	const session = await auth();
 	if (!session?.user) redirect("/");
 
-	const script = await getScriptById(Number(id), Number(session.user.id));
-	if (!script) redirect("/dashboard");
+	const script = await getScriptById(Number(id), Number(session?.user?.id));
+	if (!script) notFound();
 
 	return (
 		<PageLayout>

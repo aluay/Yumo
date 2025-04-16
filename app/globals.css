@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
 @layer base {
@@ -95,7 +95,7 @@ pre {
 	background: #0d0d0d;
 	border-radius: 0.5rem;
 	color: #fff;
-	font-family: "JetBrainsMono", monospace;
+	font-family: var(--font-geist-mono), monospace;
 	padding: 0.75rem 1rem;
 
 	code {
@@ -388,6 +388,34 @@ mark[style] > strong {
 	font-size: 1.4rem;
 	font-weight: 600;
 	line-height: 1.2;
+}
+.ProseMirror a {
+	@apply text-blue-400 hover:text-blue-500 underline underline-offset-4 transition-colors;
+}
+
+.prose pre {
+	@apply bg-zinc-900 text-zinc-100 p-4 rounded-md overflow-x-auto text-sm font-mono;
+	line-height: 2;
+}
+
+.dark .prose pre {
+	@apply bg-zinc-800 text-zinc-100;
+}
+
+.prose code {
+	@apply text-pink-400 font-mono;
+}
+
+.prose pre code {
+	@apply text-inherit bg-transparent p-0;
+}
+
+.prose pre::-webkit-scrollbar {
+	height: 6px;
+}
+.prose pre::-webkit-scrollbar-thumb {
+	background-color: rgba(255, 255, 255, 0.2);
+	border-radius: 9999px;
 }
 
 .cm-editor {

@@ -50,8 +50,6 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 	});
 
 	const onSubmit = async (values: scriptSchemaType) => {
-		console.log(values);
-
 		const endpoint = isEditing
 			? `/api/scripts/${defaultValues.id}`
 			: "/api/scripts";

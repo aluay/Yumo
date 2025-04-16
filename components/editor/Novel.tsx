@@ -96,7 +96,6 @@ const Novel = ({ value, onChange }: NovelProps) => {
 	);
 
 	useEffect(() => {
-		console.log(value);
 		const defaultEditorContent = {
 			type: "doc",
 			content: [{ type: "paragraph" }],
