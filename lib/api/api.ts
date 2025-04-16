@@ -47,6 +47,9 @@ export async function getScriptById(scriptId: number, userId?: number) {
 			author: {
 				select: { name: true, image: true },
 			},
+			likedBy: {
+				select: { id: true },
+			},
 		},
 	});
 

@@ -31,6 +31,13 @@ export const scriptPayloadSchema = scriptSchema.extend({
 			image: z.string().nullable().optional(),
 		})
 		.optional(),
+	likedBy: z
+		.array(
+			z.object({
+				id: z.number(),
+			})
+		)
+		.optional(),
 });
 
 export type scriptPayloadSchemaType = z.infer<typeof scriptPayloadSchema>;

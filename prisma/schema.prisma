@@ -16,6 +16,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Script        Script[]
+  likedScripts  Script[]  @relation("UserLikes")
 }
 
 model Account {
@@ -64,6 +65,7 @@ model Script {
   dependencies String[]
   status       ScriptStatus     @default(PUBLISHED)
   likes        Int              @default(0)
+  likedBy      User[]           @relation("UserLikes")
   views        Int              @default(0)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt

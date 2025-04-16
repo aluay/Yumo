@@ -7,6 +7,8 @@ import type { JSONContent } from "@tiptap/react";
 import { getScriptById } from "@/lib/api/api";
 import PageLayout from "@/components/layouts/PageLayout";
 import { getSafeVariant } from "@/lib/languageVariants";
+import { auth } from "@/app/auth";
+import LikeButton from "@/components/shared/LikeButton";
 
 export default async function ScriptViewPage({
 	params,
@@ -14,8 +16,12 @@ export default async function ScriptViewPage({
 	params: Promise<{ id: string }>;
 }) {
 	const { id } = await params;
+	const session = await auth();
 	const script = await getScriptById(Number(id));
 	if (!script) notFound();
+
+	const userHasLiked =
+		script.likedBy?.some((user) => user.id === session?.user?.id) ?? false;
 
 	return (
 		<PageLayout>
@@ -37,6 +43,11 @@ export default async function ScriptViewPage({
 					<span>{new Date(script.createdAt).toLocaleDateString()}</span>
 					<span>·</span>
 					<span>{script.views} views</span>
+					<LikeButton
+						scriptId={script.id}
+						initialLiked={userHasLiked}
+						initialCount={script.likedBy?.length ?? 0}
+					/>
 				</div>
 
 				<div className="flex flex-wrap gap-2">
