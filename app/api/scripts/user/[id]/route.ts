@@ -34,11 +34,8 @@ export async function GET(
 			);
 		}
 
-		if (!result.data || result.data.length === 0) {
-			return NextResponse.json(
-				{ error: "No scripts found for this user" },
-				{ status: 404 }
-			);
+		if (!result.success) {
+			return NextResponse.json({ error: "No Scripts found" }, { status: 500 });
 		}
 
 		return NextResponse.json(result.data);

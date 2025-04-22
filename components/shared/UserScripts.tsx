@@ -36,6 +36,30 @@ const UserScripts = ({ userId }: UserScriptsProps) => {
 		fetchUserScripts();
 	}, [userId]);
 
+	if (scripts.length === 0) {
+		return (
+			<div className="flex items-center justify-center h-64">
+				<div className="text-center text-muted-foreground space-y-3">
+					<p className="text-base font-medium text-foreground">
+						You haven’t created any scripts yet.
+					</p>
+
+					<ul className="list-disc list-inside text-sm text-muted-foreground text-left mx-auto w-fit space-y-1">
+						<li>Click your profile picture in the top right corner.</li>
+						<li>
+							Select{" "}
+							<span className="text-foreground font-medium">
+								&quot;New Script&quot;
+							</span>{" "}
+							from the menu.
+						</li>
+						<li>Fill out the form to create and publish your script.</li>
+					</ul>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<>
 			<h1 className="inline-block mb-4 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
