@@ -18,7 +18,7 @@ export const scriptSchema = z.object({
 
 export type scriptSchemaType = z.infer<typeof scriptSchema>;
 
-// This schema is used when to validate scripts returned from the API
+// This schema is used to validate scripts returned from the API
 export const scriptPayloadSchema = scriptSchema.extend({
 	id: z.number(),
 	createdAt: z.string(),
@@ -43,3 +43,34 @@ export const scriptPayloadSchema = scriptSchema.extend({
 export type scriptPayloadSchemaType = z.infer<typeof scriptPayloadSchema>;
 
 export type scriptSchemaWithIdType = z.infer<typeof scriptPayloadSchema>;
+
+export const createCommentSchema = z.object({
+	content: z.string().min(1, "Comment is required"),
+	scriptId: z.number(),
+	parentId: z.number().optional(),
+});
+
+export type createCommentSchemaType = z.infer<typeof createCommentSchema>;
+
+export type CommentNode = {
+	id: number;
+	content: string;
+	createdAt: Date;
+	updatedAt: Date;
+	authorId: number;
+	scriptId: number;
+	parentId: number | null;
+	author: {
+		id: number;
+		name: string;
+		image: string | null;
+	};
+	likedBy: {
+		id: number;
+	}[];
+	replies: CommentNode[];
+};
+
+export const likeSchema = z.object({
+	commentId: z.number(),
+});

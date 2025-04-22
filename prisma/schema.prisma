@@ -17,6 +17,8 @@ model User {
   sessions      Session[]
   Script        Script[]
   likedScripts  Script[]  @relation("UserLikes")
+  comments      Comment[]
+  likedComments Comment[] @relation("CommentLikes")
 }
 
 model Account {
@@ -71,7 +73,8 @@ model Script {
   updatedAt    DateTime         @updatedAt
 
   authorId Int?
-  author   User? @relation(fields: [authorId], references: [id])
+  author   User?     @relation(fields: [authorId], references: [id])
+  Comment  Comment[]
 }
 
 enum DifficultyLevel {
@@ -83,4 +86,23 @@ enum DifficultyLevel {
 enum ScriptStatus {
   DRAFT
   PUBLISHED
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  script   Script @relation(fields: [scriptId], references: [id])
+  scriptId Int
+
+  parent   Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId Int?
+
+  replies Comment[] @relation("CommentReplies")
+  likedBy User[]    @relation("CommentLikes")
 }

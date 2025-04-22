@@ -8,7 +8,8 @@ import { getScriptById } from "@/lib/api/api";
 import PageLayout from "@/components/layouts/PageLayout";
 import { getSafeVariant } from "@/lib/languageVariants";
 import { auth } from "@/app/auth";
-import LikeButton from "@/components/shared/LikeButton";
+import LikeButton from "@/components/shared/LikeScriptButton";
+import CommentThread from "@/components/shared/CommentThread";
 
 export default async function ScriptViewPage({
 	params,
@@ -76,6 +77,7 @@ export default async function ScriptViewPage({
 						<RichContentViewer content={script.content as JSONContent} />
 					</div>
 				)}
+				<CommentThread scriptId={script.id} />
 			</div>
 		</PageLayout>
 	);
