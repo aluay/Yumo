@@ -355,32 +355,90 @@
 // 	});
 
 // Seed test users
+// import { PrismaClient } from "@prisma/client";
+
+// const prisma = new PrismaClient();
+
+// async function main() {
+// 	const totalUsers = 20; // change this to seed more
+
+// 	for (let i = 1; i <= totalUsers; i++) {
+// 		const username = `test${i}`;
+// 		const email = `${username}@dev.local`;
+
+// 		await prisma.user.upsert({
+// 			where: { email },
+// 			update: {},
+// 			create: {
+// 				email,
+// 				name: `Test User ${i}`,
+// 				image: `https://i.pravatar.cc/150?u=test${i}`,
+// 			},
+// 		});
+
+// 		console.log(`Seeded user: ${email}`);
+// 	}
+// }
+
+// main()
+// 	.then(() => {
+// 		console.log("✅ Seed complete");
+// 		return prisma.$disconnect();
+// 	})
+// 	.catch((e) => {
+// 		console.error(e);
+// 		prisma.$disconnect();
+// 		process.exit(1);
+// 	});
+
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function main() {
-	const totalUsers = 20; // change this to seed more
-
-	for (let i = 1; i <= totalUsers; i++) {
-		const username = `test${i}`;
-		const email = `${username}@dev.local`;
-
-		await prisma.user.upsert({
-			where: { email },
-			update: {},
-			create: {
-				email,
-				name: `Test User ${i}`,
-				image: `https://i.pravatar.cc/150?u=test${i}`,
+async function seedScriptsForUsers() {
+	const users = await prisma.user.findMany({
+		where: {
+			email: {
+				endsWith: "@dev.local",
 			},
-		});
+		},
+	});
 
-		console.log(`Seeded user: ${email}`);
+	const dummyContent = {
+		type: "doc",
+		content: [
+			{
+				type: "paragraph",
+				content: [{ type: "text", text: "Sample content..." }],
+			},
+		],
+	};
+
+	const dummyTags = ["example", "demo"];
+	const dummyCode = `console.log("Hello, world!");`;
+
+	for (const user of users) {
+		for (let i = 1; i <= 10; i++) {
+			await prisma.script.create({
+				data: {
+					title: `Script ${i} by ${user.name}`,
+					description: `This is a demo script for ${user.name}.`,
+					code: dummyCode,
+					content: dummyContent,
+					language: "javascript",
+					tags: dummyTags,
+					difficulty: "BEGINNER",
+					dependencies: [],
+					authorId: user.id,
+				},
+			});
+		}
+
+		console.log(`Seeded 10 scripts for ${user.email}`);
 	}
 }
 
-main()
+seedScriptsForUsers()
 	.then(() => {
 		console.log("✅ Seed complete");
 		return prisma.$disconnect();
