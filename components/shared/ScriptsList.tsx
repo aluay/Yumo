@@ -16,9 +16,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { getSafeVariant } from "@/lib/languageVariants";
+import { getSafeVariant } from "@/lib/badgeVariants";
 
-const ScriptsMiniList = () => {
+const ScriptsList = () => {
 	const [scripts, setScripts] = useState<scriptPayloadSchemaType[]>([]);
 
 	useEffect(() => {
@@ -99,4 +99,4 @@ const ScriptsMiniList = () => {
 	);
 };
 
-export default ScriptsMiniList;
+export default ScriptsList;

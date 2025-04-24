@@ -12,6 +12,9 @@ export async function GET() {
 	try {
 		const scripts = await prisma.script.findMany({
 			take, // Only load recent 10 scripts for unauthenticated users
+			where: {
+				status: "PUBLISHED",
+			},
 			include: {
 				author: {
 					select: {

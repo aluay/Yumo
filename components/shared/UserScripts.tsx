@@ -15,7 +15,7 @@ import { formatNumber, truncateText } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ThumbsUp, Eye } from "lucide-react";
 import { scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
-import { getSafeVariant } from "@/lib/languageVariants";
+import { getSafeVariant } from "@/lib/badgeVariants";
 
 interface UserScriptsProps {
 	userId: number;
@@ -112,6 +112,11 @@ const UserScripts = ({ userId }: UserScriptsProps) => {
 										{formatNumber(script.views)}
 									</span>
 								</div>
+							</div>
+							<div>
+								<Badge variant={getSafeVariant(script.status.toLowerCase())}>
+									{script.status}
+								</Badge>
 							</div>
 						</CardFooter>
 					</Card>

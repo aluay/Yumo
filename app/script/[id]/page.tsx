@@ -6,7 +6,7 @@ import Image from "next/image";
 import type { JSONContent } from "@tiptap/react";
 import { getScriptById } from "@/lib/api/api";
 import PageLayout from "@/components/layouts/PageLayout";
-import { getSafeVariant } from "@/lib/languageVariants";
+import { getSafeVariant } from "@/lib/badgeVariants";
 import { auth } from "@/app/auth";
 import LikeButton from "@/components/shared/LikeScriptButton";
 import CommentThread from "@/components/shared/CommentThread";
@@ -21,9 +21,17 @@ export default async function ScriptViewPage({
 	const script = await getScriptById(Number(id));
 	if (!script) notFound();
 
+	// If a user tries to access /script/[id] and it's a draft and they're not the author, they see a 404 page.
+	if (script.status === "DRAFT" && session?.user?.id !== script.authorId) {
+		return notFound();
+	}
+
 	const userHasLiked =
 		script.likedBy?.some((user) => user.id === session?.user?.id) ?? false;
 
+	if (Number(session?.user.id) === script.authorId) {
+		console.log("WEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+	}
 	return (
 		<PageLayout>
 			<div className="space-y-6">
@@ -49,6 +57,11 @@ export default async function ScriptViewPage({
 						initialLiked={userHasLiked}
 						initialCount={script.likedBy?.length ?? 0}
 					/>
+					{Number(session?.user.id) === script.authorId && (
+						<Badge variant={getSafeVariant(script.status.toLowerCase())}>
+							{script.status}
+						</Badge>
+					)}
 				</div>
 
 				<div className="flex flex-wrap gap-2">

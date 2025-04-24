@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import CommentForm from "./CommentForm";
-import { formatDistanceToNow } from "date-fns";
+import moment from "moment";
 import DeleteCommentButton from "./DeleteCommentButton";
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
@@ -39,11 +39,7 @@ function CommentItem({
 			<div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
 				<span className="font-medium">{comment.author.name}</span>
 				<span>·</span>
-				<span>
-					{formatDistanceToNow(new Date(comment.createdAt), {
-						addSuffix: true,
-					})}
-				</span>
+				<span>{moment(comment.createdAt).fromNow()}</span>
 			</div>
 
 			<p className="mb-2">{comment.content}</p>
@@ -66,7 +62,6 @@ function CommentItem({
 					authorId={comment.author.id}
 					onSuccess={onReply}
 				/>
-				{/* Like button can go here later */}
 			</div>
 
 			{replying && (

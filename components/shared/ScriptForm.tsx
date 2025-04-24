@@ -1,7 +1,14 @@
 "use client";
-
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import Novel from "@/components/editor/Novel";
+import TagInput from "@/components/ui/tag-input";
+import CodeEditor from "@/components/shared/CodeMirror";
 import {
 	scriptSchema,
 	scriptSchemaType,
@@ -15,13 +22,13 @@ import {
 	FormControl,
 	FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import Novel from "@/components/editor/Novel";
-import TagInput from "@/components/ui/tag-input";
-import CodeEditor from "@/components/shared/CodeMirror";
+// import {
+// 	Select,
+// 	SelectItem,
+// 	SelectTrigger,
+// 	SelectContent,
+// 	SelectValue,
+// } from "@/components/ui/select";
 
 interface ScriptFormProps {
 	defaultValues?: Partial<scriptSchemaWithIdType>;
@@ -29,6 +36,7 @@ interface ScriptFormProps {
 export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 	const router = useRouter();
 	const isEditing = !!defaultValues?.id;
+	const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">("PUBLISHED");
 
 	const form = useForm<scriptSchemaType>({
 		resolver: zodResolver(scriptSchema),
@@ -50,6 +58,10 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 	});
 
 	const onSubmit = async (values: scriptSchemaType) => {
+		const payload = {
+			...values,
+			status,
+		};
 		const endpoint = isEditing
 			? `/api/scripts/${defaultValues.id}`
 			: "/api/scripts";
@@ -57,7 +69,7 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 
 		const res = await fetch(endpoint, {
 			method,
-			body: JSON.stringify(values),
+			body: JSON.stringify(payload),
 		});
 
 		if (res.ok) router.push("/dashboard");
@@ -156,7 +168,40 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 					)}
 				/>
 
-				<Button type="submit">Submit</Button>
+				{/* <FormField
+					control={form.control}
+					name="status"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Status</FormLabel>
+							<Select onValueChange={field.onChange} defaultValue={field.value}>
+								<FormControl>
+									<SelectTrigger>
+										<SelectValue placeholder="Select status" />
+									</SelectTrigger>
+								</FormControl>
+								<SelectContent>
+									<SelectItem value="DRAFT">Draft</SelectItem>
+									<SelectItem value="PUBLISHED">Published</SelectItem>
+								</SelectContent>
+							</Select>
+							<FormMessage />
+						</FormItem>
+					)}
+				/> */}
+
+				<div className="w-full flex justify-between">
+					<Button
+						type="submit"
+						onClick={() => setStatus("DRAFT")}
+						variant="secondary">
+						Save as Draft
+					</Button>
+
+					<Button type="submit" onClick={() => setStatus("PUBLISHED")}>
+						Save & Publish
+					</Button>
+				</div>
 			</form>
 		</Form>
 	);

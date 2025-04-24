@@ -24,6 +24,8 @@ const badgeVariants = cva(
 				go: "bg-cyan-500 text-white",
 				sql: "bg-purple-500 text-white",
 				bash: "bg-sky-500 text-black",
+				published: "bg-green-700 text-white",
+				draft: "bg-yellow-500 text-black",
 			},
 		},
 		defaultVariants: {
