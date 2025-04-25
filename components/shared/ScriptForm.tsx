@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -22,13 +21,6 @@ import {
 	FormControl,
 	FormMessage,
 } from "@/components/ui/form";
-// import {
-// 	Select,
-// 	SelectItem,
-// 	SelectTrigger,
-// 	SelectContent,
-// 	SelectValue,
-// } from "@/components/ui/select";
 
 interface ScriptFormProps {
 	defaultValues?: Partial<scriptSchemaWithIdType>;
@@ -36,7 +28,6 @@ interface ScriptFormProps {
 export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 	const router = useRouter();
 	const isEditing = !!defaultValues?.id;
-	const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">("PUBLISHED");
 
 	const form = useForm<scriptSchemaType>({
 		resolver: zodResolver(scriptSchema),
@@ -60,7 +51,6 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 	const onSubmit = async (values: scriptSchemaType) => {
 		const payload = {
 			...values,
-			status,
 		};
 		const endpoint = isEditing
 			? `/api/scripts/${defaultValues.id}`
@@ -168,37 +158,17 @@ export default function ScriptForm({ defaultValues }: ScriptFormProps) {
 					)}
 				/>
 
-				{/* <FormField
-					control={form.control}
-					name="status"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Status</FormLabel>
-							<Select onValueChange={field.onChange} defaultValue={field.value}>
-								<FormControl>
-									<SelectTrigger>
-										<SelectValue placeholder="Select status" />
-									</SelectTrigger>
-								</FormControl>
-								<SelectContent>
-									<SelectItem value="DRAFT">Draft</SelectItem>
-									<SelectItem value="PUBLISHED">Published</SelectItem>
-								</SelectContent>
-							</Select>
-							<FormMessage />
-						</FormItem>
-					)}
-				/> */}
-
 				<div className="w-full flex justify-between">
 					<Button
 						type="submit"
-						onClick={() => setStatus("DRAFT")}
+						onClick={() => form.setValue("status", "DRAFT")}
 						variant="secondary">
 						Save as Draft
 					</Button>
 
-					<Button type="submit" onClick={() => setStatus("PUBLISHED")}>
+					<Button
+						type="submit"
+						onClick={() => form.setValue("status", "PUBLISHED")}>
 						Save & Publish
 					</Button>
 				</div>
