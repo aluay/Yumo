@@ -4,6 +4,7 @@ import Link from "next/link";
 import SignInButton from "../auth/SignInButton";
 import ProfileDropdown from "@/components/shared/ProfileDropdown";
 import { useSession } from "next-auth/react";
+import SearchBar from "./SearchBar";
 
 export default function NavBar() {
 	const { data: session } = useSession();
@@ -11,6 +12,7 @@ export default function NavBar() {
 	return (
 		<nav className="w-full flex items-center justify-between">
 			<Link href="/">ScriptHub</Link>
+			<SearchBar />
 			<div className="flex items-center gap-4">
 				<ModeToggle />
 				<div>
