@@ -12,9 +12,9 @@ export default function NavBar() {
 	return (
 		<nav className="w-full flex items-center justify-between">
 			<Link href="/">ScriptHub</Link>
+			<SearchBar />
 			<div className="flex items-center gap-4">
 				<ModeToggle />
-				<SearchBar />
 				<div>
 					{session?.user ? (
 						<ProfileDropdown user={session.user} />
