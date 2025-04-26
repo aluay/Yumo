@@ -10,6 +10,7 @@ import { getSafeVariant } from "@/lib/badgeVariants";
 import { auth } from "@/app/auth";
 import LikeButton from "@/components/shared/LikeScriptButton";
 import CommentThread from "@/components/shared/CommentThread";
+import BookmarkButton from "@/components/shared/BookmarkScriptButton";
 
 export default async function ScriptViewPage({
 	params,
@@ -29,9 +30,9 @@ export default async function ScriptViewPage({
 	const userHasLiked =
 		script.likedBy?.some((user) => user.id === session?.user?.id) ?? false;
 
-	if (Number(session?.user.id) === script.authorId) {
-		console.log("WEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-	}
+	const userHasBookmarked =
+		script.bookmarkedBy?.some((user) => user.id === session?.user?.id) ?? false;
+
 	return (
 		<PageLayout>
 			<div className="space-y-6">
@@ -56,6 +57,10 @@ export default async function ScriptViewPage({
 						scriptId={script.id}
 						initialLiked={userHasLiked}
 						initialCount={script.likedBy?.length ?? 0}
+					/>
+					<BookmarkButton
+						scriptId={script.id}
+						initialBookmarked={userHasBookmarked}
 					/>
 					{Number(session?.user.id) === script.authorId && (
 						<Badge variant={getSafeVariant(script.status.toLowerCase())}>

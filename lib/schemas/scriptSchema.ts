@@ -39,6 +39,13 @@ export const scriptPayloadSchema = scriptSchema.extend({
 			})
 		)
 		.optional(),
+	bookmarkedBy: z
+		.array(
+			z.object({
+				id: z.number(),
+			})
+		)
+		.optional(),
 });
 
 export type scriptPayloadSchemaType = z.infer<typeof scriptPayloadSchema>;

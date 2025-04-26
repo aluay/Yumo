@@ -19,6 +19,7 @@ model User {
   likedScripts  Script[]  @relation("UserLikes")
   comments      Comment[]
   likedComments Comment[] @relation("CommentLikes")
+  bookmarkedScripts Script[] @relation("UserBookmarks")
 }
 
 model Account {
@@ -71,6 +72,7 @@ model Script {
   views        Int              @default(0)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+  bookmarkedBy User[] @relation("UserBookmarks")
 
   authorId Int?
   author   User?     @relation(fields: [authorId], references: [id])

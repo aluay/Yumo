@@ -50,6 +50,9 @@ export async function getScriptById(scriptId: number, userId?: number) {
 			likedBy: {
 				select: { id: true },
 			},
+			bookmarkedBy: {
+				select: { id: true },
+			},
 		},
 	});
 
