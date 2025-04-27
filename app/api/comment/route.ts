@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/app/auth";
 import { createCommentSchema } from "@/lib/schemas/scriptSchema";
-import sanitizeHtml from "sanitize-html";
 
 // Create a comment or a reply
 export async function POST(req: Request) {
@@ -24,14 +23,9 @@ export async function POST(req: Request) {
 	const { content, scriptId, parentId } = parsed.data;
 
 	try {
-		const cleanContent = sanitizeHtml(content, {
-			allowedTags: ["b", "i", "em", "strong", "code", "br", "p"],
-			allowedAttributes: {},
-		});
-
 		const newComment = await prisma.comment.create({
 			data: {
-				content: cleanContent,
+				content,
 				scriptId,
 				parentId,
 				authorId: Number(session.user.id),
@@ -41,6 +35,7 @@ export async function POST(req: Request) {
 				likedBy: { select: { id: true } },
 			},
 		});
+
 		return NextResponse.json(newComment);
 	} catch (error) {
 		console.error("Failed to create comment:", error);
@@ -75,7 +70,7 @@ export async function DELETE(req: Request) {
 			return NextResponse.json({ error: "Comment not found" }, { status: 404 });
 		}
 
-		if (existing.authorId !== session.user.id) {
+		if (existing.authorId !== Number(session.user.id)) {
 			return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 		}
 

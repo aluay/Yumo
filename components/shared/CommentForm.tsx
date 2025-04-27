@@ -1,9 +1,21 @@
 "use client";
-
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import CommentEditor from "@/components/editor/CommentEditor";
+import {
+	createCommentSchema,
+	createCommentSchemaType,
+} from "@/lib/schemas/scriptSchema";
+import {
+	Form,
+	FormField,
+	FormItem,
+	FormControl,
+	FormMessage,
+} from "@/components/ui/form";
 
 interface CommentFormProps {
 	scriptId: number;
@@ -16,40 +28,66 @@ export default function CommentForm({
 	parentId,
 	onSuccess,
 }: CommentFormProps) {
-	const { data: session } = useSession();
-	const [content, setContent] = useState("");
-	const [loading, setLoading] = useState(false);
+	const router = useRouter();
+	const [editorKey, setEditorKey] = useState(0);
+	const form = useForm<createCommentSchemaType>({
+		resolver: zodResolver(createCommentSchema),
+		defaultValues: {
+			content: {
+				type: "doc",
+				content: [
+					{
+						type: "paragraph",
+					},
+				],
+			},
+			scriptId,
+			parentId: parentId ?? undefined,
+		},
+	});
 
-	const submit = async () => {
-		if (!content.trim()) return;
-
-		setLoading(true);
+	const onSubmit = async (values: createCommentSchemaType) => {
+		const payload = {
+			...values,
+			scriptId,
+			parentId: parentId ?? undefined,
+		};
+		console.log("Payload", JSON.stringify(payload, null, 2));
 
 		const res = await fetch("/api/comment", {
 			method: "POST",
-			body: JSON.stringify({ scriptId, parentId, content }),
+			body: JSON.stringify(payload),
 		});
 
 		if (res.ok) {
-			setContent("");
+			router.refresh();
+			form.reset();
+			setEditorKey((prev) => prev + 1);
 			onSuccess?.();
 		}
-
-		setLoading(false);
 	};
 
-	if (!session?.user) return null;
-
 	return (
-		<div className="space-y-2">
-			<Textarea
-				value={content}
-				onChange={(e) => setContent(e.target.value)}
-				placeholder="Write a comment..."
-			/>
-			<Button onClick={submit} disabled={loading}>
-				Post
-			</Button>
-		</div>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+				<FormField
+					control={form.control}
+					name="content"
+					render={({ field }) => (
+						<FormItem>
+							<FormControl>
+								<CommentEditor
+									key={editorKey}
+									value={field.value}
+									onChange={field.onChange}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<Button type="submit">Post Comment</Button>
+			</form>
+		</Form>
 	);
 }

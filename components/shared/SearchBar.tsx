@@ -22,7 +22,7 @@ export default function SearchScripts() {
 
 		const fetchResults = async () => {
 			const res = await fetch(
-				`/api/search?q=${encodeURIComponent(debouncedQuery)}`
+				`/api/search/scripts?q=${encodeURIComponent(debouncedQuery)}`
 			);
 			const data = await res.json();
 			setResults(data);

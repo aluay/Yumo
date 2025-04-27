@@ -92,7 +92,7 @@ enum ScriptStatus {
 
 model Comment {
   id        Int      @id @default(autoincrement())
-  content   String
+  content   Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -53,7 +53,10 @@ export type scriptPayloadSchemaType = z.infer<typeof scriptPayloadSchema>;
 export type scriptSchemaWithIdType = z.infer<typeof scriptPayloadSchema>;
 
 export const createCommentSchema = z.object({
-	content: z.string().min(1, "Comment is required"),
+	content: z.object({
+		type: z.literal("doc"),
+		content: z.array(z.any()),
+	}),
 	scriptId: z.number(),
 	parentId: z.number().optional(),
 });
@@ -62,7 +65,7 @@ export type createCommentSchemaType = z.infer<typeof createCommentSchema>;
 
 export type CommentNode = {
 	id: number;
-	content: string;
+	content: JSONContent;
 	createdAt: Date;
 	updatedAt: Date;
 	authorId: number;

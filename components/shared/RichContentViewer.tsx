@@ -2,7 +2,7 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import { defaultExtensions } from "@/components/editor/extensions";
-import { slashCommand } from "@/components/editor/slash";
+import Mention from "@tiptap/extension-mention";
 import type { JSONContent } from "@tiptap/react";
 
 export default function RichContentViewer({
@@ -10,7 +10,7 @@ export default function RichContentViewer({
 }: {
 	content: JSONContent;
 }) {
-	const extensions = [...defaultExtensions, slashCommand];
+	const extensions = [...defaultExtensions, Mention];
 	const editor = useEditor({
 		extensions: extensions,
 		content,

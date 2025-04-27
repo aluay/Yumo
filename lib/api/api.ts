@@ -73,3 +73,27 @@ export async function getScriptById(scriptId: number, userId?: number) {
 		author: script.author ?? undefined,
 	};
 }
+
+// Get users for the mentions extensions
+export async function searchUsersForMentions(query: string) {
+	if (!query.trim()) return [];
+
+	try {
+		const res = await fetch(`/api/search/users?q=${encodeURIComponent(query)}`);
+		if (!res.ok) {
+			console.error("Failed to fetch users");
+			return [];
+		}
+
+		const users = await res.json();
+
+		// Normalize data if needed
+		return users.map((user: { id: number; name: string }) => ({
+			id: user.id,
+			label: user.name,
+		}));
+	} catch (error) {
+		console.error("Error fetching users for mentions", error);
+		return [];
+	}
+}

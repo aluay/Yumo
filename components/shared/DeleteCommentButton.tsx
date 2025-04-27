@@ -19,7 +19,7 @@ export default function DeleteCommentButton({
 	const { data: session } = useSession();
 	const [loading, setLoading] = useState(false);
 
-	const isOwner = session?.user?.id === authorId;
+	const isOwner = Number(session?.user?.id) === authorId;
 	if (!isOwner) return null;
 
 	const deleteComment = async () => {

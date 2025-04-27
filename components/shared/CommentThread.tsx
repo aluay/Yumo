@@ -8,10 +8,12 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 import LikeCommentButton from "./LikeCommentButton";
 import { useSession } from "next-auth/react";
+import type { JSONContent } from "@tiptap/react";
+import RichContentViewer from "@/components/shared/RichContentViewer";
 
 interface Comment {
 	id: number;
-	content: string;
+	content: JSONContent;
 	createdAt: string;
 	author: {
 		id: number;
@@ -42,8 +44,11 @@ function CommentItem({
 				<span>{moment(comment.createdAt).fromNow()}</span>
 			</div>
 
-			<p className="mb-2">{comment.content}</p>
-
+			{comment.content && (
+				<div>
+					<RichContentViewer content={comment.content as JSONContent} />
+				</div>
+			)}
 			<div className="flex gap-2 items-center text-sm text-muted-foreground">
 				<LikeCommentButton
 					commentId={comment.id}

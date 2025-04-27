@@ -27,7 +27,7 @@ import { common, createLowlight } from "lowlight";
 
 // const aiHighlight = AIHighlight;
 //You can overwrite the placeholder with your own configuration
-const placeholder = Placeholder.configure({
+export const placeholder = Placeholder.configure({
 	placeholder: "Start writing your content or type '/' for commands...",
 });
 
@@ -54,12 +54,12 @@ const updatedImage = UpdatedImage.configure({
 	},
 });
 
-const taskList = TaskList.configure({
+export const taskList = TaskList.configure({
 	HTMLAttributes: {
 		class: cx("not-prose pl-2 "),
 	},
 });
-const taskItem = TaskItem.configure({
+export const taskItem = TaskItem.configure({
 	HTMLAttributes: {
 		class: cx("flex gap-2 items-start my-4"),
 	},
@@ -72,7 +72,7 @@ const horizontalRule = HorizontalRule.configure({
 	},
 });
 
-const starterKit = StarterKit.configure({
+export const starterKit = StarterKit.configure({
 	bulletList: {
 		HTMLAttributes: {
 			class: cx("list-disc list-outside leading-3"),
