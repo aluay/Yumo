@@ -421,7 +421,3 @@ mark[style] > strong {
 .cm-editor {
 	background-color: transparent !important;
 }
-
-.ProseMirror [data-type="mention"] {
-	@apply inline-block rounded-sm bg-blue-100 px-1 text-blue-700 dark:bg-blue-900 dark:text-blue-300;
-}

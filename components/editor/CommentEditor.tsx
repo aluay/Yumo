@@ -56,6 +56,70 @@ export function renderItems(
 	return div;
 }
 
+export const customMention = Mention.extend({
+	renderHTML({ node }) {
+		return [
+			"a",
+			{
+				href: `/user/${node.attrs.id}`,
+				class: "mention",
+				"data-id": node.attrs.id,
+				"data-label": node.attrs.label,
+			},
+			`@${node.attrs.label}`,
+		];
+	},
+}).configure({
+	HTMLAttributes: {
+		onClick: (event: MouseEvent) => {
+			const id = (event.target as HTMLElement)?.dataset.id;
+			if (id) {
+				window.location.href = `/user/${id}`;
+			}
+		},
+	},
+	suggestion: {
+		char: "@",
+		items: async ({ query }) => {
+			return await searchUsersForMentions(query);
+		},
+
+		render: () => {
+			let popup: Instance | undefined;
+
+			return {
+				onStart: (props: SuggestionProps) => {
+					const referenceClientRect = () => {
+						const rect = props.clientRect?.();
+						if (rect) return rect;
+						return new DOMRect(0, 0, 0, 0);
+					};
+
+					popup = tippy(document.body, {
+						getReferenceClientRect: referenceClientRect,
+						appendTo: () => document.body,
+						content: renderItems(props.items as MentionUser[], props.command),
+						showOnCreate: true,
+						interactive: true,
+						trigger: "manual",
+						placement: "bottom-start",
+					});
+				},
+				onUpdate(props: SuggestionProps) {
+					if (!popup) return;
+					popup.setContent(
+						renderItems(props.items as MentionUser[], props.command)
+					);
+				},
+				onExit() {
+					if (!popup) return;
+					popup.destroy();
+				},
+			};
+		},
+	},
+});
+
 const extensions = [
 	starterKit,
 	Color,
@@ -65,52 +129,7 @@ const extensions = [
 	HighlightExtension,
 	TextStyle,
 	TiptapUnderline,
-	Mention.configure({
-		HTMLAttributes: {
-			class:
-				"inline-block rounded-sm bg-blue-100 px-1.5 py-0.5 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
-		},
-		suggestion: {
-			char: "@",
-			items: async ({ query }) => {
-				return await searchUsersForMentions(query);
-			},
-
-			render: () => {
-				let popup: Instance | undefined;
-
-				return {
-					onStart: (props: SuggestionProps) => {
-						const referenceClientRect = () => {
-							const rect = props.clientRect?.();
-							if (rect) return rect;
-							return new DOMRect(0, 0, 0, 0);
-						};
-
-						popup = tippy(document.body, {
-							getReferenceClientRect: referenceClientRect,
-							appendTo: () => document.body,
-							content: renderItems(props.items as MentionUser[], props.command),
-							showOnCreate: true,
-							interactive: true,
-							trigger: "manual",
-							placement: "bottom-start",
-						});
-					},
-					onUpdate(props: SuggestionProps) {
-						if (!popup) return;
-						popup.setContent(
-							renderItems(props.items as MentionUser[], props.command)
-						);
-					},
-					onExit() {
-						if (!popup) return;
-						popup.destroy();
-					},
-				};
-			},
-		},
-	}),
+	customMention,
 	placeholder.configure({
 		placeholder: "Write a comment...",
 	}),
