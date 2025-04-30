@@ -1,40 +1,21 @@
 import prisma from "@/lib/prisma";
 import { type scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
 import type { JSONContent } from "@tiptap/react";
+import { ActivityLog, UserProfile } from "@/lib/schemas/scriptSchema";
 
-// Get scripts from API and return them as JSON
-export const getScripts = async (): Promise<scriptPayloadSchemaType[]> => {
-	try {
-		const res = await fetch("/api/scripts");
-		if (!res.ok) throw new Error("Failed to fetch scripts");
-		const data = await res.json();
-		return data;
-	} catch (error: unknown) {
-		if (error instanceof Error) {
-			console.error(error.message);
-		} else {
-			console.error("An unexpected error occurred");
-		}
-		return [];
-	}
-};
+// Get scripts for ScriptsList, UserScripts, userBookmarks components
+export async function fetchScripts(
+	endpoint: string
+): Promise<scriptPayloadSchemaType[]> {
+	const res = await fetch(endpoint);
 
-// Get all scripts that belong to the currently authenticated user
-export const getUserScripts = async (userId: number) => {
-	try {
-		const res = await fetch(`/api/scripts/user/${userId}`);
-		if (!res.ok) throw new Error("Failed to fetch scripts");
-		const data = await res.json();
-		return data;
-	} catch (error: unknown) {
-		if (error instanceof Error) {
-			console.error(error.message);
-		} else {
-			console.error("An unexpected error occurred");
-		}
-		return [];
+	if (!res.ok) {
+		throw new Error(`Failed to fetch scripts from ${endpoint}`);
 	}
-};
+
+	const data = await res.json();
+	return data;
+}
 
 // Get a single script by id
 export async function getScriptById(scriptId: number, userId?: number) {
@@ -96,4 +77,18 @@ export async function searchUsersForMentions(query: string) {
 		console.error("Error fetching users for mentions", error);
 		return [];
 	}
+}
+
+// Get user activity
+export async function getUserActivity(userId: number): Promise<ActivityLog[]> {
+	const res = await fetch(`/api/activity/user/${userId}`);
+	if (!res.ok) throw new Error("Failed to fetch user activity");
+	return res.json();
+}
+
+// Get user profile
+export async function getUserProfile(userId: number): Promise<UserProfile> {
+	const res = await fetch(`/api/user/${userId}/profile`);
+	if (!res.ok) throw new Error("Failed to fetch user profile");
+	return res.json();
 }

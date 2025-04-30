@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import prisma from "@/lib/prisma";
+import { logActivity, deleteActivity } from "@/lib/api/logActivity";
 
+// Like a script
 export async function POST(req: Request) {
 	const session = await auth();
 	if (!session?.user) {
@@ -23,13 +25,20 @@ export async function POST(req: Request) {
 			return NextResponse.json({ error: "Script not found" }, { status: 404 });
 		}
 
-		await prisma.user.update({
+		const likedScripts = await prisma.user.update({
 			where: { id: Number(session.user.id) },
 			data: {
 				likedScripts: {
 					connect: { id: numericId },
 				},
 			},
+		});
+
+		await logActivity({
+			userId: Number(session.user.id),
+			type: "SCRIPT_LIKED",
+			targetId: likedScripts.id,
+			message: `You liked a new script"${likedScripts.id}"`,
 		});
 
 		return NextResponse.json({ success: true });
@@ -42,6 +51,7 @@ export async function POST(req: Request) {
 	}
 }
 
+// Unlike a script
 export async function DELETE(req: Request) {
 	const session = await auth();
 	if (!session?.user) {
@@ -56,7 +66,7 @@ export async function DELETE(req: Request) {
 	}
 
 	try {
-		const script = await prisma.user.update({
+		const unlikedScript = await prisma.user.update({
 			where: { id: Number(session.user.id) },
 			data: {
 				likedScripts: {
@@ -65,11 +75,17 @@ export async function DELETE(req: Request) {
 			},
 		});
 
-		if (!script) {
+		if (!unlikedScript) {
 			return NextResponse.json({ error: "Script not found" }, { status: 404 });
-		}
+		} else {
+			await deleteActivity(
+				Number(session?.user.id),
+				"SCRIPT_LIKED",
+				unlikedScript.id
+			);
 
-		return NextResponse.json({ success: true });
+			return NextResponse.json({ success: true });
+		}
 	} catch (error) {
 		console.error("Unlike failed:", error);
 		return NextResponse.json(

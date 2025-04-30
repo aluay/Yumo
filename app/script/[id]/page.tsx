@@ -11,6 +11,10 @@ import { auth } from "@/app/auth";
 import LikeButton from "@/components/shared/LikeScriptButton";
 import CommentThread from "@/components/shared/CommentThread";
 import BookmarkButton from "@/components/shared/BookmarkScriptButton";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import DeleteScriptButton from "@/components/shared/DeleteScriptButton";
+import { Pencil } from "lucide-react";
 
 export default async function ScriptViewPage({
 	params,
@@ -23,21 +27,40 @@ export default async function ScriptViewPage({
 	if (!script) notFound();
 
 	// If a user tries to access /script/[id] and it's a draft and they're not the author, they see a 404 page.
-	if (script.status === "DRAFT" && session?.user?.id !== script.authorId) {
+	if (
+		script.status === "DRAFT" &&
+		Number(session?.user?.id) !== script.authorId
+	) {
 		return notFound();
 	}
 
 	const userHasLiked =
-		script.likedBy?.some((user) => user.id === session?.user?.id) ?? false;
+		script.likedBy?.some((user) => user.id === Number(session?.user?.id)) ??
+		false;
 
 	const userHasBookmarked =
-		script.bookmarkedBy?.some((user) => user.id === session?.user?.id) ?? false;
+		script.bookmarkedBy?.some(
+			(user) => user.id === Number(session?.user?.id)
+		) ?? false;
 
 	return (
 		<PageLayout>
 			<div className="space-y-6">
-				<h1 className="text-3xl font-bold">{script.title}</h1>
-
+				<div className="flex justify-between">
+					<h1 className="text-3xl font-bold">{script.title}</h1>
+					<div className="flex gap-2">
+						{Number(session?.user?.id) === script.authorId && (
+							<Button size="icon" variant="default">
+								<Link href={`/dashboard/edit/${script.id}`}>
+									<Pencil />
+								</Link>
+							</Button>
+						)}
+						{Number(session?.user?.id) === script.authorId && (
+							<DeleteScriptButton scriptId={script.id} />
+						)}
+					</div>
+				</div>
 				<div className="flex items-center gap-3 text-sm text-muted-foreground">
 					{script.author?.image && (
 						<Image

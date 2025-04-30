@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface LikeCommentButtonProps {
 	commentId: number;
@@ -44,13 +45,17 @@ export default function LikeCommentButton({
 	return (
 		<Button
 			onClick={toggleLike}
-			disabled={loading}
+			disabled={loading || !session?.user}
 			variant="ghost"
 			size="sm"
-			className="flex items-center gap-1 text-xs text-muted-foreground">
-			<Heart
-				className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`}
-			/>
+			className={cn("flex items-center gap-1 text-muted-foreground", {
+				"text-red-500": liked,
+			})}>
+			{liked ? (
+				<Heart className="h-4 w-4 fill-red-500" />
+			) : (
+				<Heart className="h-4 w-4" />
+			)}
 			<span>{count}</span>
 		</Button>
 	);

@@ -1,21 +1,9 @@
-import { auth } from "@/app/auth";
-import { redirect } from "next/navigation";
 import UserScripts from "@/components/shared/UserScripts";
 import PageLayout from "@/components/layouts/PageLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserBookmarks from "@/components/shared/UserBookmarks";
-import RecentActivity from "@/components/shared/RecentActivity";
-import { Profile } from "@/components/shared/Profile";
 
-const Dashboard = async () => {
-	const session = await auth();
-
-	// if user is not signed in, redirect to homepage
-	if (!session?.user) {
-		console.log("User is not signed in");
-		redirect("/");
-	}
-
+const userPage = async (userId: string) => {
 	return (
 		<PageLayout>
 			<Tabs defaultValue="scripts" className="w-full">
@@ -27,27 +15,28 @@ const Dashboard = async () => {
 				</TabsList>
 				<TabsContent value="scripts">
 					<div className="flex flex-col gap-4">
-						<UserScripts />
+						<UserScripts userId={Number(userId)} />
 					</div>
 				</TabsContent>
 				<TabsContent value="profile">
 					<div className="flex flex-col gap-4">
-						<Profile />
+						{/* <UserSettings userId={Number(session.user.id)} /> */}
 					</div>
 				</TabsContent>
 				<TabsContent value="recent">
 					<div className="flex flex-col gap-4">
-						<RecentActivity />
+						{/* <UserSettings userId={Number(session.user.id)} /> */}
 					</div>
 				</TabsContent>
 				<TabsContent value="bookmarks">
 					<div className="flex flex-col gap-4">
-						<UserBookmarks />
+						<UserBookmarks userId={Number(userId)} />
 					</div>
 				</TabsContent>
 			</Tabs>
+			{/* <UserScripts userId={Number(session.user.id)} /> */}
 		</PageLayout>
 	);
 };
 
-export default Dashboard;
+export default userPage;

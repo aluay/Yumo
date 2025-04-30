@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+// Get the number of likes for a script
 export async function GET(
 	_req: Request,
 	{ params }: { params: { scriptId: string } }

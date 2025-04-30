@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import prisma from "@/lib/prisma";
 import { likeSchema } from "@/lib/schemas/scriptSchema";
+import { logActivity, deleteActivity } from "@/lib/api/logActivity";
 
 // Like a comment
 export async function POST(req: Request) {
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
 	const { commentId } = parsed.data;
 
 	try {
-		await prisma.user.update({
+		const likedComment = await prisma.user.update({
 			where: { id: Number(session.user.id) },
 			data: {
 				likedComments: {
@@ -31,6 +32,13 @@ export async function POST(req: Request) {
 					},
 				},
 			},
+		});
+
+		await logActivity({
+			userId: Number(session.user.id),
+			type: "COMMENT_LIKED",
+			targetId: likedComment.id,
+			message: `You liked a comment"${likedComment.id}"`,
 		});
 
 		return NextResponse.json({ success: true });
@@ -62,7 +70,7 @@ export async function DELETE(req: Request) {
 	const { commentId } = parsed.data;
 
 	try {
-		await prisma.user.update({
+		const unlikedComment = await prisma.user.update({
 			where: { id: Number(session.user.id) },
 			data: {
 				likedComments: {
@@ -70,6 +78,12 @@ export async function DELETE(req: Request) {
 				},
 			},
 		});
+
+		await deleteActivity(
+			Number(session?.user.id),
+			"COMMENT_LIKED",
+			unlikedComment.id
+		);
 
 		return NextResponse.json({ success: true });
 	} catch (error) {

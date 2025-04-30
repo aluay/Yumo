@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { scriptSchema } from "@/lib/schemas/scriptSchema";
 import { Prisma } from "@prisma/client";
+import { deleteActivity } from "@/lib/api/logActivity";
+import { auth } from "@/app/auth";
 
 // Get a single script by id
 export async function GET(
@@ -78,6 +80,7 @@ export async function DELETE(
 ) {
 	try {
 		const { id } = await context.params;
+		const session = await auth();
 		const numericId = parseInt(id);
 
 		if (isNaN(numericId)) {
@@ -87,12 +90,20 @@ export async function DELETE(
 		const deletedScript = await prisma.script.delete({
 			where: { id: numericId },
 		});
+
+		await deleteActivity(
+			Number(session?.user.id),
+			"SCRIPT_CREATED",
+			deletedScript.id
+		);
+
 		return NextResponse.json(deletedScript);
 	} catch (error: unknown) {
 		if (error instanceof Error) {
 			return NextResponse.json({ error: "Script not found" }, { status: 404 });
 		}
-		console.log("Error deleting script:", error);
+
+		console.error("Error deleting script:", error);
 		return NextResponse.json(
 			{ error: "Internal Server Error" },
 			{ status: 500 }

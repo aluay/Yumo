@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { JSONContent } from "@tiptap/react";
+import { ActivityType } from "@prisma/client";
 
 export const scriptSchema = z.object({
 	title: z.string().min(1),
@@ -85,3 +86,51 @@ export type CommentNode = {
 export const likeSchema = z.object({
 	commentId: z.number(),
 });
+
+export const activitySchema = z.object({
+	userId: z.number(),
+	type: z.enum([
+		"SCRIPT_CREATED",
+		"SCRIPT_LIKED",
+		"SCRIPT_BOOKMARKED",
+		"COMMENT_POSTED",
+		"COMMENT_LIKED",
+	]),
+	targetId: z.number(),
+	message: z.string().optional(),
+});
+
+export type activitySchemaType = z.infer<typeof activitySchema>;
+
+export const deleteSchema = z.object({
+	userId: z.number(),
+	type: z.enum([
+		"SCRIPT_CREATED",
+		"SCRIPT_LIKED",
+		"SCRIPT_BOOKMARKED",
+		"COMMENT_POSTED",
+		"COMMENT_LIKED",
+	]),
+	targetId: z.number(),
+});
+
+export type deleteSchemaType = z.infer<typeof deleteSchema>;
+
+export type ActivityLog = {
+	id: number;
+	userId: number;
+	type: ActivityType;
+	targetId: number;
+	message: string | null;
+	createdAt: string;
+};
+
+export interface UserProfile {
+	id: number;
+	name: string;
+	email: string | null;
+	image: string | null;
+	createdAt: string;
+	scriptCount: number;
+	bookmarkCount: number;
+}

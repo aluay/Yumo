@@ -36,6 +36,10 @@ function CommentItem({
 	const [replying, setReplying] = useState(false);
 	const { data: session } = useSession();
 
+	const userHasLiked =
+		comment.likedBy?.some((user) => user.id === Number(session?.user?.id)) ??
+		false;
+
 	return (
 		<div className="pl-4 border-l">
 			<div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
@@ -52,7 +56,7 @@ function CommentItem({
 			<div className="flex gap-2 items-center text-sm text-muted-foreground">
 				<LikeCommentButton
 					commentId={comment.id}
-					initialLiked={comment.likedBy.some((u) => u.id === session?.user?.id)}
+					initialLiked={userHasLiked}
 					initialCount={comment.likedBy.length}
 				/>
 				<Button

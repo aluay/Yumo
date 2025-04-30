@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/app/auth";
 import { createCommentSchema } from "@/lib/schemas/scriptSchema";
+import { logActivity, deleteActivity } from "@/lib/api/logActivity";
 
 // Create a comment or a reply
 export async function POST(req: Request) {
@@ -34,6 +35,13 @@ export async function POST(req: Request) {
 				author: { select: { id: true, name: true, image: true } },
 				likedBy: { select: { id: true } },
 			},
+		});
+
+		await logActivity({
+			userId: Number(session.user.id),
+			type: "COMMENT_POSTED",
+			targetId: newComment.id,
+			message: `You posted a new comment"${newComment.id}"`,
 		});
 
 		return NextResponse.json(newComment);
@@ -74,9 +82,16 @@ export async function DELETE(req: Request) {
 			return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 		}
 
-		await prisma.comment.delete({
+		const deletedComment = await prisma.comment.delete({
 			where: { id: numericId },
 		});
+
+		await deleteActivity(
+			Number(session?.user.id),
+			"COMMENT_POSTED",
+			deletedComment.id
+		);
+
 		return NextResponse.json({ success: true });
 	} catch (error) {
 		console.error("Error deleting comment:", error);

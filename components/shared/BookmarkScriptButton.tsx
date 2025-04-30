@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bookmark, BookmarkCheck } from "lucide-react"; // icons
+import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface BookmarkButtonProps {
@@ -40,7 +40,7 @@ export default function BookmarkButton({
 			disabled={loading}
 			size="icon">
 			{bookmarked ? (
-				<BookmarkCheck className="h-5 w-5" />
+				<Bookmark className="h-5 w-5 fill-purple-500" />
 			) : (
 				<Bookmark className="h-5 w-5" />
 			)}

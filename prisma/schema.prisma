@@ -8,18 +8,20 @@ generator client {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  Script        Script[]
-  likedScripts  Script[]  @relation("UserLikes")
-  comments      Comment[]
-  likedComments Comment[] @relation("CommentLikes")
-  bookmarkedScripts Script[] @relation("UserBookmarks")
+  id                Int        @id @default(autoincrement())
+  name              String
+  email             String     @unique
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  Script            Script[]
+  likedScripts      Script[]   @relation("UserLikes")
+  comments          Comment[]
+  likedComments     Comment[]  @relation("CommentLikes")
+  bookmarkedScripts Script[]   @relation("UserBookmarks")
+  Activity          Activity[]
+  createdAt         DateTime   @default(now())
 }
 
 model Account {
@@ -72,7 +74,7 @@ model Script {
   views        Int              @default(0)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
-  bookmarkedBy User[] @relation("UserBookmarks")
+  bookmarkedBy User[]           @relation("UserBookmarks")
 
   authorId Int?
   author   User?     @relation(fields: [authorId], references: [id])
@@ -99,7 +101,7 @@ model Comment {
   author   User @relation(fields: [authorId], references: [id])
   authorId Int
 
-  script   Script @relation(fields: [scriptId], references: [id])
+  script   Script @relation(fields: [scriptId], references: [id], onDelete: Cascade)
   scriptId Int
 
   parent   Comment? @relation("CommentReplies", fields: [parentId], references: [id])
@@ -107,4 +109,22 @@ model Comment {
 
   replies Comment[] @relation("CommentReplies")
   likedBy User[]    @relation("CommentLikes")
+}
+
+model Activity {
+  id        Int          @id @default(autoincrement())
+  user      User         @relation(fields: [userId], references: [id])
+  userId    Int
+  type      ActivityType
+  targetId  Int
+  message   String?
+  createdAt DateTime     @default(now())
+}
+
+enum ActivityType {
+  SCRIPT_CREATED
+  SCRIPT_LIKED
+  SCRIPT_BOOKMARKED
+  COMMENT_POSTED
+  COMMENT_LIKED
 }

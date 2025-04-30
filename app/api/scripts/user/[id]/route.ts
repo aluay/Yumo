@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { scriptPayloadSchema } from "@/lib/schemas/scriptSchema";
 
-// Get all scripts
+// Get all scripts for a specific user
 export async function GET(
 	request: Request,
 	context: { params: Promise<{ id: string }> }
@@ -17,6 +17,14 @@ export async function GET(
 
 		const scripts = await prisma.script.findMany({
 			where: { authorId: numericId },
+			include: {
+				author: {
+					select: {
+						name: true,
+						image: true,
+					},
+				},
+			},
 			orderBy: { createdAt: "desc" },
 		});
 

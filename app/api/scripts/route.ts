@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { scriptSchema, scriptPayloadSchema } from "@/lib/schemas/scriptSchema";
 import { auth } from "@/app/auth";
 import { Prisma } from "@prisma/client";
+import { logActivity } from "@/lib/api/logActivity";
 
 // Get all scripts
 export async function GET() {
@@ -76,5 +77,11 @@ export async function POST(request: Request) {
 		data,
 	});
 
+	await logActivity({
+		userId: Number(session.user.id),
+		type: "SCRIPT_CREATED",
+		targetId: newScript.id,
+		message: `You created a new script"${newScript.title}"`,
+	});
 	return NextResponse.json(newScript, { status: 201 });
 }

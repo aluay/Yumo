@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, HeartOff } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -28,7 +28,7 @@ export default function LikeButton({
 		setLoading(true);
 		const method = liked ? "DELETE" : "POST";
 		console.log(scriptId);
-		const res = await fetch("/api/like", {
+		const res = await fetch("/api/script-like", {
 			method,
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ scriptId }),
@@ -54,7 +54,7 @@ export default function LikeButton({
 			{liked ? (
 				<Heart className="h-4 w-4 fill-red-500" />
 			) : (
-				<HeartOff className="h-4 w-4" />
+				<Heart className="h-4 w-4" />
 			)}
 			<span>{count}</span>
 		</Button>

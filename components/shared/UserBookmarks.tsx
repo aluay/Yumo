@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import ScriptFeed from "./ScriptFeed";
 
-const UserScripts = () => {
+const UserBookmarks = () => {
 	const { data: session, status } = useSession();
 
 	if (status === "loading") {
@@ -17,12 +17,12 @@ const UserScripts = () => {
 	return (
 		<>
 			<ScriptFeed
-				endpoint={`/api/scripts/user/${session?.user.id}`}
-				emptyTitle="No scripts yet"
-				emptyMessage="Click 'New Script' to get started."
+				endpoint={`/api/bookmark/user/${session?.user.id}`}
+				emptyTitle="No bookmarks"
+				emptyMessage="Bookmarked scripts will show up here."
 			/>
 		</>
 	);
 };
 
-export default UserScripts;
+export default UserBookmarks;

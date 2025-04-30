@@ -1,7 +1,9 @@
 import { auth } from "@/app/auth";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { logActivity, deleteActivity } from "@/lib/api/logActivity";
 
+// Bookmark a script
 export async function POST(
 	req: Request,
 	context: { params: Promise<{ id: string }> }
@@ -16,7 +18,7 @@ export async function POST(
 		return NextResponse.json({ error: "Invalid script ID" }, { status: 400 });
 	}
 
-	await prisma.user.update({
+	const bookmarkedScript = await prisma.user.update({
 		where: { id: Number(session.user.id) },
 		data: {
 			bookmarkedScripts: {
@@ -25,9 +27,16 @@ export async function POST(
 		},
 	});
 
+	await logActivity({
+		userId: Number(session.user.id),
+		type: "SCRIPT_BOOKMARKED",
+		targetId: bookmarkedScript.id,
+		message: `You bookmarked a new script"${bookmarkedScript.id}"`,
+	});
 	return NextResponse.json({ success: true });
 }
 
+// Un-bookmark a script
 export async function DELETE(
 	req: Request,
 	context: { params: Promise<{ id: string }> }
@@ -43,7 +52,7 @@ export async function DELETE(
 		return NextResponse.json({ error: "Invalid Script ID" }, { status: 400 });
 	}
 
-	await prisma.user.update({
+	const unbookmarkedScript = await prisma.user.update({
 		where: { id: Number(session.user.id) },
 		data: {
 			bookmarkedScripts: {
@@ -51,6 +60,12 @@ export async function DELETE(
 			},
 		},
 	});
+
+	await deleteActivity(
+		Number(session?.user.id),
+		"SCRIPT_BOOKMARKED",
+		unbookmarkedScript.id
+	);
 
 	return NextResponse.json({ success: true });
 }
