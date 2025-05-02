@@ -51,7 +51,7 @@ export default function ScriptFeed({
 
 	return (
 		<>
-			<h2 className="scroll-m-20 pb-4 text-3xl font-semibold tracking-tight first:mt-0">
+			<h2 className="scroll-m-20 py-2 text-3xl font-semibold tracking-tight first:mt-0">
 				{pageTitle}
 			</h2>
 			<div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full mx-auto mb-4">

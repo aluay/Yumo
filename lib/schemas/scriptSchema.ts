@@ -29,6 +29,7 @@ export const scriptPayloadSchema = scriptSchema.extend({
 	views: z.number(),
 	author: z
 		.object({
+			id: z.number(),
 			name: z.string(),
 			image: z.string().nullable().optional(),
 		})

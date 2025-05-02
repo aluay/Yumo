@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { type scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
 import type { JSONContent } from "@tiptap/react";
-import { ActivityLog, UserProfile } from "@/lib/schemas/scriptSchema";
+import { ActivityLog, UserProfileInterface } from "@/lib/schemas/scriptSchema";
 
 // Get scripts for ScriptsList, UserScripts, userBookmarks components
 export async function fetchScripts(
@@ -26,7 +26,7 @@ export async function getScriptById(scriptId: number, userId?: number) {
 		},
 		include: {
 			author: {
-				select: { name: true, image: true },
+				select: { id: true, name: true, image: true },
 			},
 			likedBy: {
 				select: { id: true },
@@ -87,7 +87,9 @@ export async function getUserActivity(userId: number): Promise<ActivityLog[]> {
 }
 
 // Get user profile
-export async function getUserProfile(userId: number): Promise<UserProfile> {
+export async function getUserProfile(
+	userId: number
+): Promise<UserProfileInterface> {
 	const res = await fetch(`/api/user/${userId}/profile`);
 	if (!res.ok) throw new Error("Failed to fetch user profile");
 	return res.json();

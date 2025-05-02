@@ -77,7 +77,9 @@ export function ScriptCard({ script }: ScriptCardProps) {
 							<AvatarFallback>{author?.name.charAt(0)}</AvatarFallback>
 						)}
 					</Avatar>
-					<span className="text-[14px]">{author?.name}</span>
+					<Link href={`/user/${author?.id}`} className="hover:underline">
+						<span className="text-[14px]">{author?.name}</span>
+					</Link>
 				</div>
 				<div className="flex items-center gap-4">
 					<div className="flex items-center gap-1">
