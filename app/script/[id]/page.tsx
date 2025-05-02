@@ -71,7 +71,9 @@ export default async function ScriptViewPage({
 							className="rounded-full"
 						/>
 					)}
-					<span>{script.author?.name ?? "Unknown Author"}</span>
+					<Link href={`/user/${script.author?.id}`} className="hover:underline">
+						<span>{script.author?.name}</span>
+					</Link>
 					<span>·</span>
 					<span>{new Date(script.createdAt).toLocaleDateString()}</span>
 					<span>·</span>
