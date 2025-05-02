@@ -93,13 +93,17 @@ export default async function ScriptViewPage({
 				</div>
 
 				<div className="flex flex-wrap gap-2">
-					<Badge variant={getSafeVariant(script.language.toLowerCase())}>
-						{script.language}
-					</Badge>
-					{script.tags.map((tag) => (
-						<Badge key={tag} variant="outline">
-							{tag}
+					<Link href={`/tags/${encodeURIComponent(script.language)}`}>
+						<Badge variant={getSafeVariant(script.language.toLowerCase())}>
+							{script.language}
 						</Badge>
+					</Link>
+					{script.tags.map((tag) => (
+						<Link key={tag} href={`/tags/${encodeURIComponent(tag)}`}>
+							<Badge key={tag} variant="outline">
+								{tag}
+							</Badge>
+						</Link>
 					))}
 				</div>
 

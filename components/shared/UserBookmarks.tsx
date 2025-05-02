@@ -18,6 +18,7 @@ const UserBookmarks = () => {
 		<>
 			<ScriptFeed
 				endpoint={`/api/bookmark/user/${session?.user.id}`}
+				pageTitle="Your Bookmarks"
 				emptyTitle="No bookmarks"
 				emptyMessage="Bookmarked scripts will show up here."
 			/>

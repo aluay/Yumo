@@ -34,63 +34,66 @@ export function ScriptCard({ script }: ScriptCardProps) {
 	} = script;
 
 	return (
-		<Link href={`/script/${id}`}>
-			<Card
-				key={id}
-				className="flex flex-col justify-between hover:border-zinc-500">
-				<CardHeader className="p-4 pb-0">
-					<CardTitle className="flex items-center justify-between font-normal text-[18px]">
+		<Card
+			key={id}
+			className="flex flex-col justify-between hover:border-zinc-500">
+			<CardHeader className="p-4 pb-0">
+				<CardTitle className="flex items-center justify-between font-normal text-[18px]">
+					<Link href={`/script/${id}`} className="hover:underline">
 						<h1>{title}</h1>
-						<span className="text-xs text-muted-foreground leading-none">
-							{moment(createdAt).fromNow()}
-						</span>
-					</CardTitle>
-					<CardDescription>
-						{truncateText(description ?? "", 100)}
-					</CardDescription>
-				</CardHeader>
+					</Link>
+					<span className="text-xs text-muted-foreground leading-none">
+						{moment(createdAt).fromNow()}
+					</span>
+				</CardTitle>
+				<CardDescription>
+					{truncateText(description ?? "", 100)}
+				</CardDescription>
+			</CardHeader>
 
-				<CardContent className="flex justify-between items-center p-4">
-					<div className="flex flex-wrap gap-1">
+			<CardContent className="flex justify-between items-center p-4">
+				<div className="flex flex-wrap gap-1">
+					<Link href={`/tags/${encodeURIComponent(language)}`}>
 						<Badge variant={getSafeVariant(language.toLowerCase())}>
 							{language}
 						</Badge>
-
-						{tags?.map((tag, index) => (
+					</Link>
+					{tags?.map((tag, index) => (
+						<Link key={index} href={`/tags/${encodeURIComponent(tag)}`}>
 							<Badge key={index} variant="outline">
 								{tag}
 							</Badge>
-						))}
-					</div>
-				</CardContent>
+						</Link>
+					))}
+				</div>
+			</CardContent>
 
-				<CardFooter className="border-t px-4 py-3 flex items-center justify-between">
-					<div className="flex items-center gap-2 leading-none">
-						<Avatar className="h-[24px] w-[24px]">
-							{author?.image ? (
-								<AvatarImage src={author.image} alt={author.name} />
-							) : (
-								<AvatarFallback>{author?.name.charAt(0)}</AvatarFallback>
-							)}
-						</Avatar>
-						<span className="text-[14px]">{author?.name}</span>
+			<CardFooter className="border-t px-4 py-3 flex items-center justify-between">
+				<div className="flex items-center gap-2 leading-none">
+					<Avatar className="h-[24px] w-[24px]">
+						{author?.image ? (
+							<AvatarImage src={author.image} alt={author.name} />
+						) : (
+							<AvatarFallback>{author?.name.charAt(0)}</AvatarFallback>
+						)}
+					</Avatar>
+					<span className="text-[14px]">{author?.name}</span>
+				</div>
+				<div className="flex items-center gap-4">
+					<div className="flex items-center gap-1">
+						<ThumbsUp className="h-4 w-4" />
+						<span className="text-xs text-muted-foreground leading-none">
+							{formatNumber(likes)}
+						</span>
 					</div>
-					<div className="flex items-center gap-4">
-						<div className="flex items-center gap-1">
-							<ThumbsUp className="h-4 w-4" />
-							<span className="text-xs text-muted-foreground leading-none">
-								{formatNumber(likes)}
-							</span>
-						</div>
-						<div className="flex items-center gap-1">
-							<Eye className="h-4 w-4" />
-							<span className="text-xs text-muted-foreground leading-none">
-								{formatNumber(views)}
-							</span>
-						</div>
+					<div className="flex items-center gap-1">
+						<Eye className="h-4 w-4" />
+						<span className="text-xs text-muted-foreground leading-none">
+							{formatNumber(views)}
+						</span>
 					</div>
-				</CardFooter>
-			</Card>
-		</Link>
+				</div>
+			</CardFooter>
+		</Card>
 	);
 }

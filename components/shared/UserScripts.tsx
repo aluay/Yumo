@@ -18,8 +18,9 @@ const UserScripts = () => {
 		<>
 			<ScriptFeed
 				endpoint={`/api/scripts/user/${session?.user.id}`}
+				pageTitle="Your Scripts"
 				emptyTitle="No scripts yet"
-				emptyMessage="Click 'New Script' to get started."
+				emptyMessage="Click 'New Script' under your profile image to get started."
 			/>
 		</>
 	);
