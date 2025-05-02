@@ -1,24 +1,17 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import ScriptFeed from "./ScriptFeed";
 
-const UserBookmarks = () => {
-	const { data: session, status } = useSession();
+interface UserBookmarksProps {
+	userId: number;
+}
 
-	if (status === "loading") {
-		return <p className="text-muted-foreground">Loading...</p>;
-	}
-
-	if (!session?.user?.id) {
-		return <p className="text-destructive">Unable to load your scripts.</p>;
-	}
-
+const UserBookmarks = (userId: UserBookmarksProps) => {
 	return (
 		<>
 			<ScriptFeed
-				endpoint={`/api/bookmark/user/${session?.user.id}`}
 				pageTitle="Your Bookmarks"
+				endpoint={`/api/bookmark/user/${userId.userId}`}
 				emptyTitle="No bookmarks"
 				emptyMessage="Bookmarked scripts will show up here."
 			/>

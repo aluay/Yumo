@@ -125,7 +125,7 @@ export type ActivityLog = {
 	createdAt: string;
 };
 
-export interface UserProfile {
+export interface UserProfileInterface {
 	id: number;
 	name: string;
 	email: string | null;
