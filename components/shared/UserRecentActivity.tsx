@@ -7,17 +7,19 @@ import moment from "moment";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { getActivityStyle } from "@/lib/utils";
-import { useSession } from "next-auth/react";
 
-export default function RecentActivity() {
+interface UserRecentActivityProps {
+	userId: number;
+}
+
+export default function UserRecentActivity(userId: UserRecentActivityProps) {
 	const [activity, setActivity] = useState<ActivityLog[]>([]);
 	const [loading, setLoading] = useState(true);
-	const { data: session } = useSession();
 
 	useEffect(() => {
 		async function load() {
 			try {
-				const data = await getUserActivity(Number(session?.user.id));
+				const data = await getUserActivity(Number(userId.userId));
 				setActivity(data);
 			} catch (err) {
 				console.error(err);
@@ -27,7 +29,7 @@ export default function RecentActivity() {
 		}
 
 		load();
-	}, [session?.user.id]);
+	}, [userId]);
 
 	if (loading) return <p className="text-muted-foreground">Loading...</p>;
 

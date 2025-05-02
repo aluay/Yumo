@@ -2,8 +2,17 @@ import UserScripts from "@/components/shared/UserScripts";
 import PageLayout from "@/components/layouts/PageLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserBookmarks from "@/components/shared/UserBookmarks";
+import UserRecentActivity from "@/components/shared/UserRecentActivity";
+import { UserProfile } from "@/components/shared/UserProfile";
 
-const userPage = async (userId: string) => {
+export default async function userPage({
+	params,
+}: {
+	params: Promise<{ id: string }>;
+}) {
+	const { id } = await params;
+	const userId = decodeURIComponent(id);
+
 	return (
 		<PageLayout>
 			<Tabs defaultValue="scripts" className="w-full">
@@ -20,12 +29,12 @@ const userPage = async (userId: string) => {
 				</TabsContent>
 				<TabsContent value="profile">
 					<div className="flex flex-col gap-4">
-						{/* <UserSettings userId={Number(session.user.id)} /> */}
+						<UserProfile userId={Number(userId)} />
 					</div>
 				</TabsContent>
 				<TabsContent value="recent">
 					<div className="flex flex-col gap-4">
-						{/* <UserSettings userId={Number(session.user.id)} /> */}
+						<UserRecentActivity userId={Number(userId)} />
 					</div>
 				</TabsContent>
 				<TabsContent value="bookmarks">
@@ -34,9 +43,6 @@ const userPage = async (userId: string) => {
 					</div>
 				</TabsContent>
 			</Tabs>
-			{/* <UserScripts userId={Number(session.user.id)} /> */}
 		</PageLayout>
 	);
-};
-
-export default userPage;
+}

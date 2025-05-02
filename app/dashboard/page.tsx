@@ -4,8 +4,8 @@ import UserScripts from "@/components/shared/UserScripts";
 import PageLayout from "@/components/layouts/PageLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserBookmarks from "@/components/shared/UserBookmarks";
-import RecentActivity from "@/components/shared/RecentActivity";
-import { Profile } from "@/components/shared/Profile";
+import UserRecentActivity from "@/components/shared/UserRecentActivity";
+import { UserProfile } from "@/components/shared/UserProfile";
 
 const Dashboard = async () => {
 	const session = await auth();
@@ -27,22 +27,22 @@ const Dashboard = async () => {
 				</TabsList>
 				<TabsContent value="scripts">
 					<div className="flex flex-col gap-4">
-						<UserScripts />
+						<UserScripts userId={Number(session?.user.id)} />
 					</div>
 				</TabsContent>
 				<TabsContent value="profile">
 					<div className="flex flex-col gap-4">
-						<Profile />
+						<UserProfile userId={Number(session?.user.id)} />
 					</div>
 				</TabsContent>
 				<TabsContent value="recent">
 					<div className="flex flex-col gap-4">
-						<RecentActivity />
+						<UserRecentActivity userId={Number(session?.user.id)} />
 					</div>
 				</TabsContent>
 				<TabsContent value="bookmarks">
 					<div className="flex flex-col gap-4">
-						<UserBookmarks />
+						<UserBookmarks userId={Number(session?.user.id)} />
 					</div>
 				</TabsContent>
 			</Tabs>

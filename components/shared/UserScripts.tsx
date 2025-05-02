@@ -1,23 +1,16 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import ScriptFeed from "./ScriptFeed";
 
-const UserScripts = () => {
-	const { data: session, status } = useSession();
+interface UserScriptsProps {
+	userId: number;
+}
 
-	if (status === "loading") {
-		return <p className="text-muted-foreground">Loading...</p>;
-	}
-
-	if (!session?.user?.id) {
-		return <p className="text-destructive">Unable to load your scripts.</p>;
-	}
-
+const UserScripts = (userId: UserScriptsProps) => {
 	return (
 		<>
 			<ScriptFeed
-				endpoint={`/api/scripts/user/${session?.user.id}`}
+				endpoint={`/api/scripts/user/${userId.userId}`}
 				emptyTitle="No scripts yet"
 				emptyMessage="Click 'New Script' to get started."
 			/>
