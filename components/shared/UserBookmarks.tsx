@@ -10,7 +10,7 @@ const UserBookmarks = (userId: UserBookmarksProps) => {
 	return (
 		<>
 			<ScriptFeed
-				pageTitle="Your Bookmarks"
+				pageTitle="Bookmarks"
 				endpoint={`/api/bookmark/user/${userId.userId}`}
 				emptyTitle="No bookmarks"
 				emptyMessage="Bookmarked scripts will show up here."

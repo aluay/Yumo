@@ -10,7 +10,7 @@ const UserScripts = (userId: UserScriptsProps) => {
 	return (
 		<>
 			<ScriptFeed
-				pageTitle="Your Scripts"
+				pageTitle="Scripts"
 				endpoint={`/api/scripts/user/${userId.userId}`}
 				emptyTitle="No scripts yet"
 				emptyMessage="Click 'New Script' under your profile image to get started."
