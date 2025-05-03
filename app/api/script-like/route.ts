@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 			userId: Number(session.user.id),
 			type: "SCRIPT_LIKED",
 			targetId: likedScripts.id,
-			message: `You liked a new script"${likedScripts.id}"`,
+			message: `You liked a script`,
 		});
 
 		return NextResponse.json({ success: true });

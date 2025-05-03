@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 			userId: Number(session.user.id),
 			type: "COMMENT_LIKED",
 			targetId: likedComment.id,
-			message: `You liked a comment"${likedComment.id}"`,
+			message: `You liked a comment`,
 		});
 
 		return NextResponse.json({ success: true });

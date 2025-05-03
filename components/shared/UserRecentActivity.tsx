@@ -7,6 +7,7 @@ import moment from "moment";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { getActivityStyle } from "@/lib/utils";
+import Link from "next/link";
 
 interface UserRecentActivityProps {
 	userId: number;
@@ -20,6 +21,7 @@ export default function UserRecentActivity(userId: UserRecentActivityProps) {
 		async function load() {
 			try {
 				const data = await getUserActivity(Number(userId.userId));
+				console.log(data);
 				setActivity(data);
 			} catch (err) {
 				console.error(err);
@@ -45,22 +47,27 @@ export default function UserRecentActivity(userId: UserRecentActivityProps) {
 	}
 
 	return (
-		<div className="space-y-4">
+		<div className="flex  flex-col gap-2">
 			{activity.map((entry) => {
 				const { icon: Icon, text } = getActivityStyle(entry.type);
 
 				return (
-					<Card key={entry.id}>
-						<CardContent className="flex items-start gap-4 p-4">
-							<Icon className={cn("h-5 w-5 mt-1", text)} />
-							<div className="flex-1">
-								<p className={cn("text-sm", text)}>{entry.message}</p>
-								<p className="text-xs text-muted-foreground mt-1">
-									{moment(entry.createdAt).fromNow()}
-								</p>
-							</div>
-						</CardContent>
-					</Card>
+					<Link key={entry.id} href={`/script/${entry.script?.id}`}>
+						<Card className="hover:bg-muted">
+							<CardContent className="flex items-start gap-4 p-4">
+								<Icon className={cn("h-5 w-5 mt-1", text)} />
+								<div className="flex-1">
+									<p className={cn("text-sm", text)}>{entry.message}</p>
+									<p className="text-xs mt-1">
+										{entry.script?.title} - {entry.script?.language}
+									</p>
+									<p className="text-xs text-muted-foreground mt-1">
+										{moment(entry.createdAt).fromNow()}
+									</p>
+								</div>
+							</CardContent>
+						</Card>
+					</Link>
 				);
 			})}
 		</div>

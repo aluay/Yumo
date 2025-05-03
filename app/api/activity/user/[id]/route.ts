@@ -19,7 +19,21 @@ export async function GET(
 			where: { userId },
 			orderBy: { createdAt: "desc" },
 			take: 20,
+			include: {
+				script: {
+					select: {
+						id: true,
+						title: true,
+						language: true,
+					},
+				},
+			},
 		});
+		// const activity = await prisma.activity.findMany({
+		// 	where: { userId },
+		// 	orderBy: { createdAt: "desc" },
+		// 	take: 20,
+		// });
 
 		const safe = activity.map((item) => ({
 			...item,
