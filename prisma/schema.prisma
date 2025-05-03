@@ -77,8 +77,9 @@ model Script {
   bookmarkedBy User[]           @relation("UserBookmarks")
 
   authorId Int?
-  author   User?     @relation(fields: [authorId], references: [id])
+  author   User?      @relation(fields: [authorId], references: [id])
   Comment  Comment[]
+  Activity Activity[]
 }
 
 enum DifficultyLevel {
@@ -114,6 +115,7 @@ model Comment {
 model Activity {
   id        Int          @id @default(autoincrement())
   user      User         @relation(fields: [userId], references: [id])
+  script    Script?      @relation(fields: [targetId], references: [id])
   userId    Int
   type      ActivityType
   targetId  Int

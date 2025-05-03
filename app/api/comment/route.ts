@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 			userId: Number(session.user.id),
 			type: "COMMENT_POSTED",
 			targetId: newComment.id,
-			message: `You posted a new comment"${newComment.id}"`,
+			message: `You posted a comment`,
 		});
 
 		return NextResponse.json(newComment);

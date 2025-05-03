@@ -124,6 +124,11 @@ export type ActivityLog = {
 	targetId: number;
 	message: string | null;
 	createdAt: string;
+	script: {
+		id: number;
+		title: string;
+		language: string;
+	} | null;
 };
 
 export interface UserProfileInterface {

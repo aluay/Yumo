@@ -82,7 +82,7 @@ export async function POST(request: Request) {
 		userId: Number(session.user.id),
 		type: "SCRIPT_CREATED",
 		targetId: newScript.id,
-		message: `You created a new script"${newScript.title}"`,
+		message: `You created a script`,
 	});
 	return NextResponse.json(newScript, { status: 201 });
 }

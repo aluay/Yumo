@@ -31,7 +31,7 @@ export async function POST(
 		userId: Number(session.user.id),
 		type: "SCRIPT_BOOKMARKED",
 		targetId: bookmarkedScript.id,
-		message: `You bookmarked a new script"${bookmarkedScript.id}"`,
+		message: `You bookmarked a script`,
 	});
 	return NextResponse.json({ success: true });
 }
