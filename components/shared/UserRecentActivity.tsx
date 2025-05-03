@@ -47,7 +47,10 @@ export default function UserRecentActivity(userId: UserRecentActivityProps) {
 	}
 
 	return (
-		<div className="flex  flex-col gap-2">
+		<>
+			<h2 className="scroll-m-20 py-2 text-3xl font-semibold tracking-tight first:mt-0">
+				Recent Activity
+			</h2>
 			{activity.map((entry) => {
 				const { icon: Icon, text } = getActivityStyle(entry.type);
 
@@ -70,6 +73,6 @@ export default function UserRecentActivity(userId: UserRecentActivityProps) {
 					</Link>
 				);
 			})}
-		</div>
+		</>
 	);
 }
