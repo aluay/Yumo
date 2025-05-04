@@ -16,18 +16,18 @@ export async function POST(req: Request) {
 		}
 
 		const { userId, type, targetId, message } = parsed.data;
-
-		await prisma.activity.upsert({
+		const createdActivity = await prisma.activity.upsert({
 			where: {
 				id: userId,
 				type: type,
 				targetId: targetId,
+				message: message,
 			},
 			update: { message, createdAt: new Date() },
 			create: { userId, type, targetId, message },
 		});
 
-		return NextResponse.json({ success: true });
+		return NextResponse.json(createdActivity);
 	} catch (err) {
 		console.error("Activity logging failed:", err);
 		return NextResponse.json({ error: "Internal error" }, { status: 500 });

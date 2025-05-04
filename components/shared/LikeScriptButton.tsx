@@ -27,7 +27,6 @@ export default function LikeButton({
 
 		setLoading(true);
 		const method = liked ? "DELETE" : "POST";
-		console.log(scriptId);
 		const res = await fetch("/api/script-like", {
 			method,
 			headers: { "Content-Type": "application/json" },

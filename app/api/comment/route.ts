@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/app/auth";
 import { createCommentSchema } from "@/lib/schemas/scriptSchema";
-import { logActivity, deleteActivity } from "@/lib/api/logActivity";
+import {
+	logActivity,
+	deleteActivity,
+	extractMentionedUserIds,
+	logMentions,
+} from "@/lib/api/logActivity";
 
 // Create a comment or a reply
 export async function POST(req: Request) {
@@ -37,12 +42,18 @@ export async function POST(req: Request) {
 			},
 		});
 
-		await logActivity({
+		const mentionedUserIds = extractMentionedUserIds(content);
+
+		const activity = await logActivity({
 			userId: Number(session.user.id),
 			type: "COMMENT_POSTED",
 			targetId: newComment.id,
 			message: `You posted a comment`,
 		});
+
+		if (activity && mentionedUserIds.length) {
+			await logMentions(activity.id, mentionedUserIds);
+		}
 
 		return NextResponse.json(newComment);
 	} catch (error) {

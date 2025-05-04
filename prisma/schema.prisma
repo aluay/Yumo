@@ -8,20 +8,21 @@ generator client {
 }
 
 model User {
-  id                Int        @id @default(autoincrement())
+  id                Int               @id @default(autoincrement())
   name              String
-  email             String     @unique
+  email             String            @unique
   emailVerified     DateTime?
   image             String?
   accounts          Account[]
   sessions          Session[]
   Script            Script[]
-  likedScripts      Script[]   @relation("UserLikes")
+  likedScripts      Script[]          @relation("UserLikes")
   comments          Comment[]
-  likedComments     Comment[]  @relation("CommentLikes")
-  bookmarkedScripts Script[]   @relation("UserBookmarks")
+  likedComments     Comment[]         @relation("CommentLikes")
+  bookmarkedScripts Script[]          @relation("UserBookmarks")
   Activity          Activity[]
-  createdAt         DateTime   @default(now())
+  createdAt         DateTime          @default(now())
+  ActivityMention   ActivityMention[]
 }
 
 model Account {
@@ -113,14 +114,26 @@ model Comment {
 }
 
 model Activity {
-  id        Int          @id @default(autoincrement())
-  user      User         @relation(fields: [userId], references: [id])
-  script    Script?      @relation(fields: [targetId], references: [id])
-  userId    Int
-  type      ActivityType
-  targetId  Int
-  message   String?
-  createdAt DateTime     @default(now())
+  id             Int               @id @default(autoincrement())
+  user           User              @relation(fields: [userId], references: [id])
+  script         Script?           @relation(fields: [targetId], references: [id])
+  userId         Int
+  type           ActivityType
+  targetId       Int
+  message        String?
+  mentionedUsers ActivityMention[]
+  createdAt      DateTime          @default(now())
+}
+
+model ActivityMention {
+  id         Int @id @default(autoincrement())
+  activityId Int
+  userId     Int
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, userId]) // avoid duplicate mentions
 }
 
 enum ActivityType {

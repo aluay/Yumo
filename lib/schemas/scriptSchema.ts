@@ -123,12 +123,19 @@ export type ActivityLog = {
 	type: ActivityType;
 	targetId: number;
 	message: string | null;
-	createdAt: string;
-	script: {
+	createdAt: Date; // change this from string to Date
+	script?: {
 		id: number;
 		title: string;
 		language: string;
-	} | null;
+	};
+	mentions?: {
+		user: {
+			id: number;
+			name: string;
+			image: string | null;
+		};
+	}[];
 };
 
 export interface UserProfileInterface {

@@ -1,4 +1,6 @@
-import { ActivityType } from "@prisma/client";
+import { Activity, ActivityType } from "@prisma/client";
+import prisma from "../prisma";
+import { JSONContent } from "@tiptap/react";
 
 interface LogParams {
 	userId: number;
@@ -19,13 +21,19 @@ export async function logActivity({
 	message,
 }: LogParams) {
 	try {
-		await fetch(`${BASE_URL}/api/activity`, {
+		const res = await fetch(`${BASE_URL}/api/activity`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ userId, type, targetId, message }),
 		});
+
+		if (!res.ok) throw new Error("Failed to log activity");
+
+		const activity = await res.json();
+		return activity;
 	} catch (err) {
 		console.error("Failed to log activity:", err);
+		return null;
 	}
 }
 
@@ -42,5 +50,87 @@ export async function deleteActivity(
 		});
 	} catch (err) {
 		console.error("Failed to delete activity:", err);
+	}
+}
+
+export async function logMentions(
+	activityId: number,
+	mentionedUserIds: number[]
+) {
+	if (!mentionedUserIds.length) return;
+
+	const mentionsData = mentionedUserIds.map((userId) => ({
+		activityId,
+		userId,
+	}));
+
+	try {
+		await prisma.activityMention.createMany({
+			data: mentionsData,
+			skipDuplicates: true,
+		});
+	} catch (error) {
+		console.error("Failed to log mentions:", error);
+	}
+}
+
+// This function recursively walks the TipTap JSON tree and collects all mention IDs
+export function extractMentionedUserIds(content: JSONContent): number[] {
+	// Set to avoid duplicate user IDs
+	const mentionedIds = new Set<number>();
+
+	function walk(node: JSONContent) {
+		if (node.type === "mention" && node.attrs?.id) {
+			const idNum = Number(node.attrs.id);
+			if (!isNaN(idNum)) {
+				mentionedIds.add(idNum);
+			}
+		}
+		// Recurse into children if they exist
+		if (node.content && Array.isArray(node.content)) {
+			for (const child of node.content) {
+				walk(child);
+			}
+		}
+	}
+
+	walk(content);
+
+	return Array.from(mentionedIds);
+}
+
+export function getActivityMessage(
+	activity: Activity & {
+		script?: { title: string };
+		mentions?: { user: { name: string } }[];
+	}
+) {
+	const { type, script, mentions } = activity;
+	const scriptTitle = script?.title ?? "a script";
+	const mentionedNames = mentions?.map((m) => `@${m.user.name}`) ?? [];
+
+	switch (type) {
+		case "COMMENT_POSTED":
+			if (mentionedNames.length > 0) {
+				return `You posted a comment on "${scriptTitle}" and mentioned ${mentionedNames.join(
+					", "
+				)}`;
+			}
+			return `You posted a comment on "${scriptTitle}"`;
+
+		case "SCRIPT_CREATED":
+			return `You created a new script "${scriptTitle}"`;
+
+		case "SCRIPT_BOOKMARKED":
+			return `You bookmarked "${scriptTitle}"`;
+
+		case "SCRIPT_LIKED":
+			return `You liked "${scriptTitle}"`;
+
+		case "COMMENT_LIKED":
+			return `You liked a comment`;
+
+		default:
+			return "You performed an action";
 	}
 }
