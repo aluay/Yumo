@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
 import { ScriptCard } from "@/components/shared/ScriptCard";
 import { fetchScripts } from "@/lib/api/api";
+import { useSession } from "next-auth/react";
 
 interface ScriptFeedProps {
 	endpoint: string;
@@ -20,6 +21,7 @@ export default function ScriptFeed({
 }: ScriptFeedProps) {
 	const [scripts, setScripts] = useState<scriptPayloadSchemaType[]>([]);
 	const [loading, setLoading] = useState(true);
+	const { data: session } = useSession();
 
 	useEffect(() => {
 		async function load() {
@@ -55,9 +57,17 @@ export default function ScriptFeed({
 				{pageTitle}
 			</h2>
 			<div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full mx-auto mb-4">
-				{scripts.map((script) => (
-					<ScriptCard key={script.id} script={script} />
-				))}
+				{scripts
+					.filter((script) => {
+						// If user is logged in and is the author, include all scripts
+						if (session?.user?.id === script.author?.id) return true;
+
+						// Otherwise, only include published scripts
+						return script.status === "PUBLISHED";
+					})
+					.map((script) => (
+						<ScriptCard key={script.id} script={script} />
+					))}
 			</div>
 		</>
 	);

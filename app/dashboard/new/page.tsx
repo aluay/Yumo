@@ -8,7 +8,6 @@ export default async function NewScriptPage() {
 
 	// if user is not signed in, redirect to homepage
 	if (!session?.user) {
-		console.log("User is not signed in");
 		redirect("/");
 	}
 

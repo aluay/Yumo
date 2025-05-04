@@ -2,7 +2,14 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { CommentNode } from "./schemas/scriptSchema";
 import { ActivityLog } from "./schemas/scriptSchema";
-import { FileText, Heart, Bookmark, MessageCircle } from "lucide-react";
+import {
+	BookMarked,
+	MessageCircle,
+	BookHeart,
+	MessageCircleHeart,
+	FilePlus,
+	FileText,
+} from "lucide-react";
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
@@ -47,29 +54,28 @@ export function getActivityStyle(type: ActivityLog["type"]) {
 	switch (type) {
 		case "SCRIPT_CREATED":
 			return {
-				icon: FileText,
-				text: "text-green-700 dark:text-green-300",
+				icon: FilePlus,
+				text: "text-green-500",
 			};
 		case "SCRIPT_LIKED":
 			return {
-				icon: Heart,
-				text: "text-red-700 dark:text-red-300",
+				icon: BookHeart,
+				text: "text-red-500",
 			};
 		case "SCRIPT_BOOKMARKED":
 			return {
-				icon: Bookmark,
-				text: "text-blue-700 dark:text-blue-300",
+				icon: BookMarked,
+				text: "text-blue-500",
 			};
 		case "COMMENT_POSTED":
 			return {
 				icon: MessageCircle,
-				text: "text-yellow-700 dark:text-yellow-300",
+				text: "text-yellow-500",
 			};
 		case "COMMENT_LIKED":
 			return {
-				icon: Heart,
-
-				text: "text-purple-700 dark:text-purple-300",
+				icon: MessageCircleHeart,
+				text: "text-purple-500",
 			};
 		default:
 			return { icon: FileText, text: "text-muted-foreground" };

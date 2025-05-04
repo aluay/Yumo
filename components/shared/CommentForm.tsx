@@ -52,7 +52,6 @@ export default function CommentForm({
 			scriptId,
 			parentId: parentId ?? undefined,
 		};
-		console.log("Payload", JSON.stringify(payload, null, 2));
 
 		const res = await fetch("/api/comment", {
 			method: "POST",

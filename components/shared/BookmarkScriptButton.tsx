@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 interface BookmarkButtonProps {
 	scriptId: number;
@@ -15,6 +16,7 @@ export default function BookmarkButton({
 }: BookmarkButtonProps) {
 	const [bookmarked, setBookmarked] = useState(initialBookmarked);
 	const [loading, setLoading] = useState(false);
+	const { data: session } = useSession();
 
 	const toggleBookmark = async () => {
 		setLoading(true);
@@ -37,7 +39,7 @@ export default function BookmarkButton({
 		<Button
 			variant="ghost"
 			onClick={toggleBookmark}
-			disabled={loading}
+			disabled={loading || !session?.user}
 			size="icon">
 			{bookmarked ? (
 				<Bookmark className="h-5 w-5 fill-purple-500" />

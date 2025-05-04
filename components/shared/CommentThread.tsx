@@ -108,7 +108,6 @@ export default function CommentThread({ scriptId }: { scriptId: number }) {
 		const res = await fetch(`/api/comment/${scriptId}`);
 		if (!res.ok) return;
 		const data = await res.json();
-		console.log(data);
 		setComments(data);
 	}, [scriptId]);
 

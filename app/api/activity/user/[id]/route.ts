@@ -27,6 +27,15 @@ export async function GET(
 						language: true,
 					},
 				},
+				mentionedUsers: {
+					select: {
+						user: {
+							select: {
+								id: true,
+							},
+						},
+					},
+				},
 			},
 		});
 		// const activity = await prisma.activity.findMany({
