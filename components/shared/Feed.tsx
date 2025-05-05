@@ -27,6 +27,7 @@ export default function Feed({
 		async function load() {
 			try {
 				const data = await fetchPosts(endpoint);
+				console.log("POSTS: ", data);
 				setPosts(data);
 			} catch (err) {
 				console.error(err);

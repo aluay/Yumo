@@ -117,7 +117,7 @@ export default function CommentThread({ postId }: { postId: number }) {
 
 	return (
 		<div className="space-y-6 mt-8">
-			<h2 className="text-lg font-semibold">Comments</h2>
+			<h2 className="text-lg font-semibold">{comments.length}&nbsp;Comments</h2>
 
 			{comments.length === 0 && (
 				<p className="text-muted-foreground">No comments yet.</p>

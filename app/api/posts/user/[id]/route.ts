@@ -25,6 +25,9 @@ export async function GET(
 						image: true,
 					},
 				},
+				_count: {
+					select: { Comment: true },
+				},
 			},
 			orderBy: { createdAt: "desc" },
 		});

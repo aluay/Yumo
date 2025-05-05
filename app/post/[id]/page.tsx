@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import CodeViewer from "@/components/shared/CodeViewer";
+// import CodeViewer from "@/components/shared/CodeViewer";
 import RichContentViewer from "@/components/shared/RichContentViewer";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
@@ -58,6 +58,20 @@ export default async function PostViewPage({
 						)}
 					</div>
 				</div>
+				<div>
+					{post.description && (
+						<p className="text-muted-foreground italic">{post.description}</p>
+					)}
+				</div>
+				<div className="flex flex-wrap gap-2">
+					{post.tags?.map((tag, index) => (
+						<Link key={index} href={`/tags/${encodeURIComponent(tag)}`}>
+							<Badge variant={getSafeVariant(tag.toLowerCase())} key={tag}>
+								#{tag}
+							</Badge>
+						</Link>
+					))}
+				</div>
 				<div className="flex items-center gap-3 text-sm text-muted-foreground">
 					{post.author?.image && (
 						<Image
@@ -78,7 +92,7 @@ export default async function PostViewPage({
 					<LikePostButton
 						postId={post.id}
 						initialLiked={userHasLiked}
-						initialCount={post.likedBy?.length ?? 0}
+						initialCount={post.likes ?? 0}
 					/>
 					<BookmarkButton
 						postId={post.id}
@@ -91,33 +105,12 @@ export default async function PostViewPage({
 					)}
 				</div>
 
-				<div className="flex flex-wrap gap-2">
-					<Link href={`/tags/${encodeURIComponent(post.language)}`}>
-						<Badge variant={getSafeVariant(post.language.toLowerCase())}>
-							{post.language}
-						</Badge>
-					</Link>
-					{post.tags.map((tag) => (
-						<Link key={tag} href={`/tags/${encodeURIComponent(tag)}`}>
-							<Badge key={tag} variant="outline">
-								{tag}
-							</Badge>
-						</Link>
-					))}
-				</div>
-
-				{post.description && (
-					<p className="text-muted-foreground">{post.description}</p>
-				)}
-
-				<div>
-					{/* <h2 className="text-lg font-semibold mb-2">Code</h2> */}
+				{/* <div>
 					<CodeViewer code={post.code} language={post.language} />
-				</div>
+				</div> */}
 
 				{post.content && (
 					<div>
-						{/* <h2 className="text-lg font-semibold mt-6 mb-2">Notes</h2> */}
 						<RichContentViewer content={post.content as JSONContent} />
 					</div>
 				)}

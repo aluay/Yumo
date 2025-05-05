@@ -48,6 +48,9 @@ export const postPayloadSchema = postSchema.extend({
 			})
 		)
 		.optional(),
+	_count: z.object({
+		Comment: z.number(),
+	}),
 });
 
 export type postPayloadSchemaType = z.infer<typeof postPayloadSchema>;
