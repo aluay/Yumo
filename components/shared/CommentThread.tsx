@@ -26,11 +26,11 @@ interface Comment {
 
 function CommentItem({
 	comment,
-	scriptId,
+	postId,
 	onReply,
 }: {
 	comment: Comment;
-	scriptId: number;
+	postId: number;
 	onReply: () => void;
 }) {
 	const [replying, setReplying] = useState(false);
@@ -76,7 +76,7 @@ function CommentItem({
 			{replying && (
 				<div className="mt-2">
 					<CommentForm
-						scriptId={scriptId}
+						postId={postId}
 						parentId={comment.id}
 						onSuccess={() => {
 							setReplying(false);
@@ -92,7 +92,7 @@ function CommentItem({
 					<CommentItem
 						key={reply.id}
 						comment={reply}
-						scriptId={scriptId}
+						postId={postId}
 						onReply={onReply}
 					/>
 				))}
@@ -101,15 +101,15 @@ function CommentItem({
 	);
 }
 
-export default function CommentThread({ scriptId }: { scriptId: number }) {
+export default function CommentThread({ postId }: { postId: number }) {
 	const [comments, setComments] = useState<Comment[]>([]);
 
 	const fetchComments = useCallback(async () => {
-		const res = await fetch(`/api/comment/${scriptId}`);
+		const res = await fetch(`/api/comment/${postId}`);
 		if (!res.ok) return;
 		const data = await res.json();
 		setComments(data);
-	}, [scriptId]);
+	}, [postId]);
 
 	useEffect(() => {
 		fetchComments();
@@ -128,12 +128,12 @@ export default function CommentThread({ scriptId }: { scriptId: number }) {
 					<CommentItem
 						key={comment.id}
 						comment={comment}
-						scriptId={scriptId}
+						postId={postId}
 						onReply={fetchComments}
 					/>
 				))}
 			</div>
-			<CommentForm scriptId={scriptId} onSuccess={fetchComments} />
+			<CommentForm postId={postId} onSuccess={fetchComments} />
 		</div>
 	);
 }

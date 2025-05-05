@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { CommentNode } from "./schemas/scriptSchema";
-import { ActivityLog } from "./schemas/scriptSchema";
+import { CommentNode } from "./schemas/postSchema";
+import { ActivityLog } from "./schemas/postSchema";
 import {
 	BookMarked,
 	MessageCircle,
@@ -52,17 +52,17 @@ export function buildCommentTree(comments: CommentNode[]): CommentNode[] {
 // Style activity entries based on type
 export function getActivityStyle(type: ActivityLog["type"]) {
 	switch (type) {
-		case "SCRIPT_CREATED":
+		case "POST_CREATED":
 			return {
 				icon: FilePlus,
 				text: "text-green-500",
 			};
-		case "SCRIPT_LIKED":
+		case "POST_LIKED":
 			return {
 				icon: BookHeart,
 				text: "text-red-500",
 			};
-		case "SCRIPT_BOOKMARKED":
+		case "POST_BOOKMARKED":
 			return {
 				icon: BookMarked,
 				text: "text-blue-500",

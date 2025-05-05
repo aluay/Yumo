@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getUserActivity } from "@/lib/api/api";
-import { ActivityLog } from "@/lib/schemas/scriptSchema";
+import { ActivityLog } from "@/lib/schemas/postSchema";
 import moment from "moment";
 // import { cn } from "@/lib/utils";
 import { getActivityStyle } from "@/lib/utils";
@@ -55,7 +55,7 @@ export default function UserRecentActivity(userId: UserRecentActivityProps) {
 				const { icon: Icon, text } = getActivityStyle(activity.type);
 
 				return (
-					<Link key={activity.id} href={`/script/${activity.script?.id}`}>
+					<Link key={activity.id} href={`/post/${activity.post?.id}`}>
 						<Alert className={`hover:bg-muted/50 ${text}`}>
 							<Icon className="h-5 w-5" />
 							<AlertTitle>{getActivityMessage(activity)}</AlertTitle>

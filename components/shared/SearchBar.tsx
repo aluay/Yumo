@@ -2,12 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
+import { postPayloadSchemaType } from "@/lib/schemas/postSchema";
 
-export default function SearchScripts() {
+export default function SearchPosts() {
 	const [query, setQuery] = useState("");
 	const [debouncedQuery] = useDebounce(query, 300); // debounce by 300ms
-	const [results, setResults] = useState<scriptPayloadSchemaType[]>([]);
+	const [results, setResults] = useState<postPayloadSchemaType[]>([]);
 	const inputRef = useRef<HTMLDivElement>(null);
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ export default function SearchScripts() {
 
 		const fetchResults = async () => {
 			const res = await fetch(
-				`/api/search/scripts?q=${encodeURIComponent(debouncedQuery)}`
+				`/api/search/posts?q=${encodeURIComponent(debouncedQuery)}`
 			);
 			const data = await res.json();
 			setResults(data);
@@ -80,9 +80,9 @@ export default function SearchScripts() {
 			{/* Search Results */}
 			{open && query && results.length > 0 && (
 				<div className="absolute mt-2 w-full max-h-80 overflow-y-auto rounded-md border bg-background p-2 shadow-md overscroll-contain z-10">
-					{results.map((script) => (
-						<div key={script.id} className="p-2 hover:bg-muted rounded-sm">
-							{script.title}
+					{results.map((post) => (
+						<div key={post.id} className="p-2 hover:bg-muted rounded-sm">
+							{post.title}
 						</div>
 					))}
 				</div>

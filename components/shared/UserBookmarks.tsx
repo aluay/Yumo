@@ -1,6 +1,6 @@
 "use client";
 
-import ScriptFeed from "./ScriptFeed";
+import Feed from "./Feed";
 
 interface UserBookmarksProps {
 	userId: number;
@@ -9,11 +9,11 @@ interface UserBookmarksProps {
 const UserBookmarks = (userId: UserBookmarksProps) => {
 	return (
 		<>
-			<ScriptFeed
+			<Feed
 				pageTitle="Bookmarks"
 				endpoint={`/api/bookmark/user/${userId.userId}`}
 				emptyTitle="No bookmarks"
-				emptyMessage="Bookmarked scripts will show up here."
+				emptyMessage="Bookmarked posts will show up here."
 			/>
 		</>
 	);

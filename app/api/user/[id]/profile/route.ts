@@ -13,8 +13,8 @@ export async function GET(
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
 		include: {
-			Script: true,
-			bookmarkedScripts: true,
+			post: true,
+			bookmarkedPosts: true,
 		},
 	});
 
@@ -27,7 +27,7 @@ export async function GET(
 		email: user.email,
 		image: user.image,
 		createdAt: user.createdAt.toISOString(),
-		scriptCount: user.Script.length,
-		bookmarkCount: user.bookmarkedScripts.length,
+		postCount: user.post.length,
+		bookmarkCount: user.bookmarkedPosts.length,
 	});
 }

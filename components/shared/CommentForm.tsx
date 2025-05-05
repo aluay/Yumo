@@ -8,7 +8,7 @@ import CommentEditor from "@/components/editor/CommentEditor";
 import {
 	createCommentSchema,
 	createCommentSchemaType,
-} from "@/lib/schemas/scriptSchema";
+} from "@/lib/schemas/postSchema";
 import {
 	Form,
 	FormField,
@@ -18,13 +18,13 @@ import {
 } from "@/components/ui/form";
 
 interface CommentFormProps {
-	scriptId: number;
+	postId: number;
 	parentId?: number;
 	onSuccess?: () => void;
 }
 
 export default function CommentForm({
-	scriptId,
+	postId,
 	parentId,
 	onSuccess,
 }: CommentFormProps) {
@@ -41,7 +41,7 @@ export default function CommentForm({
 					},
 				],
 			},
-			scriptId,
+			postId,
 			parentId: parentId ?? undefined,
 		},
 	});
@@ -49,7 +49,7 @@ export default function CommentForm({
 	const onSubmit = async (values: createCommentSchemaType) => {
 		const payload = {
 			...values,
-			scriptId,
+			postId,
 			parentId: parentId ?? undefined,
 		};
 

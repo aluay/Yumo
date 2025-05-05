@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/app/auth";
-import { createCommentSchema } from "@/lib/schemas/scriptSchema";
+import { createCommentSchema } from "@/lib/schemas/postSchema";
 import {
 	logActivity,
 	deleteActivity,
@@ -26,13 +26,13 @@ export async function POST(req: Request) {
 		);
 	}
 
-	const { content, scriptId, parentId } = parsed.data;
+	const { content, postId, parentId } = parsed.data;
 
 	try {
 		const newComment = await prisma.comment.create({
 			data: {
 				content,
-				scriptId,
+				postId,
 				parentId,
 				authorId: Number(session.user.id),
 			},

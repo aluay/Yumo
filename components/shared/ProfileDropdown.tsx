@@ -36,7 +36,7 @@ export default function UserDropdown({
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={() => router.push("/dashboard/new")}>
-					<PlusCircle className="h-4 w-4" /> New Script
+					<PlusCircle className="h-4 w-4" /> New Post
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={() => signOut()}>

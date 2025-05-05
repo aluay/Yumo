@@ -20,7 +20,7 @@ export async function GET(
 			orderBy: { createdAt: "desc" },
 			take: 20,
 			include: {
-				script: {
+				post: {
 					select: {
 						id: true,
 						title: true,
@@ -38,11 +38,6 @@ export async function GET(
 				},
 			},
 		});
-		// const activity = await prisma.activity.findMany({
-		// 	where: { userId },
-		// 	orderBy: { createdAt: "desc" },
-		// 	take: 20,
-		// });
 
 		const safe = activity.map((item) => ({
 			...item,

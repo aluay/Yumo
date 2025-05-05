@@ -1,9 +1,9 @@
 import PageLayout from "@/components/layouts/PageLayout";
-import ScriptForm from "@/components/shared/ScriptForm";
+import PostForm from "@/components/shared/PostForm";
 import { auth } from "@/app/auth";
 import { redirect } from "next/navigation";
 
-export default async function NewScriptPage() {
+export default async function NewPostPage() {
 	const session = await auth();
 
 	// if user is not signed in, redirect to homepage
@@ -14,8 +14,8 @@ export default async function NewScriptPage() {
 	return (
 		<PageLayout>
 			<div className="max-w-2xl mx-auto py-10">
-				<h1 className="text-2xl font-semibold mb-6">Create a New Script</h1>
-				<ScriptForm />
+				<h1 className="text-2xl font-semibold mb-6">Create a New Post</h1>
+				<PostForm />
 			</div>
 		</PageLayout>
 	);

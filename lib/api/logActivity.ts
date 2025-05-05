@@ -101,31 +101,31 @@ export function extractMentionedUserIds(content: JSONContent): number[] {
 
 export function getActivityMessage(
 	activity: Activity & {
-		script?: { title: string };
+		post?: { title: string };
 		mentions?: { user: { name: string } }[];
 	}
 ) {
-	const { type, script, mentions } = activity;
-	const scriptTitle = script?.title ?? "a script";
+	const { type, post, mentions } = activity;
+	const postTitle = post?.title ?? "a post";
 	const mentionedNames = mentions?.map((m) => `@${m.user.name}`) ?? [];
 
 	switch (type) {
 		case "COMMENT_POSTED":
 			if (mentionedNames.length > 0) {
-				return `You posted a comment on "${scriptTitle}" and mentioned ${mentionedNames.join(
+				return `You posted a comment on "${postTitle}" and mentioned ${mentionedNames.join(
 					", "
 				)}`;
 			}
-			return `You posted a comment on "${scriptTitle}"`;
+			return `You posted a comment on "${postTitle}"`;
 
-		case "SCRIPT_CREATED":
-			return `You created a new script "${scriptTitle}"`;
+		case "POST_CREATED":
+			return `You created a new post "${postTitle}"`;
 
-		case "SCRIPT_BOOKMARKED":
-			return `You bookmarked "${scriptTitle}"`;
+		case "POST_BOOKMARKED":
+			return `You bookmarked "${postTitle}"`;
 
-		case "SCRIPT_LIKED":
-			return `You liked "${scriptTitle}"`;
+		case "POST_LIKED":
+			return `You liked "${postTitle}"`;
 
 		case "COMMENT_LIKED":
 			return `You liked a comment`;

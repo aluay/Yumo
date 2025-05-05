@@ -1,6 +1,6 @@
 import { auth } from "@/app/auth";
 import { redirect } from "next/navigation";
-import UserScripts from "@/components/shared/UserScripts";
+import UserPosts from "@/components/shared/UserPosts";
 import PageLayout from "@/components/layouts/PageLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserBookmarks from "@/components/shared/UserBookmarks";
@@ -17,16 +17,16 @@ const Dashboard = async () => {
 
 	return (
 		<PageLayout>
-			<Tabs defaultValue="scripts" className="w-full">
+			<Tabs defaultValue="posts" className="w-full">
 				<TabsList className="grid w-full grid-cols-4">
-					<TabsTrigger value="scripts">Scripts</TabsTrigger>
+					<TabsTrigger value="posts">Posts</TabsTrigger>
 					<TabsTrigger value="profile">Profile</TabsTrigger>
 					<TabsTrigger value="recent">Recent</TabsTrigger>
 					<TabsTrigger value="bookmarks">Bookmarks</TabsTrigger>
 				</TabsList>
-				<TabsContent value="scripts">
+				<TabsContent value="posts">
 					<div className="flex flex-col gap-4">
-						<UserScripts userId={Number(session?.user.id)} />
+						<UserPosts userId={Number(session?.user.id)} />
 					</div>
 				</TabsContent>
 				<TabsContent value="profile">

@@ -16,7 +16,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  Script        Script[]
+  Post        Post[]
 }
 
 model Account {
@@ -53,7 +53,7 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Script {
+model Post {
   id           Int              @id @default(autoincrement())
   title        String
   description  String?
@@ -62,7 +62,7 @@ model Script {
   tags         String[]
   difficulty   DifficultyLevel?
   dependencies String[]
-  status       ScriptStatus     @default(PUBLISHED)
+  status       PostStatus     @default(PUBLISHED)
   likes        Int              @default(0)
   views        Int              @default(0)
   createdAt    DateTime         @default(now())
@@ -78,7 +78,7 @@ enum DifficultyLevel {
   ADVANCED
 }
 
-enum ScriptStatus {
+enum PostStatus {
   DRAFT
   PUBLISHED
 }

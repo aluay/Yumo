@@ -1,27 +1,30 @@
 import prisma from "@/lib/prisma";
-import { type scriptPayloadSchemaType } from "@/lib/schemas/scriptSchema";
 import type { JSONContent } from "@tiptap/react";
-import { ActivityLog, UserProfileInterface } from "@/lib/schemas/scriptSchema";
+import {
+	ActivityLog,
+	UserProfileInterface,
+	type postPayloadSchemaType,
+} from "@/lib/schemas/postSchema";
 
-// Get scripts for ScriptsList, UserScripts, userBookmarks components
-export async function fetchScripts(
+// Get posts for PostsList, UserPosts, userBookmarks components
+export async function fetchPosts(
 	endpoint: string
-): Promise<scriptPayloadSchemaType[]> {
+): Promise<postPayloadSchemaType[]> {
 	const res = await fetch(endpoint);
 
 	if (!res.ok) {
-		throw new Error(`Failed to fetch scripts from ${endpoint}`);
+		throw new Error(`Failed to fetch posts from ${endpoint}`);
 	}
 
 	const data = await res.json();
 	return data;
 }
 
-// Get a single script by id
-export async function getScriptById(scriptId: number, userId?: number) {
-	const script = await prisma.script.findUnique({
+// Get a single post by id
+export async function getPostById(postId: number, userId?: number) {
+	const post = await prisma.post.findUnique({
 		where: {
-			id: scriptId,
+			id: postId,
 			...(userId && { authorId: userId }),
 		},
 		include: {
@@ -37,21 +40,19 @@ export async function getScriptById(scriptId: number, userId?: number) {
 		},
 	});
 
-	if (!script) return null;
+	if (!post) return null;
 
 	return {
-		...script,
-		createdAt: script.createdAt.toISOString(),
-		updatedAt: script.updatedAt.toISOString(),
-		description: script.description ?? undefined,
-		tags: script.tags ?? [],
+		...post,
+		createdAt: post.createdAt.toISOString(),
+		updatedAt: post.updatedAt.toISOString(),
+		description: post.description ?? undefined,
+		tags: post.tags ?? [],
 		content:
-			script.content &&
-			typeof script.content === "object" &&
-			"type" in script.content
-				? (script.content as JSONContent)
+			post.content && typeof post.content === "object" && "type" in post.content
+				? (post.content as JSONContent)
 				: { type: "doc", content: [] },
-		author: script.author ?? undefined,
+		author: post.author ?? undefined,
 	};
 }
 

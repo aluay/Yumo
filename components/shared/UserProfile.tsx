@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getUserProfile } from "@/lib/api/api";
-import { UserProfileInterface } from "@/lib/schemas/scriptSchema";
+import { UserProfileInterface } from "@/lib/schemas/postSchema";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import moment from "moment";
 
@@ -39,7 +39,7 @@ export function UserProfile(userId: UserProfileProps) {
 			</p>
 
 			<div className="text-sm text-muted-foreground">
-				<p>You have shared: {profile?.scriptCount} scripts</p>
+				<p>You have shared: {profile?.postCount} posts</p>
 				<p>You have bookmarked: {profile?.bookmarkCount} bookmarks</p>
 			</div>
 		</div>

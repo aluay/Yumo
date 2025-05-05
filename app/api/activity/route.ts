@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { activitySchema, deleteSchema } from "@/lib/schemas/scriptSchema";
+import { activitySchema, deleteSchema } from "@/lib/schemas/postSchema";
 import prisma from "@/lib/prisma";
 
 // Create a new activity log

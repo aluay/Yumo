@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/app/auth";
 import prisma from "@/lib/prisma";
-import { likeSchema } from "@/lib/schemas/scriptSchema";
+import { likeSchema } from "@/lib/schemas/postSchema";
 import { logActivity, deleteActivity } from "@/lib/api/logActivity";
 
 // Like a comment

@@ -12,14 +12,14 @@ export async function GET(
 		return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
 	}
 	try {
-		const scripts = await prisma.script.findMany({
+		const posts = await prisma.post.findMany({
 			where: {
 				bookmarkedBy: {
 					some: {
 						id: userId,
 					},
 				},
-				status: "PUBLISHED", // Only return published scripts
+				status: "PUBLISHED", // Only return published posts
 			},
 			orderBy: { createdAt: "desc" },
 			include: {
@@ -33,13 +33,13 @@ export async function GET(
 			},
 		});
 
-		const safeScripts = scripts.map((s) => ({
+		const safePosts = posts.map((s) => ({
 			...s,
 			createdAt: s.createdAt.toISOString(),
 			updatedAt: s.updatedAt.toISOString(),
 		}));
 
-		return NextResponse.json(safeScripts);
+		return NextResponse.json(safePosts);
 	} catch (err) {
 		console.error("Error fetching bookmarks for user", err);
 		return NextResponse.json(
