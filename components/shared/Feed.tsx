@@ -56,7 +56,7 @@ export default function Feed({
 			<h2 className="scroll-m-20 py-2 text-3xl font-semibold tracking-tight first:mt-0">
 				{pageTitle}
 			</h2>
-			<div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full mx-auto mb-4">
+			<div className="relative flex flex-col gap-4">
 				{posts
 					.filter((post) => {
 						// If user is logged in and is the author, include all posts

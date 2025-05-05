@@ -7,7 +7,7 @@ const PostsList = () => {
 		<>
 			<Feed
 				endpoint="/api/posts"
-				pageTitle="All Posts"
+				pageTitle="Latest"
 				emptyTitle="No posts found"
 				emptyMessage="Try checking back later!"
 			/>

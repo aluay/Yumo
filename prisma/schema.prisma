@@ -116,7 +116,7 @@ model Comment {
 model Activity {
   id             Int               @id @default(autoincrement())
   user           User              @relation(fields: [userId], references: [id])
-  post           Post?             @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  post           Post?             @relation(fields: [targetId], references: [id])
   userId         Int
   type           ActivityType
   targetId       Int

@@ -123,7 +123,7 @@ export type ActivityLog = {
 	type: ActivityType;
 	targetId: number;
 	message: string | null;
-	createdAt: Date; // change this from string to Date
+	createdAt: Date;
 	post?: {
 		id: number;
 		title: string;

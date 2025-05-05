@@ -16,6 +16,7 @@ export async function POST(req: Request) {
 		}
 
 		const { userId, type, targetId, message } = parsed.data;
+
 		const createdActivity = await prisma.activity.upsert({
 			where: {
 				id: userId,
