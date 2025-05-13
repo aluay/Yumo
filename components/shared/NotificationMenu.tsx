@@ -26,7 +26,7 @@ import { NotificationPayload } from "@/lib/validation/post";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export function NotificationMenu() {
+export default function NotificationMenu() {
 	const { data: session } = useSession();
 	const userId = session?.user?.id ? Number(session.user.id) : undefined;
 	const router = useRouter();
@@ -180,62 +180,75 @@ export function NotificationMenu() {
 	if (!userId) {
 		return null;
 	}
-
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="icon" className="relative">
-					<Bell className="h-5 w-5" />
+				<Button
+					variant="ghost"
+					size="icon"
+					className="relative rounded-full h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent">
+					<Bell className="h-[1.2rem] w-[1.2rem]" />
 					{unreadCount > 0 && (
 						<Badge
 							variant="destructive"
-							className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+							className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px] font-semibold">
 							{unreadCount}
 						</Badge>
 					)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" className="w-80">
-				<DropdownMenuLabel className="flex justify-between items-center">
-					<span>Notifications</span>
+			<DropdownMenuContent
+				align="end"
+				className="w-[350px] max-h-[75vh] overflow-hidden shadow-lg border-border p-0">
+				<DropdownMenuLabel className="flex justify-between items-center py-3 px-4 border-b">
+					<span className="font-semibold text-base">Notifications</span>
 					{unreadCount > 0 && (
 						<Button
 							variant="ghost"
 							size="sm"
 							onClick={handleMarkAllAsRead}
-							className="h-8 px-2 text-xs">
-							<CheckCheck className="mr-1 h-4 w-4" />
-							Mark all as read
+							className="h-8 px-2 text-xs hover:bg-primary/10 hover:text-primary transition-colors duration-150">
+							<CheckCheck className="mr-1 h-3.5 w-3.5" />
+							Mark all read
 						</Button>
-					)}
+					)}{" "}
 				</DropdownMenuLabel>
-				<DropdownMenuSeparator />
+				<DropdownMenuSeparator className="m-0 p-0" />
 
-				<ScrollArea className="h-[300px]">
+				<ScrollArea className="h-[400px] py-1">
 					{loading && notifications.length === 0 ? (
-						<div className="flex justify-center items-center h-20">
+						<div className="flex justify-center items-center h-24">
 							<Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
 						</div>
 					) : error ? (
 						<div className="p-4 text-center text-destructive">{error}</div>
 					) : notifications.length > 0 ? (
-						<>
+						<div className="px-1 py-0.5">
 							{notifications.map((notification) => (
-								<div key={notification.id}>
+								<div key={notification.id} className="relative group">
 									<DropdownMenuItem
 										className={cn(
-											"flex flex-col items-start p-4 cursor-pointer", // Make it look clickable
-											!notification.isRead && "bg-muted/50"
+											"flex flex-col items-start p-3 my-0.5 rounded-md cursor-pointer border-l-2 hover:bg-accent/70 transition-all duration-150",
+											!notification.isRead
+												? "border-l-primary bg-primary/5"
+												: "border-l-transparent"
 										)}
 										onClick={() => handleNotificationClick(notification)}>
 										<div className="flex justify-between w-full">
-											<span className="font-medium">
+											<span
+												className={cn(
+													"font-semibold text-sm",
+													!notification.isRead && "text-primary"
+												)}>
 												{notification.activity?.type.split("_").join(" ") ||
 													"Notification"}
 											</span>
+											<span className="text-xs text-muted-foreground">
+												{formatTimestamp(notification.createdAt)}
+											</span>
 										</div>
 
-										<p className="text-sm text-muted-foreground mt-1">
+										<p className="text-sm text-foreground/80 mt-1 line-clamp-2">
 											{notification.actionText}
 										</p>
 
@@ -299,7 +312,7 @@ export function NotificationMenu() {
 									</Button>
 								</div>
 							)}
-						</>
+						</div>
 					) : (
 						<div className="p-4 text-center text-muted-foreground">
 							No notifications
@@ -310,5 +323,3 @@ export function NotificationMenu() {
 		</DropdownMenu>
 	);
 }
-
-export default NotificationMenu;

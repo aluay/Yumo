@@ -14,12 +14,13 @@ export default async function Feed() {
 			</div>
 		);
 	}
-
 	return (
 		<>
-			<div className="space-y-6">
+			<div className="space-y-6 mx-auto w-full max-w-xl flex flex-col items-center">
 				{posts.map((post) => (
-					<PostCard key={post.id} post={post} />
+					<div key={post.id} className="w-full">
+						<PostCard post={post} />
+					</div>
 				))}
 			</div>
 		</>

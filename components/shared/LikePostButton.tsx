@@ -5,6 +5,13 @@ import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { formatNumber } from "@/lib/utils";
 
 interface LikeButtonProps {
 	postId: number;
@@ -21,9 +28,14 @@ export default function LikePostButton({
 	const [liked, setLiked] = useState(initialLiked);
 	const [count, setCount] = useState(initialCount);
 	const [loading, setLoading] = useState(false);
+	const [animating, setAnimating] = useState(false);
 
 	const toggleLike = async () => {
-		if (!session?.user) return;
+		if (!session?.user) return; // Animation effect when liking
+		if (!liked) {
+			setAnimating(true);
+			setTimeout(() => setAnimating(false), 600);
+		}
 
 		setLoading(true);
 		const method = liked ? "DELETE" : "POST";
@@ -40,19 +52,48 @@ export default function LikePostButton({
 	};
 
 	return (
-		<Button
-			onClick={toggleLike}
-			disabled={loading || !session?.user}
-			variant="ghost"
-			className={cn("flex items-center gap-1 text-muted-foreground", {
-				"text-red-500": liked,
-			})}>
-			{liked ? (
-				<Heart className="h-5 w-5 fill-red-500" />
-			) : (
-				<Heart className="h-5 w-5" />
-			)}
-			<span>{count}</span>
-		</Button>
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Button
+						onClick={toggleLike}
+						disabled={loading || !session?.user}
+						variant="ghost"
+						size="sm"
+						className={cn(
+							"flex items-center gap-1 text-muted-foreground relative group/like-btn p-1 h-auto",
+							{
+								"text-rose-500": liked,
+							}
+						)}>
+						{" "}
+						<span
+							className={cn(
+								"absolute inset-0 bg-rose-500/10 rounded-md opacity-0 transition-opacity duration-150",
+								liked ? "opacity-100" : "group-hover/like-btn:opacity-70"
+							)}></span>
+						<Heart
+							className={cn(
+								"h-3.5 w-3.5 relative z-10 transition-colors duration-150",
+								liked && "fill-rose-500",
+								animating && "animate-heartbeat",
+								!liked && "group-hover/like-btn:text-rose-500"
+							)}
+						/>{" "}
+						<span
+							className={cn(
+								"text-xs relative z-10 transition-colors duration-150",
+								liked && "text-rose-500",
+								!liked && "group-hover/like-btn:text-rose-500"
+							)}>
+							{formatNumber(count)}
+						</span>
+					</Button>
+				</TooltipTrigger>
+				<TooltipContent side="bottom" className="text-xs">
+					{liked ? "Unlike post" : "Like post"}
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	);
 }

@@ -87,7 +87,9 @@ export default async function userPage({
 			</div>{" "}
 			<div className="max-w-4xl mx-auto px-4">
 				{/* Profile info section */}{" "}
-				<div className="mt-10 sm:mt-12 flex flex-col items-center text-center animate-fade-in">					<h1 className="text-2xl sm:text-3xl font-bold">{profile?.name}</h1>
+				<div className="mt-10 sm:mt-12 flex flex-col items-center text-center animate-fade-in">
+					{" "}
+					<h1 className="text-2xl sm:text-3xl font-bold">{profile?.name}</h1>
 					<div className="flex flex-col sm:flex-row flex-wrap gap-2 mt-2 items-center justify-center">
 						{profile?.email && profile?.showEmail && (
 							<div className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -123,24 +125,25 @@ export default async function userPage({
 						</TabsTrigger>
 						<TabsTrigger value="posts">
 							<FileText className="h-4 w-4 mr-1" />
-							Posts
+							Posts {profile?.posts?.length ? `(${profile.posts.length})` : ""}
 						</TabsTrigger>
 						<TabsTrigger value="comments">
 							<MessageSquare className="h-4 w-4 mr-1" />
-							Comments
+							Comments{" "}
+							{profile?.comments?.length ? `(${profile.comments.length})` : ""}
 						</TabsTrigger>
 					</TabsList>
 					{/* Posts Tab */}
 					<TabsContent
 						value="posts"
 						className="mt-4 sm:mt-6 space-y-4 animate-fade-up">
-						<h2 className="text-xl font-semibold">Posts</h2>
+						<h2 className="text-xl font-semibold">Posts</h2>{" "}
 						{profile?.posts?.length ? (
-							<div className="grid gap-4">
+							<div className="mx-auto w-full max-w-xl grid gap-4 place-items-center">
 								{profile.posts.map((post, index) => (
 									<div
 										key={post.id}
-										className="transition-all duration-300 hover:translate-y-[-2px] hover:shadow-md"
+										className="transition-all duration-300 hover:translate-y-[-2px] hover:shadow-md w-full"
 										style={{ animationDelay: `${index * 50}ms` }}>
 										<PostCard post={post} />
 									</div>

@@ -91,14 +91,13 @@ export default function SearchBar() {
 		results.posts.length > 0 ||
 		results.users.length > 0 ||
 		results.tags.length > 0;
-
 	return (
-		<div ref={inputRef} className="relative w-full max-w-2xl mx-auto">
+		<div ref={inputRef} className="relative w-full">
 			{/* Input */}
 			<div className="relative">
 				<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 				<Input
-					className="pl-9"
+					className="w-full pl-9 pr-8 py-1.5 border-muted bg-background/50 focus-visible:bg-background"
 					placeholder="Search posts, users, and tags..."
 					value={query}
 					onChange={(e) => {
@@ -108,6 +107,7 @@ export default function SearchBar() {
 					onKeyDown={(e) => {
 						if (e.key === "Enter" && query.trim()) {
 							router.push(`/search?q=${encodeURIComponent(query)}`);
+							setOpen(false);
 						}
 					}}
 				/>
@@ -133,7 +133,7 @@ export default function SearchBar() {
 			</div>{" "}
 			{/* Search Results Dropdown */}
 			{open && debouncedQuery && debouncedQuery.length >= 2 && (
-				<div className="absolute mt-2 w-full max-h-96 overflow-y-auto rounded-md border bg-background p-2 shadow-md overscroll-contain z-10">
+				<div className="absolute mt-2 w-full max-h-96 overflow-y-auto rounded-md border bg-background p-2 shadow-md overscroll-contain z-50">
 					{loading ? (
 						<div className="flex justify-center items-center p-4">
 							<div className="h-4 w-4 animate-spin text-muted-foreground">

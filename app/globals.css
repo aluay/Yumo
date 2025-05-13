@@ -442,7 +442,7 @@ mark[style] > strong {
 @keyframes fadeUp {
 	from {
 		opacity: 0;
-		transform: translateY(10px);
+		transform: translateY(6px);
 	}
 	to {
 		opacity: 1;
@@ -450,10 +450,128 @@ mark[style] > strong {
 	}
 }
 
+@keyframes fadeInRight {
+	from {
+		opacity: 0;
+		transform: translateX(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+/* Card animations */
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.01);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+/* Remove the scaleUp animation */
+
+/* Removed borderGlow animation */
+
+@keyframes shine {
+	0% {
+		background-position: -80% 0;
+	}
+	100% {
+		background-position: 180% 0;
+	}
+}
+
+@keyframes stagger-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(3px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes heartbeat {
+	0% {
+		transform: scale(1);
+	}
+	25% {
+		transform: scale(1.15);
+	}
+	50% {
+		transform: scale(1);
+	}
+	75% {
+		transform: scale(1.15);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+/* Animation classes */
 .animate-fade-in {
-	animation: fadeIn 0.6s ease-in-out forwards;
+	animation: fadeIn 0.3s ease-in-out forwards;
 }
 
 .animate-fade-up {
-	animation: fadeUp 0.5s ease-out forwards;
+	animation: fadeUp 0.2s ease-out forwards;
+}
+
+.animate-fade-in-right {
+	animation: fadeInRight 0.15s ease-out forwards;
+}
+
+.animate-pulse-on-hover:hover {
+	animation: pulse 0.5s ease-in-out infinite;
+}
+
+/* Remove scale up on hover animation */
+
+/* Removed border glow animation */
+
+.animate-shine {
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		rgba(var(--primary), 0.1) 50%,
+		transparent 100%
+	);
+	background-size: 200% 100%;
+	animation: shine 1.2s infinite;
+}
+
+.animate-stagger-fade-in {
+	opacity: 0;
+	animation: stagger-fade-in 0.2s ease-out forwards;
+}
+
+.animate-heartbeat {
+	animation: heartbeat 0.6s ease-in-out;
+}
+
+.animate-stagger-fade-in:nth-child(1) {
+	animation-delay: 0.03s;
+}
+.animate-stagger-fade-in:nth-child(2) {
+	animation-delay: 0.06s;
+}
+.animate-stagger-fade-in:nth-child(3) {
+	animation-delay: 0.09s;
+}
+.animate-stagger-fade-in:nth-child(4) {
+	animation-delay: 0.12s;
+}
+.animate-stagger-fade-in:nth-child(5) {
+	animation-delay: 0.15s;
+}
+.animate-stagger-fade-in:nth-child(6) {
+	animation-delay: 0.18s;
 }

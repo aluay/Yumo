@@ -10,9 +10,11 @@ export default function SignInButton() {
 			console.error(result.error);
 		}
 	};
-
 	return (
-		<Button size="sm" onClick={handleSignIn}>
+		<Button
+			size="sm"
+			onClick={handleSignIn}
+			className="font-medium rounded-full px-4 py-2 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary">
 			Sign In
 		</Button>
 	);
