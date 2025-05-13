@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { JSONContent } from "novel";
+import UserFollowedTags from "@/components/shared/UserFollowedTags";
 
 export default async function userPage({
 	params,
@@ -66,6 +67,12 @@ export default async function userPage({
 						<RichContentViewer content={profile.pageContent} />
 					</div>
 				)}
+
+				{/* Followed Tags Section */}
+				<div>
+					<UserFollowedTags userId={Number(decodedUserId)} />
+				</div>
+
 				<Separator />
 				{/* Posts */}
 				<div>

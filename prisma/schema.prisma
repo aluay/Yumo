@@ -20,17 +20,19 @@ model User {
   bio         String?
   pageContent Json?
 
-  accounts        Account[]
-  sessions        Session[]
-  posts           Post[]
-  comments        Comment[]
-  postLikes       PostLike[]
-  postBookmarks   PostBookmark[]
+  accounts      Account[]
+  sessions      Session[]
+  posts         Post[]
+  comments      Comment[]
+  postLikes     PostLike[]
+  postBookmarks PostBookmark[]
+
   commentLikes    CommentLike[]
   commentReports  CommentReport[]
   Activity        Activity[]
   ActivityMention ActivityMention[]
   Notification    Notification[]
+  tagFollows      TagFollow[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -250,4 +252,16 @@ model Notification {
 
   @@unique([recipientId, activityId]) // 1 notification per user per activity
   @@index([recipientId, isRead])
+}
+
+/// ----------  TAG FOLLOWS  ----------
+model TagFollow {
+  userId    Int
+  tag       String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, tag]) // composite primary key - one follow per tag per user
+  @@index([tag]) // for efficient lookup by tag
 }

@@ -116,6 +116,60 @@ export async function searchUsersForMentions(query: string) {
 	}
 }
 
+// Check if user is following a tag
+export async function isUserFollowingTag(
+	userId: number,
+	tag: string
+): Promise<boolean> {
+	try {
+		const res = await fetch(`${BASE_URL}/api/v1/users/${userId}/tags`);
+		if (!res.ok) {
+			console.error("Failed to fetch user's tags");
+			return false;
+		}
+
+		const data = await res.json();
+		const followedTags = data.data || [];
+
+		// Check if the tag is in the list of followed tags
+		return followedTags.some(
+			(followedTag: { tag: string }) =>
+				followedTag.tag.toLowerCase() === tag.toLowerCase()
+		);
+	} catch (error) {
+		console.error("Error checking if user follows tag:", error);
+		return false;
+	}
+}
+
+// Follow a tag
+export async function followTag(tag: string): Promise<boolean> {
+	try {
+		const res = await fetch(`/api/v1/tags/${encodeURIComponent(tag)}/follow`, {
+			method: "POST",
+		});
+
+		return res.ok;
+	} catch (error) {
+		console.error("Error following tag:", error);
+		return false;
+	}
+}
+
+// Unfollow a tag
+export async function unfollowTag(tag: string): Promise<boolean> {
+	try {
+		const res = await fetch(`/api/v1/tags/${encodeURIComponent(tag)}/follow`, {
+			method: "DELETE",
+		});
+
+		return res.ok;
+	} catch (error) {
+		console.error("Error unfollowing tag:", error);
+		return false;
+	}
+}
+
 // Get user activity (CONVERT TO SERVER COMPONENT INSTEAD)
 export async function getUserActivity(userId: number): Promise<ActivityLog[]> {
 	const res = await fetch(`/api/v1/activity/users/${userId}`);
