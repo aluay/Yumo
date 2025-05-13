@@ -41,7 +41,7 @@ export async function POST(
 				type: "POST_LIKED",
 				targetType: "POST",
 				targetId: numericPostId,
-				message: `${userId} liked your post`,
+				message: `liked your post`,
 				mentions: [],
 				postId: numericPostId,
 			});

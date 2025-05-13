@@ -46,7 +46,7 @@ export async function POST(
 				type: "POST_BOOKMARKED",
 				targetType: "POST",
 				targetId: numericPostId,
-				message: `${userId} bookmarked your post`,
+				message: `bookmarked your post`,
 				postId: numericPostId,
 				mentions: [],
 			});

@@ -5,6 +5,7 @@ import SignInButton from "../auth/SignInButton";
 import ProfileDropdown from "@/components/shared/ProfileDropdown";
 import { useSession } from "next-auth/react";
 import SearchBar from "./SearchBar";
+import NotificationMenu from "@/components/shared/NotificationMenu";
 
 export default function NavBar() {
 	const { data: session } = useSession();
@@ -14,6 +15,7 @@ export default function NavBar() {
 			<Link href="/">ScriptHub</Link>
 			<SearchBar />
 			<div className="flex items-center gap-4">
+				<NotificationMenu />
 				<ModeToggle />
 				<div>
 					{session?.user ? (

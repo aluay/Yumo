@@ -140,6 +140,9 @@ export const likeSchema = z.object({
 	commentId: z.number(),
 });
 
+/*-----------------------------------------------------------------*/
+/*-----------------------------ACTIVITY----------------------------*/
+/*-----------------------------------------------------------------*/
 export const activitySchema = z.object({
 	type: z.enum([
 		"POST_CREATED",
@@ -253,5 +256,56 @@ export interface CommentLike {
 		id: number;
 		name: string;
 		image: string | null;
+	};
+}
+
+/*-----------------------------------------------------------------*/
+/*-----------------------------NOTIFICATION------------------------*/
+/*-----------------------------------------------------------------*/
+export const notificationSchema = z.object({
+	id: z.number().int().positive(),
+	recipientId: z.number().int().positive(),
+	activityId: z.number().int().positive(),
+	isRead: z.boolean().default(false),
+	createdAt: z.date().or(z.string().datetime()),
+	readAt: z.date().or(z.string().datetime()).nullable().optional(),
+
+	// Include the related activity data
+	activity: activitySchema,
+});
+
+export interface NotificationPayload {
+	id: number;
+	recipientId: number;
+	isRead: boolean;
+	createdAt: string;
+	readAt: string | null;
+	activity?: {
+		id: number;
+		userId: number;
+		type: string;
+		targetId: number;
+		targetType: string;
+		message?: string | null;
+		createdAt: string;
+		title: string;
+		description: string;
+		user: {
+			id: number;
+			name: string;
+			image?: string;
+		};
+	};
+	relatedContent?: {
+		type: string;
+		id: number;
+		title: string;
+	};
+	actionText: string;
+	actionUrl: string;
+	targetContent?: {
+		title: string;
+		type: string;
+		parentType?: string;
 	};
 }

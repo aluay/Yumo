@@ -83,7 +83,7 @@ export async function POST(req: Request) {
 				type: "POST_CREATED",
 				targetType: "POST",
 				targetId: Number(createdPost.id),
-				message: `${Number(session.user.id)} created a post`,
+				message: `created a post`,
 				mentions: mentionedUserIds,
 				postId: Number(createdPost.id),
 			});

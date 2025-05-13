@@ -42,7 +42,7 @@ export async function POST(
 				type: "COMMENT_LIKED",
 				targetType: "COMMENT",
 				targetId: Number(commentId),
-				message: `${userId} liked your comment`,
+				message: `liked your comment`,
 				mentions: [],
 			});
 		} catch (err) {

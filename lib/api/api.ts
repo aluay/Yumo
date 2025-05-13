@@ -5,6 +5,7 @@ import {
 } from "@/lib/validation/post";
 import { prisma } from "../db";
 import { JSONContent } from "novel";
+import { NotificationPayload } from "@/lib/validation/post";
 
 const BASE_URL =
 	typeof window === "undefined"
@@ -274,4 +275,135 @@ export async function getUserProfile(
 			})),
 		})),
 	};
+}
+
+/*-----------------------------------------------------------------*/
+/*---------------------GET USER NOTIFICATIONS----------------------*/
+/*-----------------------------------------------------------------*/
+export async function getUserNotifications({
+	limit = 20,
+	cursor,
+	includeRead = false,
+}: {
+	limit?: number;
+	cursor?: number | null;
+	includeRead?: boolean;
+} = {}): Promise<{
+	notifications: NotificationPayload[];
+	nextCursor: number | null;
+}> {
+	try {
+		// Build query params
+		const params = new URLSearchParams({
+			limit: limit.toString(),
+		});
+
+		if (cursor) {
+			params.append("cursor", cursor.toString());
+		}
+
+		if (includeRead) {
+			params.append("all", "1");
+		}
+
+		const response = await fetch(`/api/v1/notifications?${params.toString()}`);
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.error || "Failed to fetch notifications");
+		}
+
+		const { data, nextCursor } = await response.json();
+
+		return {
+			notifications: data,
+			nextCursor,
+		};
+	} catch (error) {
+		console.error("Error fetching notifications:", error);
+		return {
+			notifications: [],
+			nextCursor: null,
+		};
+	}
+}
+
+/*-----------------------------------------------------------------*/
+/*----------MARK NOTIFICATION A SINGLE AS READ---------------------*/
+/*-----------------------------------------------------------------*/
+export async function markNotificationAsRead(
+	notificationId: number
+): Promise<boolean> {
+	try {
+		const response = await fetch("/api/v1/notifications", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ id: notificationId }),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.error || "Failed to mark notification as read");
+		}
+
+		const data = await response.json();
+		return data.success;
+	} catch (error) {
+		console.error("Failed to mark notification as read:", error);
+		return false;
+	}
+}
+
+/*-----------------------------------------------------------------*/
+/*-----------------MARK ALL NOTIFICATIONS AS READ------------------*/
+/*-----------------------------------------------------------------*/
+export async function markAllNotificationsAsRead(): Promise<boolean> {
+	try {
+		const response = await fetch("/api/v1/notifications", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ all: true }),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(
+				errorData.error || "Failed to mark all notifications as read"
+			);
+		}
+
+		const data = await response.json();
+		return data.success;
+	} catch (error) {
+		console.error("Failed to mark all notifications as read:", error);
+		return false;
+	}
+}
+
+/*-----------------------------------------------------------------*/
+/*--------------------DELETE NOTIFICATION--------------------------*/
+/*-----------------------------------------------------------------*/
+export async function deleteNotification(
+	notificationId: number
+): Promise<boolean> {
+	try {
+		const response = await fetch(`/api/v1/notifications?id=${notificationId}`, {
+			method: "DELETE",
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.error || "Failed to delete notification");
+		}
+
+		const data = await response.json();
+		return data.success;
+	} catch (error) {
+		console.error("Failed to delete notification:", error);
+		return false;
+	}
 }

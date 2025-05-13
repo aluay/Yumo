@@ -155,7 +155,7 @@ export async function POST(
 			targetType: "COMMENT",
 			targetId: numericPostId,
 			postId: numericPostId,
-			message: `${Number(session.user.id)} commented on your post`,
+			message: `commented on your post`,
 			mentions: mentionedUserIds,
 		});
 
