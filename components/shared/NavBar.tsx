@@ -12,7 +12,11 @@ export default function NavBar() {
 
 	return (
 		<nav className="w-full flex items-center justify-between">
-			<Link href="/">ScriptHub</Link>
+			<Link href="/">
+				<span className="bg-black text-white dark:bg-white dark:text-black rounded-md px-2 py-1 font-bold">
+					Nullix
+				</span>
+			</Link>
 			<SearchBar />
 			<div className="flex items-center gap-4">
 				<NotificationMenu />
