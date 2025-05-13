@@ -67,11 +67,10 @@ export default function UserFollowedTags({ userId }: UserFollowedTagsProps) {
 			</div>
 		);
 	}
-
 	return (
 		<div className="space-y-2">
 			<h3 className="text-lg font-medium">Followed Tags</h3>
-			<div className="flex flex-wrap gap-2">
+			<div className="flex flex-wrap gap-2 min-h-[50px] max-h-[150px] overflow-y-auto">
 				{followedTags.map((tagData) => (
 					<Link
 						key={tagData.tag}

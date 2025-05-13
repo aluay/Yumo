@@ -11,12 +11,14 @@ export async function POST(req: Request) {
 
 	const filename = crypto.randomUUID() + "." + extension;
 	const filePath = path.join(process.cwd(), "public", "uploads", filename);
-
 	try {
 		await writeFile(filePath, buffer);
 
+		const returnUrl = `/uploads/${filename}`;
+		console.log("Upload successful, returning URL:", returnUrl);
+
 		return NextResponse.json({
-			url: `/uploads/${filename}`, // ✅ relative URL
+			url: returnUrl, // ✅ relative URL
 		});
 	} catch (err) {
 		console.error("Upload failed:", err);

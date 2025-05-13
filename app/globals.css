@@ -428,3 +428,32 @@ mark[style] > strong {
 .cm-editor {
 	background-color: transparent !important;
 }
+
+/* Custom animations for the user profile page */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeUp {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.6s ease-in-out forwards;
+}
+
+.animate-fade-up {
+	animation: fadeUp 0.5s ease-out forwards;
+}

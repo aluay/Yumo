@@ -123,7 +123,14 @@ export const profileInputSchema = z.object({
 	name: z.string().min(2).max(60),
 	website: z.string().max(100).optional().nullable(),
 	bio: z.string().max(1000).optional().nullable(),
-	image: z.union([z.string().url(), z.literal(""), z.null(), z.undefined()]),
+	showEmail: z.boolean().optional(),
+	image: z.union([
+		z.string().url(),
+		z.string().startsWith("/"), // Accept relative paths starting with /
+		z.literal(""),
+		z.null(),
+		z.undefined(),
+	]),
 	pageContent: z
 		.custom<JSONContent | null>(
 			(val) => {
@@ -198,7 +205,7 @@ export interface UserProfileInterface {
 	name: string;
 	email: string;
 	image: string | null;
-
+	showEmail?: boolean;
 	website: string | null;
 	bio: string | null;
 	pageContent: JSONContent | null;

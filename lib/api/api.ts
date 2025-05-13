@@ -185,7 +185,6 @@ export async function getUserProfile(
 	userId: number
 ): Promise<UserProfileInterface | null> {
 	if (isNaN(userId)) return null;
-
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
 		select: {
@@ -196,6 +195,7 @@ export async function getUserProfile(
 			website: true,
 			bio: true,
 			pageContent: true,
+			showEmail: true,
 			posts: {
 				select: {
 					id: true,

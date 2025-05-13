@@ -13,12 +13,11 @@ model User {
   name          String
   email         String    @unique
   emailVerified DateTime?
-  image         String
-
-  // Profile fields
-  website     String?
-  bio         String?
-  pageContent Json?
+  image         String // Profile fields
+  website       String?
+  bio           String?
+  pageContent   Json?
+  showEmail     Boolean   @default(true)
 
   accounts      Account[]
   sessions      Session[]
