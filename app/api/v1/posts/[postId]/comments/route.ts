@@ -120,7 +120,7 @@ export async function POST(
 	const numericPostId = Number(postId);
 	const authorId = Number(session.user.id);
 
-	/*  create + bump replyCount if it's a reply                       */
+	/* create + bump replyCount if it's a reply */
 	const newComment = await prisma.$transaction(async (tx) => {
 		const comment = await tx.comment.create({
 			data: {
@@ -137,27 +137,75 @@ export async function POST(
 				likeCount: true,
 				replyCount: true,
 				author: { select: { id: true, name: true, image: true } },
+				post: { select: { id: true, title: true, authorId: true } },
 			},
 		});
 
 		if (parentId) {
+			// Increment reply count on parent comment
 			await tx.comment.update({
 				where: { id: parentId },
 				data: { replyCount: { increment: 1 } },
 			});
+
+			// Get parent comment author to notify them about the reply
+			const parentComment = await tx.comment.findUnique({
+				where: { id: parentId },
+				select: { authorId: true },
+			});
+
+			if (parentComment && parentComment.authorId !== authorId) {
+				// Create notification for comment reply (if author is not the same)
+				await recordActivity(tx, {
+					actorId: authorId,
+					type: "COMMENT_POSTED",
+					targetType: "COMMENT",
+					targetId: comment.id, // The new comment ID
+					postId: numericPostId,
+					message: `replied to your comment`,
+					// Don't include the parent comment author in mentions as they get a direct notification
+					mentions: [],
+					// Specify the recipient (parent comment author)
+					recipientId: parentComment.authorId,
+				});
+			}
 		}
 
+		// Notify post author about the comment (if not their own post)
+		if (comment.post.authorId !== authorId && !parentId) {
+			await recordActivity(tx, {
+				actorId: authorId,
+				type: "COMMENT_POSTED",
+				targetType: "POST",
+				targetId: numericPostId,
+				postId: numericPostId,
+				message: `commented on your post "${comment.post.title}"`,
+				mentions: [],
+				recipientId: comment.post.authorId,
+			});
+		}
+
+		// Handle mentioned users
 		const mentionedUserIds = extractMentionedUserIds(content);
 
-		await recordActivity(tx, {
-			actorId: Number(session.user.id),
-			type: "COMMENT_POSTED",
-			targetType: "COMMENT",
-			targetId: numericPostId,
-			postId: numericPostId,
-			message: `commented on your post`,
-			mentions: mentionedUserIds,
-		});
+		// Remove author ID from mentions (don't notify yourself)
+		const filteredMentions = mentionedUserIds.filter((id) => id !== authorId);
+
+		// Create mention-specific notifications
+		for (const mentionedUserId of filteredMentions) {
+			await recordActivity(tx, {
+				actorId: authorId,
+				type: "USER_MENTIONED", // Create a new activity type for mentions
+				targetType: parentId ? "COMMENT" : "POST",
+				targetId: comment.id,
+				postId: numericPostId,
+				message: parentId
+					? `mentioned you in a reply to a comment`
+					: `mentioned you in a comment on "${comment.post.title}"`,
+				mentions: [], // No need for mentions here as this is already a mention notification
+				recipientId: mentionedUserId,
+			});
+		}
 
 		return comment;
 	});

@@ -129,6 +129,31 @@ export async function GET(req: Request) {
 							: null;
 						break;
 
+					case "USER_MENTIONED":
+						actionText = `${userName} mentioned you`;
+
+						if (targetType === "POST") {
+							actionText += " in a post";
+							actionUrl = activity.Post
+								? `/posts/${activity.Post.id || activity.Post.id}`
+								: "";
+						} else if (targetType === "COMMENT") {
+							actionText += " in a comment";
+							actionUrl = activity.Post
+								? `/posts/${
+										activity.Post.id || activity.Post.id
+								  }#comment-${targetId}`
+								: "";
+						}
+
+						targetContent = activity.Post
+							? {
+									title: activity.Post.title,
+									type: targetType.toLowerCase(),
+							  }
+							: null;
+						break;
+
 					case "COMMENT_POSTED":
 						const targetDescription =
 							targetType === "POST" ? "your post" : "a comment";

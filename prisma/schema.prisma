@@ -228,6 +228,7 @@ enum ActivityType {
   POST_BOOKMARKED
   COMMENT_POSTED
   COMMENT_LIKED
+  USER_MENTIONED
 }
 
 enum TargetType {

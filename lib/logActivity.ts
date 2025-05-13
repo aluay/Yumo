@@ -7,7 +7,7 @@ const BASE_URL =
 		? process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 		: "";
 
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -17,108 +17,75 @@ export type ActivityType =
 	| "POST_LIKED"
 	| "POST_BOOKMARKED"
 	| "COMMENT_POSTED"
+	| "USER_MENTIONED"
 	| "COMMENT_LIKED";
 
 export type TargetType = "POST" | "COMMENT" | "USER";
-
-interface RecordActivityOptions {
-	actorId: number; // user who caused the event
-	type: ActivityType;
-	targetType: TargetType;
-	targetId: number;
-	postId?: number;
-	message?: string; // optional free-text
-	mentions?: number[]; // userIds referenced via @mentions
-}
-
-/* ------------------------------------------------------------------ */
-/* Helper to look up the owner of the target (post author, etc.)       */
-/* ------------------------------------------------------------------ */
-async function lookupOwner(
-	tx: Prisma.TransactionClient,
-	targetType: TargetType,
-	targetId: number
-): Promise<number | null> {
-	switch (targetType) {
-		case "POST":
-			return tx.post
-				.findUnique({ where: { id: targetId }, select: { authorId: true } })
-				.then((p) => p?.authorId ?? null);
-		case "COMMENT":
-			return tx.comment
-				.findUnique({ where: { id: targetId }, select: { authorId: true } })
-				.then((c) => c?.authorId ?? null);
-		case "USER":
-			return targetId; // the user themselves
-		default:
-			return null;
-	}
-}
 
 /* ------------------------------------------------------------------ */
 /* recordActivity                                                      */
 /* ------------------------------------------------------------------ */
 export async function recordActivity(
-	tx: Prisma.TransactionClient | PrismaClient,
-	opts: RecordActivityOptions
-) {
-	const {
+	tx: Prisma.TransactionClient,
+	{
 		actorId,
 		type,
+		targetId,
 		targetType,
 		postId,
-		targetId,
 		message,
 		mentions = [],
-	} = opts;
-
-	/* 1 ── create Activity row ───────────────────────────────────── */
+		recipientId,
+	}: {
+		actorId: number;
+		type: ActivityType;
+		targetId: number;
+		targetType: TargetType;
+		postId?: number;
+		message?: string;
+		mentions?: number[];
+		recipientId?: number; // Add this optional parameter
+	}
+) {
+	// Create the activity
 	const activity = await tx.activity.create({
 		data: {
 			userId: actorId,
 			type,
-			targetType,
 			targetId,
+			targetType,
 			message,
 			postId,
 		},
 	});
 
-	/* 2 ── create mentions (if any) ──────────────────────────────── */
-	if (mentions.length) {
-		await tx.activityMention.createMany({
-			data: mentions.map((u) => ({
-				userId: u,
+	// Create a direct notification if recipientId is provided
+	if (recipientId && recipientId !== actorId) {
+		// Don't notify yourself
+		await tx.notification.create({
+			data: {
+				recipientId,
 				activityId: activity.id,
-			})),
-			skipDuplicates: true,
+			},
 		});
 	}
 
-	/* 3 ── determine notification recipients ────────────────────── */
-	const recipients = new Set<number>();
-
-	// 3a. owner of the target (post / comment / user)
-	const ownerId = await lookupOwner(tx, targetType, targetId);
-	if (ownerId && ownerId !== actorId) recipients.add(ownerId);
-
-	// 3b. all @mentioned users
-	mentions.forEach((u) => {
-		if (u !== actorId) recipients.add(u);
-	});
-
-	/* 4 ── create Notification rows (skip self, skip duplicates) ── */
-	if (recipients.size) {
-		await tx.notification.createMany({
-			data: Array.from(recipients).map((rId) => ({
-				recipientId: rId,
-				activityId: activity.id,
-			})),
-			skipDuplicates: true,
-		});
+	// Process mentions
+	if (mentions.length > 0) {
+		// Create records for all mentions
+		await Promise.all(
+			mentions.map((userId) =>
+				tx.activityMention.create({
+					data: {
+						activityId: activity.id,
+						userId,
+					},
+				})
+			)
+		);
 	}
 
-	return activity; // return for logging / debugging if needed
+	return activity;
 }
 
 export async function deleteActivity(
