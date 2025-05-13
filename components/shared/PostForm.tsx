@@ -7,12 +7,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Novel from "@/components/editor/Novel";
 import TagInput from "@/components/ui/tag-input";
-import CodeEditor from "@/components/shared/CodeMirror";
-import {
-	postSchema,
-	postSchemaType,
-	postSchemaWithIdType,
-} from "@/lib/schemas/postSchema";
+// import CodeEditor from "@/components/shared/CodeMirror";
+import { postInputSchema, PostInput, PostPayload } from "@/lib/validation/post";
 
 import {
 	Form,
@@ -21,22 +17,22 @@ import {
 	FormLabel,
 	FormControl,
 	FormMessage,
+	FormDescription,
 } from "@/components/ui/form";
 
 interface PostFormProps {
-	defaultValues?: Partial<postSchemaWithIdType>;
+	defaultValues?: Partial<PostPayload>;
 }
 
 export default function PostForm({ defaultValues }: PostFormProps) {
 	const router = useRouter();
 	const isEditing = !!defaultValues?.id;
 
-	const form = useForm<postSchemaType>({
-		resolver: zodResolver(postSchema),
+	const form = useForm<PostInput>({
+		resolver: zodResolver(postInputSchema),
 		defaultValues: {
 			title: "",
 			description: "",
-			language: "",
 			tags: [],
 			content: {
 				type: "doc",
@@ -50,26 +46,28 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 		},
 	});
 
-	const onSubmit = async (values: postSchemaType) => {
-		const payload = {
-			...values,
-		};
+	const onSubmit = async (values: PostInput) => {
 		const endpoint = isEditing
-			? `/api/posts/${defaultValues.id}`
-			: "/api/posts";
+			? `/api/v1/posts/${defaultValues.id}`
+			: "/api/v1//posts";
 		const method = isEditing ? "PATCH" : "POST";
 
 		const res = await fetch(endpoint, {
 			method,
-			body: JSON.stringify(payload),
+			body: JSON.stringify(values),
 		});
 
-		if (res.ok) router.push("/dashboard");
+		if (method === "PATCH") {
+			if (res.ok) router.push(`/posts/${defaultValues?.id}`);
+		} else {
+			const data = await res.json();
+			router.push(`/posts/${data.id}`);
+		}
 	};
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<FormField
 					control={form.control}
 					name="title"
@@ -77,38 +75,15 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 						<FormItem>
 							<FormLabel className="font-bold">Title</FormLabel>
 							<FormControl>
-								<Input {...field} placeholder="Post title goes here..." />
+								<Input
+									className="focus-visible:ring-transparent"
+									{...field}
+									placeholder="Post title"
+								/>
 							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
-				<FormField
-					control={form.control}
-					name="language"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel className="font-bold">Language</FormLabel>
-							<FormControl>
-								<Input {...field} placeholder="e.g.TypeScript" />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
-				<FormField
-					control={form.control}
-					name="code"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Code</FormLabel>
-							<CodeEditor
-								value={field.value}
-								onChange={field.onChange}
-								language={form.watch("language")}
-							/>
+							<FormDescription>
+								Summarize your post in one sentence.
+							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -122,10 +97,14 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 							<FormLabel className="font-bold">Description</FormLabel>
 							<FormControl>
 								<Textarea
+									className="resize-none focus-visible:ring-transparent"
 									{...field}
-									placeholder="Add description that others will see at a glance"
+									placeholder="Post description"
 								/>
 							</FormControl>
+							<FormDescription>
+								A quick summary to catch readers attention.
+							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -140,6 +119,9 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 							<FormControl>
 								<TagInput value={field.value || []} onChange={field.onChange} />
 							</FormControl>
+							<FormDescription>
+								Add tags to highlight the topics in your post.
+							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -168,7 +150,7 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 					<Button
 						type="submit"
 						onClick={() => form.setValue("status", "PUBLISHED")}>
-						Save & Publish
+						Publish
 					</Button>
 				</div>
 			</form>

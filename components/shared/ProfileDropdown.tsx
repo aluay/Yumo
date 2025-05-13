@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 export default function UserDropdown({
 	user,
 }: {
-	user: { name: string; image?: string | null };
+	user: { id: string; name: string; image?: string | null };
 }) {
 	const router = useRouter();
 
@@ -31,11 +31,11 @@ export default function UserDropdown({
 				<DropdownMenuItem onClick={() => router.push("/")}>
 					<House className="h-4 w-4" /> Home
 				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => router.push("/dashboard")}>
-					<User className="h-4 w-4" /> Dashboard
+				<DropdownMenuItem onClick={() => router.push(`/users/${user.id}`)}>
+					<User className="h-4 w-4" /> Profile
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={() => router.push("/dashboard/new")}>
+				<DropdownMenuItem onClick={() => router.push("/posts/new")}>
 					<PlusCircle className="h-4 w-4" /> New Post
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />

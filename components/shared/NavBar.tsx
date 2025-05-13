@@ -17,7 +17,13 @@ export default function NavBar() {
 				<ModeToggle />
 				<div>
 					{session?.user ? (
-						<ProfileDropdown user={session.user} />
+						<ProfileDropdown
+							user={{
+								id: String(session.user.id), // force the id be a string
+								name: session.user.name!,
+								image: session.user.image ?? undefined,
+							}}
+						/>
 					) : (
 						<SignInButton />
 					)}

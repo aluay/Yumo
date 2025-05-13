@@ -1,18 +1,25 @@
-"use client";
+import { getPosts } from "@/lib/api/api";
+import PostCard from "@/components/shared/PostCard";
 
-import Feed from "./Feed";
+export default async function PostsList() {
+	const posts = await getPosts();
 
-const PostsList = () => {
+	if (!posts.length) {
+		return (
+			<div className="text-center py-20">
+				<h2 className="text-lg font-semibold">No results found</h2>
+				<p className="text-sm text-muted-foreground mt-2">
+					No posts to show here.
+				</p>
+			</div>
+		);
+	}
+
 	return (
-		<>
-			<Feed
-				endpoint="/api/posts"
-				pageTitle="Latest"
-				emptyTitle="No posts found"
-				emptyMessage="Try checking back later!"
-			/>
-		</>
+		<div className="space-y-6">
+			{posts.map((post) => (
+				<PostCard key={post.id} post={post} />
+			))}
+		</div>
 	);
-};
-
-export default PostsList;
+}

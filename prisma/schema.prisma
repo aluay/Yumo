@@ -7,24 +7,36 @@ generator client {
   provider = "prisma-client-js"
 }
 
+/// ----------  USER  ----------
 model User {
-  id              Int               @id @default(autoincrement())
-  name            String
-  email           String            @unique
-  emailVerified   DateTime?
-  image           String?
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  image         String
+
+  // Profile fields
+  website     String?
+  bio         String?
+  pageContent Json?
+
   accounts        Account[]
   sessions        Session[]
-  post            Post[]
-  likedPosts      Post[]            @relation("UserLikes")
+  posts           Post[]
   comments        Comment[]
-  likedComments   Comment[]         @relation("CommentLikes")
-  bookmarkedPosts Post[]            @relation("UserBookmarks")
+  postLikes       PostLike[]
+  postBookmarks   PostBookmark[]
+  commentLikes    CommentLike[]
+  commentReports  CommentReport[]
   Activity        Activity[]
-  createdAt       DateTime          @default(now())
   ActivityMention ActivityMention[]
+  Notification    Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
+/// ----------  ACCOUNT  ----------
 model Account {
   id                Int     @id @default(autoincrement())
   userId            Int
@@ -59,81 +71,155 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+/// ----------  POST  ----------
 model Post {
-  id           Int              @id @default(autoincrement())
-  title        String
-  description  String?
-  code         String
-  content      Json? // TipTap editor schema
-  language     String
-  tags         String[]
-  difficulty   DifficultyLevel?
-  dependencies String[]
-  status       PostStatus       @default(PUBLISHED)
-  likes        Int              @default(0)
-  likedBy      User[]           @relation("UserLikes")
-  views        Int              @default(0)
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  bookmarkedBy User[]           @relation("UserBookmarks")
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  content     Json // TipTap JSON
+  tags        String[]
+  status      PostStatus @default(PUBLISHED)
 
-  authorId Int?
-  author   User?      @relation(fields: [authorId], references: [id])
-  Comment  Comment[]
+  // denormalised stats – cheap sort/filter
+  likeCount     Int @default(0)
+  bookmarkCount Int @default(0)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // soft‑delete keeps comments alive
+
+  /**
+   * ─── relations ────────────────────────────────────────────
+   */
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+
+  comments  Comment[]
+  likes     PostLike[]
+  bookmarks PostBookmark[]
+
   Activity Activity[]
+
+  @@index([status, createdAt])
 }
 
-enum DifficultyLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-}
-
+/// Post status
 enum PostStatus {
   DRAFT
   PUBLISHED
 }
 
-model Comment {
-  id        Int      @id @default(autoincrement())
-  content   Json
+/// Like toggle table
+model PostLike {
+  userId    Int
+  postId    Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  author   User @relation(fields: [authorId], references: [id])
-  authorId Int
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@id([userId, postId]) // one like per user
+}
+
+/// Bookmark toggle table
+model PostBookmark {
+  userId    Int
+  postId    Int
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+}
+
+/// ----------  COMMENTS  ----------
+model Comment {
+  id        Int       @id @default(autoincrement())
+  postId    Int
+  parentId  Int?
+  authorId  Int
+  content   Json
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // preserves thread shape
+
+  // counters
+  likeCount   Int @default(0)
+  replyCount  Int @default(0)
+  reportCount Int @default(0)
+
+  /**
+   * ─── relations ────────────────────────────────────────────
+   */
   post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId Int
+  author User @relation(fields: [authorId], references: [id])
 
-  parent   Comment? @relation("CommentReplies", fields: [parentId], references: [id])
-  parentId Int?
-
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies Comment[] @relation("CommentReplies")
-  likedBy User[]    @relation("CommentLikes")
+
+  likes   CommentLike[]
+  reports CommentReport[]
+
+  @@index([postId, createdAt])
+}
+
+/// Like toggle for comments
+model CommentLike {
+  userId    Int
+  commentId Int
+  createdAt DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, commentId])
+}
+
+/// Abuse / report
+model CommentReport {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  commentId Int
+  reason    String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId]) // one report per user
 }
 
 model Activity {
-  id             Int               @id @default(autoincrement())
-  user           User              @relation(fields: [userId], references: [id])
-  post           Post?             @relation(fields: [targetId], references: [id])
-  userId         Int
-  type           ActivityType
-  targetId       Int
-  message        String?
-  mentionedUsers ActivityMention[]
-  createdAt      DateTime          @default(now())
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  type       ActivityType
+  targetId   Int
+  targetType TargetType
+  message    String?
+  createdAt  DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  /**
+   * reverse navigation for notifications & mentions *
+   */
+  mentions      ActivityMention[]
+  notifications Notification[]
+  Post          Post?             @relation(fields: [postId], references: [id])
+  postId        Int?
 }
 
 model ActivityMention {
-  id         Int @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   activityId Int
   userId     Int
+  createdAt  DateTime @default(now())
 
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([activityId, userId]) // avoid duplicate mentions
+  @@unique([activityId, userId]) // no dupes
 }
 
 enum ActivityType {
@@ -142,4 +228,25 @@ enum ActivityType {
   POST_BOOKMARKED
   COMMENT_POSTED
   COMMENT_LIKED
+}
+
+enum TargetType {
+  POST
+  COMMENT
+  USER // e.g., follow
+}
+
+model Notification {
+  id          Int       @id @default(autoincrement())
+  recipientId Int
+  activityId  Int
+  isRead      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  readAt      DateTime?
+
+  recipient User     @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  activity  Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([recipientId, activityId]) // 1 notification per user per activity
+  @@index([recipientId, isRead])
 }

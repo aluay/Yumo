@@ -5,10 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import CommentEditor from "@/components/editor/CommentEditor";
-import {
-	createCommentSchema,
-	createCommentSchemaType,
-} from "@/lib/schemas/postSchema";
+import { commentInputSchema, CommentInput } from "@/lib/validation/post";
 import {
 	Form,
 	FormField,
@@ -30,8 +27,8 @@ export default function CommentForm({
 }: CommentFormProps) {
 	const router = useRouter();
 	const [editorKey, setEditorKey] = useState(0);
-	const form = useForm<createCommentSchemaType>({
-		resolver: zodResolver(createCommentSchema),
+	const form = useForm<CommentInput>({
+		resolver: zodResolver(commentInputSchema),
 		defaultValues: {
 			content: {
 				type: "doc",
@@ -46,14 +43,28 @@ export default function CommentForm({
 		},
 	});
 
-	const onSubmit = async (values: createCommentSchemaType) => {
+	const onSubmit = async (values: CommentInput) => {
+		const json = values.content;
+
+		const isEmpty =
+			!json ||
+			!json.content ||
+			(json.content.length === 1 &&
+				json.content[0].type === "paragraph" &&
+				!json.content[0].content);
+
+		if (isEmpty) {
+			// console.warn("Cannot post an empty comment");
+			return;
+		}
+
 		const payload = {
 			...values,
 			postId,
 			parentId: parentId ?? undefined,
 		};
 
-		const res = await fetch("/api/comment", {
+		const res = await fetch(`/api/v1/posts/${postId}/comments`, {
 			method: "POST",
 			body: JSON.stringify(payload),
 		});

@@ -21,7 +21,7 @@ export default function DevLoginPage() {
 		await signIn("credentials", {
 			username,
 			password,
-			callbackUrl: "/dashboard",
+			callbackUrl: "/",
 		});
 	};
 

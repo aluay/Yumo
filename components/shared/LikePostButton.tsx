@@ -27,10 +27,8 @@ export default function LikePostButton({
 
 		setLoading(true);
 		const method = liked ? "DELETE" : "POST";
-		const res = await fetch("/api/post-like", {
+		const res = await fetch(`/api/v1/posts/${postId}/like`, {
 			method,
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ postId }),
 		});
 
 		if (res.ok) {
@@ -46,14 +44,13 @@ export default function LikePostButton({
 			onClick={toggleLike}
 			disabled={loading || !session?.user}
 			variant="ghost"
-			size="sm"
 			className={cn("flex items-center gap-1 text-muted-foreground", {
 				"text-red-500": liked,
 			})}>
 			{liked ? (
-				<Heart className="h-4 w-4 fill-red-500" />
+				<Heart className="h-5 w-5 fill-red-500" />
 			) : (
-				<Heart className="h-4 w-4" />
+				<Heart className="h-5 w-5" />
 			)}
 			<span>{count}</span>
 		</Button>

@@ -4,6 +4,9 @@
 
 body {
 	font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
 }
 
 @layer base {
@@ -159,7 +162,11 @@ pre {
 }
 
 .ProseMirror {
-	padding: 3rem 2.4rem;
+	padding: 2.5rem 2rem;
+	font-family: inherit;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
 }
 
 .ProseMirror .is-editor-empty:first-child::before {

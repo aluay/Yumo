@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { postPayloadSchemaType } from "@/lib/schemas/postSchema";
+import { postPayloadSchemaType } from "@/lib/validation/post";
 
 export default function SearchPosts() {
 	const [query, setQuery] = useState("");

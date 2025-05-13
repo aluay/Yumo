@@ -61,7 +61,7 @@ export const customMention = Mention.extend({
 		return [
 			"a",
 			{
-				href: `/user/${node.attrs.id}`,
+				href: `/users/${node.attrs.id}`,
 				class: "mention",
 				"data-id": node.attrs.id,
 				"data-label": node.attrs.label,
@@ -74,7 +74,7 @@ export const customMention = Mention.extend({
 		onClick: (event: MouseEvent) => {
 			const id = (event.target as HTMLElement)?.dataset.id;
 			if (id) {
-				window.location.href = `/user/${id}`;
+				window.location.href = `/users/${id}`;
 			}
 		},
 	},
@@ -174,7 +174,7 @@ const CommentEditor = ({ value, onChange }: CommentEditorProps) => {
 				<EditorContent
 					initialContent={initialContent}
 					extensions={extensions}
-					className="relative w-full max-w-screen-lg border-muted bg-background border border-input rounded-md"
+					className="relative w-full max-w-screen-lg border-muted bg-background border border-input rounded-md p-0"
 					editorProps={{
 						attributes: {
 							class: "focus:outline-none font-default text-sm",

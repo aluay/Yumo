@@ -44,7 +44,7 @@ export default function TagInput({
 	return (
 		<div
 			className={cn(
-				"flex flex-wrap items-center gap-2 p-2 border rounded-md min-h-[42px]",
+				"flex flex-wrap items-center gap-2 p-2 border rounded-md min-h-[42px] bg-background",
 				disabled && "bg-muted"
 			)}>
 			{value.map((tag) => (
@@ -70,7 +70,7 @@ export default function TagInput({
 				value={inputValue}
 				onChange={(e) => setInputValue(e.target.value)}
 				onKeyDown={handleKeyDown}
-				className="flex-1 bg-transparent outline-none text-sm min-w-[100px]"
+				className="flex-1 dark:bg-transparent outline-none text-sm min-w-[100px]"
 				placeholder={placeholder}
 				disabled={disabled}
 			/>

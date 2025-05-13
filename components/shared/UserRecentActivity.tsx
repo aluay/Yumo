@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { getUserActivity } from "@/lib/api/api";
-import { ActivityLog } from "@/lib/schemas/postSchema";
-import moment from "moment";
-// import { cn } from "@/lib/utils";
+import { ActivityLog } from "@/lib/validation/post";
+import { formatDistanceToNow } from "date-fns";
 import { getActivityStyle } from "@/lib/utils";
 import Link from "next/link";
-import { getActivityMessage } from "@/lib/api/logActivity";
+import { getActivityMessage } from "@/lib/logActivity";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface UserRecentActivityProps {
@@ -53,14 +52,16 @@ export default function UserRecentActivity(userId: UserRecentActivityProps) {
 			</h2>
 			{activities.map((activity) => {
 				const { icon: Icon, text } = getActivityStyle(activity.type);
-
+				console.log(activity);
 				return (
-					<Link key={activity.id} href={`/post/${activity.post?.id}`}>
+					<Link key={activity.id} href={`/posts/${activity.Post?.id}`}>
 						<Alert className={`hover:bg-muted/50 ${text}`}>
 							<Icon className="h-5 w-5" />
 							<AlertTitle>{getActivityMessage(activity)}</AlertTitle>
 							<AlertDescription className="text-xs text-muted-foreground">
-								{moment(activity.createdAt).fromNow()}
+								{formatDistanceToNow(new Date(activity.createdAt), {
+									addSuffix: true,
+								})}
 							</AlertDescription>
 						</Alert>
 					</Link>

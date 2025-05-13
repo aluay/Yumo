@@ -75,12 +75,12 @@ const horizontalRule = HorizontalRule.configure({
 export const starterKit = StarterKit.configure({
 	bulletList: {
 		HTMLAttributes: {
-			class: cx("list-disc list-outside leading-3"),
+			class: cx("list-disc list-outside my-6 pl-4"),
 		},
 	},
 	orderedList: {
 		HTMLAttributes: {
-			class: cx("list-decimal list-outside leading-3"),
+			class: cx("list-decimal list-outside my-6 pl-4"),
 		},
 	},
 	listItem: {
@@ -90,7 +90,7 @@ export const starterKit = StarterKit.configure({
 	},
 	blockquote: {
 		HTMLAttributes: {
-			class: cx("border-l-4 border-primary"),
+			class: cx("border-l-[3px] border-l-gray-300 my-6 pl-4"),
 		},
 	},
 	codeBlock: {

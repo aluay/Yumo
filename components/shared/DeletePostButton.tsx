@@ -17,7 +17,7 @@ export default function DeletePostButton({ postId }: { postId: number }) {
 		if (!confirmed) return;
 
 		try {
-			const res = await fetch(`/api/posts/${postId}`, {
+			const res = await fetch(`/api/v1/posts/${postId}`, {
 				method: "DELETE",
 			});
 

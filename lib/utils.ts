@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { CommentNode } from "./schemas/postSchema";
-import { ActivityLog } from "./schemas/postSchema";
+import { ActivityLog } from "./validation/post";
 import {
 	BookMarked,
 	MessageCircle,
@@ -26,27 +25,6 @@ export function formatNumber(n: number): string {
 export function truncateText(text: string, maxLength = 100): string {
 	if (!text) return "";
 	return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
-}
-
-// Build a tree structure from flat comments
-export function buildCommentTree(comments: CommentNode[]): CommentNode[] {
-	const map = new Map<number, CommentNode>();
-	const roots: CommentNode[] = [];
-
-	comments.forEach((c) => {
-		map.set(c.id, { ...c, replies: [] });
-	});
-
-	map.forEach((comment) => {
-		if (comment.parentId) {
-			const parent = map.get(comment.parentId);
-			if (parent) parent.replies.push(comment);
-		} else {
-			roots.push(comment);
-		}
-	});
-
-	return roots;
 }
 
 // Style activity entries based on type

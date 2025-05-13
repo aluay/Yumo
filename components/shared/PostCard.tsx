@@ -1,85 +1,103 @@
-"use client";
-
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { postPayloadSchemaType } from "@/lib/schemas/postSchema";
-import moment from "moment";
-import { getSafeVariant } from "@/lib/badgeVariants";
+import { PostPayload } from "@/lib/validation/post";
+import { formatDistanceToNow } from "date-fns";
 import { formatNumber } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Heart, MessageCircle } from "lucide-react";
+import BookmarkPostButton from "./BookmarkPostButton";
+import { auth } from "@/lib/auth";
 
 interface PostCardProps {
-	post: postPayloadSchemaType;
+	post: PostPayload;
 }
 
-export function PostCard({ post }: PostCardProps) {
+export default async function PostCard({ post }: PostCardProps) {
+	const session = await auth();
+	const userId = Number(session?.user?.id) ?? null;
+
+	const userHasBookmarked =
+		userId != null && post.bookmarks?.some((b) => b.userId === userId);
+
 	return (
-		<div
-			key={post.id}
-			className="rounded-md border bg-background transition-shadow p-4 space-y-3 max-w-full">
-			{/* Title */}
-			<h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-				<Link
-					href={`/post/${post.id}`}
-					className="relative inline-block transition-colors duration-200 hover:text-sky-500">
-					{post.title}
-				</Link>
-			</h2>
-
-			{/* Description */}
-			<p className="text-sm text-muted-foreground line-clamp-3">
-				{post.description}
-			</p>
-
-			{/* Badges */}
-			<div className="flex flex-wrap gap-2">
-				{/* <Link href={`/tags/${encodeURIComponent(post.language)}`}>
-					<Badge variant={getSafeVariant(post.language.toLowerCase())}>
-						#{post.language}
-					</Badge>
-				</Link> */}
-				{post.tags?.map((tag, index) => (
-					<Link key={index} href={`/tags/${encodeURIComponent(tag)}`}>
-						<Badge variant={getSafeVariant(tag.toLowerCase())} key={tag}>
-							#{tag}
-						</Badge>
+		<article className="border p-4 rounded-lg bg-muted/50 shadow-sm">
+			<div>
+				<div className="mb-4">
+					<Link href={`/users/${post.author.id}`} className="hover:underline">
+						<div className="flex items-center gap-2">
+							<div>
+								<Avatar className="h-6 w-6">
+									{post.author.image ? (
+										<AvatarImage
+											src={post.author.image}
+											alt={post.author.name}
+										/>
+									) : (
+										<AvatarFallback>
+											{post.author.name.charAt(0)}
+										</AvatarFallback>
+									)}
+								</Avatar>
+							</div>
+							<div>
+								<p className="text-sm">{post.author.name}</p>
+							</div>
+						</div>
 					</Link>
-				))}
-			</div>
-
-			{/* Footer row */}
-			<div className="flex items-center justify-between mt-4">
-				{/* User info */}
-				<div className="flex items-center gap-2">
-					<Avatar className="h-[24px] w-[24px]">
-						{post?.author?.image ? (
-							<AvatarImage src={post?.author.image} alt={post?.author.name} />
-						) : (
-							<AvatarFallback>{post?.author?.name.charAt(0)}</AvatarFallback>
-						)}
-					</Avatar>
-					<div className="text-sm">
-						<Link
-							href={`/user/${post?.author?.id}`}
-							className="relative inline-block transition-colors duration-200 hover:text-red-500">
-							<div className="font-medium">{post?.author?.name}</div>
+				</div>
+				<div className="pb-3">
+					<div>
+						<Link href={`/posts/${post.id}`}>
+							<div>
+								<div>
+									<h2 className="sm:text-1xl md:text-2xl lg:text-3xl font-extrabold tracking-tight leading-snug sm:leading-tight">
+										{post.title}
+									</h2>
+								</div>
+								<div className="pt-2">
+									<p className="text-muted-foreground">{post.description}</p>
+								</div>
+							</div>
 						</Link>
-						<div className="text-xs text-muted-foreground">
-							{moment(post.createdAt).fromNow()}
+					</div>
+				</div>
+				<div className="py-2">
+					{post.tags?.length > 0 && (
+						<div className="flex flex-wrap gap-4">
+							{post.tags.map((tag, index) => (
+								<Link
+									key={index}
+									href={`/tags/${encodeURIComponent(tag)}`}
+									className="text-muted-foreground hover:text-primary">
+									#{tag}
+								</Link>
+							))}
+						</div>
+					)}
+				</div>
+				<span className="flex items-center justify-between">
+					<div className="flex gap-6 items-center py-4 text-sm text-muted-foreground">
+						{formatDistanceToNow(new Date(post.createdAt), {
+							addSuffix: true,
+						})}
+						<div className="flex items-center gap-6">
+							<div className="flex items-center gap-1">
+								<Heart className="w-4 h-4" />
+								<span>{formatNumber(post.likeCount)}</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<MessageCircle className="w-4 h-4" />
+								<span>{formatNumber(post._count.comments)}</span>
+							</div>
 						</div>
 					</div>
-				</div>
-
-				{/* Stats */}
-				<div className="flex items-center gap-4 text-sm text-muted-foreground">
-					<div className="flex items-center gap-1">
-						❤️ <span>{formatNumber(post.likes)}</span>
+					<div>
+						<BookmarkPostButton
+							postId={post.id}
+							initialBookmarked={userHasBookmarked}
+						/>
 					</div>
-					<div className="flex items-center gap-1">
-						🗨️ <span>{formatNumber(post._count.Comment)}</span>
-					</div>
-				</div>
+				</span>
 			</div>
-		</div>
+		</article>
 	);
 }

@@ -1,123 +1,66 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import CommentForm from "./CommentForm";
-import moment from "moment";
-import DeleteCommentButton from "./DeleteCommentButton";
-import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
-import LikeCommentButton from "./LikeCommentButton";
+import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import type { JSONContent } from "@tiptap/react";
-import RichContentViewer from "@/components/shared/RichContentViewer";
+import CommentItem from "./CommentItem";
+import CommentForm from "./CommentForm";
+import useUserLikedComments from "@/components/shared/useUserLikedComment";
+import { Button } from "@/components/ui/button";
+import { PostCommentsInterface } from "@/components/shared/CommentItem";
 
-interface Comment {
-	id: number;
-	content: JSONContent;
-	createdAt: string;
-	author: {
-		id: number;
-		name: string;
-		image?: string | null;
-	};
-	likedBy: { id: number }[];
-	replies: Comment[];
-}
-
-function CommentItem({
-	comment,
-	postId,
-	onReply,
-}: {
-	comment: Comment;
+interface CommentThreadProps {
 	postId: number;
-	onReply: () => void;
-}) {
-	const [replying, setReplying] = useState(false);
-	const { data: session } = useSession();
-
-	const userHasLiked =
-		comment.likedBy?.some((user) => user.id === Number(session?.user?.id)) ??
-		false;
-
-	return (
-		<div className="pl-4 border-l">
-			<div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-				<span className="font-medium">{comment.author.name}</span>
-				<span>·</span>
-				<span>{moment(comment.createdAt).fromNow()}</span>
-			</div>
-
-			{comment.content && (
-				<div>
-					<RichContentViewer content={comment.content as JSONContent} />
-				</div>
-			)}
-			<div className="flex gap-2 items-center text-sm text-muted-foreground">
-				<LikeCommentButton
-					commentId={comment.id}
-					initialLiked={userHasLiked}
-					initialCount={comment.likedBy.length}
-				/>
-				<Button
-					size="icon"
-					variant="ghost"
-					onClick={() => setReplying((r) => !r)}
-					className="hover:underline text-xs">
-					<MessageCircle />
-				</Button>
-				<DeleteCommentButton
-					commentId={comment.id}
-					authorId={comment.author.id}
-					onSuccess={onReply}
-				/>
-			</div>
-
-			{replying && (
-				<div className="mt-2">
-					<CommentForm
-						postId={postId}
-						parentId={comment.id}
-						onSuccess={() => {
-							setReplying(false);
-							onReply();
-						}}
-					/>
-				</div>
-			)}
-
-			{/* Render replies recursively */}
-			<div className="mt-3 space-y-2">
-				{comment.replies.map((reply) => (
-					<CommentItem
-						key={reply.id}
-						comment={reply}
-						postId={postId}
-						onReply={onReply}
-					/>
-				))}
-			</div>
-		</div>
-	);
 }
 
-export default function CommentThread({ postId }: { postId: number }) {
-	const [comments, setComments] = useState<Comment[]>([]);
+export default function CommentThread({ postId }: CommentThreadProps) {
+	const { data: session } = useSession();
+	const [comments, setComments] = useState<PostCommentsInterface[]>([]);
+	const [nextCursor, setNextCursor] = useState(null);
+	const [loading, setLoading] = useState(false);
 
-	const fetchComments = useCallback(async () => {
-		const res = await fetch(`/api/comment/${postId}`);
-		if (!res.ok) return;
-		const data = await res.json();
-		setComments(data);
-	}, [postId]);
+	const { likedCommentIds, refreshLikedComments } = useUserLikedComments({
+		postId,
+		userId: Number(session?.user?.id),
+	});
+
+	const fetchComments = useCallback(
+		async (cursor = null) => {
+			setLoading(true);
+			const res = await fetch(
+				`/api/v1/posts/${postId}/comments?limit=10${
+					cursor ? `&cursor=${cursor}` : ""
+				}`
+			);
+			if (!res.ok) {
+				console.error("Failed to load comments");
+				setLoading(false);
+				return;
+			}
+			const data = await res.json();
+			if (cursor) {
+				setComments((prev) => [...prev, ...data.data]);
+			} else {
+				setComments(data.data);
+			}
+			setNextCursor(data.nextCursor);
+			setLoading(false);
+		},
+		[postId]
+	);
 
 	useEffect(() => {
 		fetchComments();
 	}, [fetchComments]);
 
+	const handleNewComment = () => {
+		fetchComments();
+	};
+
 	return (
 		<div className="space-y-6 mt-8">
-			<h2 className="text-lg font-semibold">{comments.length}&nbsp;Comments</h2>
+			<h2 className="text-lg font-semibold">Comments</h2>
+
+			<CommentForm postId={postId} onSuccess={handleNewComment} />
 
 			{comments.length === 0 && (
 				<p className="text-muted-foreground">No comments yet.</p>
@@ -129,11 +72,23 @@ export default function CommentThread({ postId }: { postId: number }) {
 						key={comment.id}
 						comment={comment}
 						postId={postId}
-						onReply={fetchComments}
+						onReply={handleNewComment}
+						likedCommentIds={likedCommentIds}
+						onRefreshLikedComments={refreshLikedComments}
 					/>
 				))}
 			</div>
-			<CommentForm postId={postId} onSuccess={fetchComments} />
+
+			{nextCursor && (
+				<div className="flex justify-center mt-4">
+					<Button
+						onClick={() => fetchComments(nextCursor)}
+						disabled={loading}
+						variant="outline">
+						{loading ? "Loading..." : "Load More Comments"}
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 }
