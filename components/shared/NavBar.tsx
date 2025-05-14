@@ -47,14 +47,14 @@ export default function NavBar() {
 									"bg-black text-white dark:bg-white dark:text-black rounded-md font-bold mr-1",
 									"px-3 py-1.5 text-lg"
 								)}>
-								N
+								Y
 							</div>
 							<span
 								className={cn(
 									"font-bold hidden sm:inline-block group-hover:text-primary",
 									"text-xl"
 								)}>
-								Nullix
+								Yumo
 							</span>
 						</Link>
 					</div>
