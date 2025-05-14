@@ -13,10 +13,7 @@ export default async function NewPostPage() {
 
 	return (
 		<PageLayout>
-			<div className="max-w-2xl mx-auto">
-				<h1 className="text-2xl font-semibold mb-6">Create New Post</h1>
-				<PostForm />
-			</div>
+			<PostForm />
 		</PageLayout>
 	);
 }

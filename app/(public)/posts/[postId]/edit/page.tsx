@@ -24,10 +24,7 @@ export default async function EditPostPage({
 
 	return (
 		<PageLayout>
-			<div className="max-w-2xl mx-auto pb-10">
-				<h1 className="text-2xl font-semibold mb-6">Edit Post</h1>
-				<PostForm defaultValues={post} />
-			</div>
+			<PostForm defaultValues={post} />
 		</PageLayout>
 	);
 }
