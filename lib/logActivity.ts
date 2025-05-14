@@ -158,7 +158,6 @@ export function getActivityMessage(
 ) {
 	const { type, Post, mentions } = activity;
 	const mentionedNames = mentions?.map((m) => `@${m.user.name}`) ?? [];
-	console.log(activity);
 	switch (type) {
 		case "COMMENT_POSTED":
 			if (mentionedNames.length > 0) {

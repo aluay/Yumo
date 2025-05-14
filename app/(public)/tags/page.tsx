@@ -5,7 +5,6 @@ import { getTopTags } from "@/lib/api/api";
 export default async function TagsPage() {
 	const session = { user: { id: 1 } };
 	const tags = await getTopTags(20, session); // Fetch top 20 tags from the API
-	console.log(tags);
 	return (
 		<PageLayout>
 			<div className="container mx-auto py-8">

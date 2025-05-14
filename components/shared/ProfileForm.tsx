@@ -78,13 +78,6 @@ export default function ProfileForm({
 				showEmail: values.showEmail === undefined ? true : !!values.showEmail,
 			};
 
-			console.log("Final submitData:", submitData);
-			console.log(
-				"Final showEmail value:",
-				submitData.showEmail,
-				typeof submitData.showEmail
-			);
-
 			const res = await fetch(`/api/v1/users/${userId}/profile`, {
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
@@ -92,7 +85,6 @@ export default function ProfileForm({
 			});
 
 			if (res.ok) {
-				console.log("Profile update successful");
 				router.push(`/users/${userId}`);
 			} else {
 				const errorData = await res.json().catch(() => null);
