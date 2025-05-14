@@ -16,6 +16,25 @@ import DeletePostButton from "@/components/shared/DeletePostButton";
 import { Pencil } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
+// This function is used to generate metadata for the page
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ postId: string }>;
+}) {
+	const { postId } = await params;
+	const numericPostId = Number(postId);
+	if (isNaN(numericPostId)) return {};
+
+	const post = await getPostById(numericPostId);
+	if (!post) return {};
+
+	return {
+		title: `Yumo | ${post.title}`,
+		description: post.description,
+	};
+}
+
 export default async function PostViewPage({
 	params,
 }: {

@@ -1,8 +1,4 @@
-import {
-	ActivityLog,
-	UserProfileInterface,
-	type PostPayload,
-} from "@/lib/validation/post";
+import { UserProfileInterface, type PostPayload } from "@/lib/validation/post";
 import { prisma } from "../db";
 import { JSONContent } from "novel";
 import { NotificationPayload } from "@/lib/validation/post";
@@ -83,15 +79,43 @@ export async function getTagPosts(tagName: string): Promise<PostPayload[]> {
 	}));
 }
 
-// Get a single post by id
-export async function getPostById(postId: number): Promise<PostPayload> {
-	const res = await fetch(`${BASE_URL}/api/v1/posts/${postId}`);
-	if (!res.ok) throw new Error("Failed to fetch post");
-	const post = await res.json();
-	return post;
+/*-----------------------------------------------------------------*/
+/*-----------------GET A SINGLE POST BY ID-------------------------*/
+/*-----------------------------------------------------------------*/
+export async function getPostById(postId: number): Promise<PostPayload | null> {
+	const post = await prisma.post.findUnique({
+		where: { id: postId, status: "PUBLISHED", deletedAt: null },
+		select: {
+			id: true,
+			title: true,
+			description: true,
+			tags: true,
+			content: true,
+			status: true,
+			likes: { select: { userId: true } },
+			likeCount: true,
+			bookmarks: { select: { userId: true } },
+			bookmarkCount: true,
+			createdAt: true,
+			updatedAt: true,
+			author: {
+				select: { id: true, name: true, image: true },
+			},
+			_count: { select: { comments: true } },
+		},
+	});
+	if (!post) return null;
+	return {
+		...post,
+		content: post.content as JSONContent,
+		createdAt: post.createdAt.toISOString(),
+		updatedAt: post.updatedAt.toISOString(),
+	};
 }
 
-// Get users for the mentions extensions
+/*-----------------------------------------------------------------*/
+/*--------GET USERS FOR THE MENTIONS EXTENSIONS--------------------*/
+/*-----------------------------------------------------------------*/
 export async function searchUsersForMentions(query: string) {
 	if (!query.trim()) return [];
 
@@ -116,7 +140,9 @@ export async function searchUsersForMentions(query: string) {
 	}
 }
 
-// Check if user is following a tag
+/*-----------------------------------------------------------------*/
+/*-----------------CHECK IF USER IS FOLLOWING A TAG----------------*/
+/*-----------------------------------------------------------------*/
 export async function isUserFollowingTag(
 	userId: number,
 	tag: string
@@ -142,7 +168,9 @@ export async function isUserFollowingTag(
 	}
 }
 
-// Check if user is following another user
+/*-----------------------------------------------------------------*/
+/*----------CHECK IF USER IS FOLLOWING ANOTHER USER----------------*/
+/*-----------------------------------------------------------------*/
 export async function isUserFollowingUser(
 	currentUserId: number,
 	targetUserId: number
@@ -154,7 +182,9 @@ export async function isUserFollowingUser(
 	return data.followers.some((f: { id: number }) => f.id === currentUserId);
 }
 
-// Follow a tag
+/*-----------------------------------------------------------------*/
+/*---------------------------FOLLOW A TAG--------------------------*/
+/*-----------------------------------------------------------------*/
 export async function followTag(tag: string): Promise<boolean> {
 	try {
 		const res = await fetch(`/api/v1/tags/${encodeURIComponent(tag)}/follow`, {
@@ -168,7 +198,9 @@ export async function followTag(tag: string): Promise<boolean> {
 	}
 }
 
-// Unfollow a tag
+/*-----------------------------------------------------------------*/
+/*---------------------------UNFOLLOW A TAG------------------------*/
+/*-----------------------------------------------------------------*/
 export async function unfollowTag(tag: string): Promise<boolean> {
 	try {
 		const res = await fetch(`/api/v1/tags/${encodeURIComponent(tag)}/follow`, {
@@ -180,14 +212,6 @@ export async function unfollowTag(tag: string): Promise<boolean> {
 		console.error("Error unfollowing tag:", error);
 		return false;
 	}
-}
-
-// Get user activity (CONVERT TO SERVER COMPONENT INSTEAD)
-export async function getUserActivity(userId: number): Promise<ActivityLog[]> {
-	const res = await fetch(`/api/v1/activity/users/${userId}`);
-	if (!res.ok) throw new Error("Failed to fetch user activity");
-	const json = await res.json();
-	return json.data;
 }
 
 /*-----------------------------------------------------------------*/
