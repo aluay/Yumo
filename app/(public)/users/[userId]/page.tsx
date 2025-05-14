@@ -17,11 +17,6 @@ import {
 } from "lucide-react";
 import { JSONContent } from "novel";
 import UserFollowedTags from "@/components/shared/UserFollowedTags";
-// import ScrollPreservingTabs, {
-// 	TabsContent,
-// 	TabsList,
-// 	TabsTrigger,
-// } from "@/components/shared/ScrollPreservingTabs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
 	Card,

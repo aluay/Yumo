@@ -76,6 +76,19 @@ export async function POST(req: Request) {
 				},
 			});
 
+			// Upsert tags and update postCount
+			for (const tagName of tags) {
+				// Count posts with this tag
+				const postCount = await tx.post.count({
+					where: { tags: { has: tagName } },
+				});
+				await tx.tag.upsert({
+					where: { name: tagName },
+					update: { postCount },
+					create: { name: tagName, postCount },
+				});
+			}
+
 			const mentionedUserIds = extractMentionedUserIds(content as JSONContent);
 
 			await recordActivity(tx, {

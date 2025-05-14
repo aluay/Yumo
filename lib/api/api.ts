@@ -16,7 +16,7 @@ const BASE_URL =
 /*-----------------------------------------------------------------*/
 export async function getPosts(): Promise<PostPayload[]> {
 	const posts = await prisma.post.findMany({
-		where: { status: "PUBLISHED" },
+		where: { status: "PUBLISHED", deletedAt: null },
 		orderBy: { createdAt: "desc" },
 		select: {
 			id: true,
@@ -197,6 +197,7 @@ export async function getUserProfile(
 			pageContent: true,
 			showEmail: true,
 			posts: {
+				where: { deletedAt: null },
 				select: {
 					id: true,
 					title: true,

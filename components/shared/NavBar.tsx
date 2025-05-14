@@ -44,7 +44,7 @@ export default function NavBar() {
 						<Link href="/" className="flex items-center group">
 							<div
 								className={cn(
-									"bg-black text-white dark:bg-white dark:text-black rounded-md font-bold mr-1 group-hover:bg-primary/90 dark:group-hover:bg-primary/90 dark:group-hover:text-white",
+									"bg-black text-white dark:bg-white dark:text-black rounded-md font-bold mr-1",
 									"px-3 py-1.5 text-lg"
 								)}>
 								N
