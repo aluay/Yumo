@@ -506,21 +506,31 @@ export async function getTopTags(
 	limit: number,
 	session: { user?: { id: number } } | null
 ) {
+	// Get all tags
 	const tags = await prisma.tag.findMany({
 		orderBy: { postCount: "desc" },
 		take: limit,
 		select: {
 			name: true,
-			postCount: true,
 			follows: { select: { userId: true } },
 		},
 	});
 
-	return tags.map((tag) => ({
-		name: tag.name,
-		postCount: tag.postCount,
-		isFollowing: tag.follows.some(
-			(follow) => follow.userId === session?.user?.id
-		),
-	}));
+	// For each tag, get the current count of non-deleted posts
+	const tagsWithCounts = await Promise.all(
+		tags.map(async (tag) => {
+			const postCount = await prisma.post.count({
+				where: { tags: { has: tag.name }, deletedAt: null },
+			});
+			return {
+				name: tag.name,
+				postCount,
+				isFollowing: tag.follows.some(
+					(follow) => follow.userId === session?.user?.id
+				),
+			};
+		})
+	);
+
+	return tagsWithCounts;
 }

@@ -78,9 +78,9 @@ export async function POST(req: Request) {
 
 			// Upsert tags and update postCount
 			for (const tagName of tags) {
-				// Count posts with this tag
+				// Count posts with this tag and not soft-deleted (including the new post)
 				const postCount = await tx.post.count({
-					where: { tags: { has: tagName } },
+					where: { tags: { has: tagName }, deletedAt: null },
 				});
 				await tx.tag.upsert({
 					where: { name: tagName },
