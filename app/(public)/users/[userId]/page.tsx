@@ -26,6 +26,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import FollowUserButton from "@/components/shared/FollowUserButton";
 
 export default async function userPage({
 	params,
@@ -37,10 +38,14 @@ export default async function userPage({
 	const decodedUserId = decodeURIComponent(userId);
 	const profile = await getUserProfile(Number(decodedUserId));
 	const isOwnProfile = Number(session?.user?.id) === profile?.id;
+	if (!profile) return null;
+
+	// Use follower/following data directly from profile
+	const followerCount = profile.followerCount;
+	const followingCount = profile.followingCount;
 
 	return (
 		<PageLayout>
-			{" "}
 			{/* Hero section with profile cover */}
 			<div className="relative w-full h-24 sm:h-34 md:h-44 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg mb-16 overflow-visible">
 				{/* Background pattern overlay */}
@@ -48,7 +53,7 @@ export default async function userPage({
 					className="absolute inset-0 opacity-10"
 					style={{
 						backgroundImage:
-							"url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 2 2 2 2z' fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E\")",
+							"url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 2 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 2 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 2 2 2 2z' fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E\")",
 					}}></div>
 				{/* Edit button */}
 				{isOwnProfile && (
@@ -66,7 +71,16 @@ export default async function userPage({
 							</Link>
 						</Button>
 					</div>
-				)}{" "}
+				)}
+				{/* Follow button (not own profile) */}
+				{!isOwnProfile && profile?.id && (
+					<div className="absolute top-4 right-4">
+						<FollowUserButton 
+							userId={profile.id} 
+							initialIsFollowing={Array.isArray(profile.followers) && !!session?.user?.id && profile.followers.some(f => f.id === Number(session.user.id))}
+						/>
+					</div>
+				)}
 				{/* Avatar */}
 				<div className="absolute left-1/2 -bottom-[40px] transform -translate-x-1/2 transition-transform duration-300 hover:scale-105 z-10">
 					<Avatar className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-background shadow-md">
@@ -78,13 +92,19 @@ export default async function userPage({
 							{profile?.name?.slice(0, 2).toUpperCase() || "UN"}
 						</AvatarFallback>
 					</Avatar>
-				</div>{" "}
-			</div>{" "}
+				</div>
+			</div>
 			<div className="max-w-4xl mx-auto px-4">
-				{/* Profile info section */}{" "}
+				{/* Profile info section */}
 				<div className="mt-10 sm:mt-12 flex flex-col items-center text-center animate-fade-in">
-					{" "}
 					<h1 className="text-2xl sm:text-3xl font-bold">{profile?.name}</h1>
+					{/* Follower/Following counts and modals */}
+					<div className="flex gap-4 justify-center mt-2">
+						<FollowerFollowingStats
+							followerCount={followerCount}
+							followingCount={followingCount}
+						/>
+					</div>
 					<div className="flex flex-col sm:flex-row flex-wrap gap-2 mt-2 items-center justify-center">
 						{profile?.email && profile?.showEmail && (
 							<div className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -110,7 +130,7 @@ export default async function userPage({
 							{profile.bio}
 						</p>
 					)}
-				</div>{" "}
+				</div>
 				{/* Tabs for content sections */}
 				<Tabs defaultValue="about" className="mt-10 animate-fade-in">
 					<TabsList className="grid w-full grid-cols-3">
@@ -256,4 +276,23 @@ export default async function userPage({
 			</div>
 		</PageLayout>
 	);
+}
+
+function FollowerFollowingStats({
+  followerCount,
+  followingCount,
+}: {
+  followerCount: number;
+  followingCount: number;
+}) {
+  return (
+    <>
+      <span className="text-sm">
+        <b>{followerCount}</b> Followers
+      </span>
+      <span className="text-sm">
+        <b>{followingCount}</b> Following
+      </span>
+    </>
+  );
 }

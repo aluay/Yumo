@@ -61,16 +61,11 @@ export async function GET(
 			id: true,
 			name: true,
 			email: true,
-			// emailVerified: true,
-			image: true, // Profile fields
+			image: true,
 			website: true,
 			bio: true,
 			pageContent: true,
 			showEmail: true,
-
-			// Relations
-			// accounts: true,
-			// sessions: true,
 			posts: {
 				select: {
 					id: true,
@@ -85,21 +80,22 @@ export async function GET(
 				},
 			},
 			comments: true,
-			// postLikes: true,
-			// postBookmarks: true,
-			// commentLikes: true,
-			// commentReports: true,
-			// Activity: true,
-			// ActivityMention: true,
-			// Notification: true,
-
+			followers: { select: { followerId: true } },
+			following: { select: { followingId: true } },
 			createdAt: true,
-			// updatedAt: true,
 		},
 	});
 
 	if (!profile) return notFound(userId);
-	return NextResponse.json(profile);
+
+	const followerCount = profile.followers.length;
+	const followingCount = profile.following.length;
+
+	return NextResponse.json({
+		...profile,
+		followerCount,
+		followingCount,
+	});
 }
 
 /* ================================================================== */

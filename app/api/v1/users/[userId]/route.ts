@@ -45,11 +45,22 @@ export async function GET(
 			createdAt: true,
 			// aggregate counts if you like:
 			_count: { select: { posts: true, comments: true } },
+			// Add follower/following counts
+			followers: { select: { followerId: true } },
+			following: { select: { followingId: true } },
 		},
 	});
 
 	if (!user) return notFound();
-	return NextResponse.json(user);
+
+	const followerCount = user.followers.length;
+	const followingCount = user.following.length;
+
+	return NextResponse.json({
+		...user,
+		followerCount,
+		followingCount,
+	});
 }
 
 /* ------------------------------------------------------------------ */

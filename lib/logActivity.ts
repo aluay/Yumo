@@ -18,7 +18,8 @@ export type ActivityType =
 	| "POST_BOOKMARKED"
 	| "COMMENT_POSTED"
 	| "USER_MENTIONED"
-	| "COMMENT_LIKED";
+	| "COMMENT_LIKED"
+	| "USER_FOLLOWED";
 
 export type TargetType = "POST" | "COMMENT" | "USER";
 
