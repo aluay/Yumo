@@ -9,7 +9,9 @@ import Novel from "@/components/editor/Novel";
 import TagInput from "@/components/ui/tag-input";
 // import CodeEditor from "@/components/shared/CodeMirror";
 import { postInputSchema, PostInput, PostPayload } from "@/lib/validation/post";
-
+import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 import {
 	Form,
 	FormField,
@@ -27,6 +29,8 @@ interface PostFormProps {
 export default function PostForm({ defaultValues }: PostFormProps) {
 	const router = useRouter();
 	const isEditing = !!defaultValues?.id;
+	const [submitting, setSubmitting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const form = useForm<PostInput>({
 		resolver: zodResolver(postInputSchema),
@@ -47,26 +51,41 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 	});
 
 	const onSubmit = async (values: PostInput) => {
-		const endpoint = isEditing
-			? `/api/v1/posts/${defaultValues.id}`
-			: "/api/v1//posts";
-		const method = isEditing ? "PATCH" : "POST";
+		setSubmitting(true);
+		setError(null);
+		try {
+			const endpoint = isEditing
+				? `/api/v1/posts/${defaultValues.id}`
+				: "/api/v1//posts";
+			const method = isEditing ? "PATCH" : "POST";
 
-		const res = await fetch(endpoint, {
-			method,
-			body: JSON.stringify(values),
-		});
+			const res = await fetch(endpoint, {
+				method,
+				body: JSON.stringify(values),
+			});
 
-		if (method === "PATCH") {
-			if (res.ok) router.push(`/posts/${defaultValues?.id}`);
-		} else {
-			const data = await res.json();
-			router.push(`/posts/${data.id}`);
+			if (method === "PATCH") {
+				if (res.ok) router.push(`/posts/${defaultValues?.id}`);
+			} else {
+				const data = await res.json();
+				router.push(`/posts/${data.id}`);
+			}
+		} catch (err) {
+			console.error("Update failed", err);
+			setError("An error occurred while updating your profile.");
+		} finally {
+			setSubmitting(false);
 		}
 	};
 
 	return (
 		<Form {...form}>
+			{error && (
+				<Alert variant="destructive" className="mb-6">
+					<AlertCircle className="h-4 w-4" />
+					<AlertDescription>{error}</AlertDescription>
+				</Alert>
+			)}
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<FormField
 					control={form.control}
@@ -141,16 +160,18 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 
 				<div className="w-full flex justify-between">
 					<Button
+						disabled={submitting}
 						type="submit"
 						onClick={() => form.setValue("status", "DRAFT")}
 						variant="secondary">
-						Save as Draft
+						{submitting ? "Saving..." : "Save as Draft"}
 					</Button>
 
 					<Button
+						disabled={submitting}
 						type="submit"
 						onClick={() => form.setValue("status", "PUBLISHED")}>
-						Publish
+						{submitting ? "Publishing..." : "Publish"}
 					</Button>
 				</div>
 			</form>

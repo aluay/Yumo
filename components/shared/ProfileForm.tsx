@@ -59,8 +59,6 @@ export default function ProfileForm({
 		setError(null);
 
 		try {
-			console.log("Submitting profile update:", values);
-
 			// Ensure image value is valid (empty string, null, undefined, or starts with /)
 			let imageValue = values.image;
 			if (

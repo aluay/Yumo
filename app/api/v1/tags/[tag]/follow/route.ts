@@ -25,6 +25,7 @@ export async function POST(
 	}
 
 	try {
+		console.log("Creating tag follow for user:", userId, "and tag:", tagName);
 		// Create tag follow
 		const tagFollow = await prisma.tagFollow.create({
 			data: {
@@ -41,21 +42,26 @@ export async function POST(
 			{ status: 201 }
 		);
 	} catch (error: unknown) {
-		if (error instanceof Error && "code" in error && error.code === "P2025") {
-			// Handle unique constraint violation
-			if ((error as { code?: string }).code === "P2002") {
+		console.error(
+			"Error in follow tag POST:",
+			typeof error === "object" ? error : String(error)
+		);
+		if (typeof error === "object" && error !== null && "code" in error) {
+			const code = (error as { code?: string }).code;
+			if (code === "P2002") {
 				return NextResponse.json(
 					{ error: "You are already following this tag" },
 					{ status: 409 }
 				);
 			}
-
-			console.error("Error following tag:", error);
-			return NextResponse.json(
-				{ error: "Failed to follow tag" },
-				{ status: 500 }
-			);
+			if (code === "P2025") {
+				return NextResponse.json({ error: "Tag not found" }, { status: 404 });
+			}
 		}
+		return NextResponse.json(
+			{ error: "Unexpected error occurred" },
+			{ status: 500 }
+		);
 	}
 }
 
@@ -96,20 +102,21 @@ export async function DELETE(
 			success: true,
 		});
 	} catch (error: unknown) {
-		// Handle record not found
-		if (
-			error instanceof Error &&
-			(error as { code?: string }).code === "P2025"
-		) {
-			return NextResponse.json(
-				{ error: "You are not following this tag" },
-				{ status: 404 }
-			);
+		console.error(
+			"Error in unfollow tag DELETE:",
+			typeof error === "object" ? error : String(error)
+		);
+		if (typeof error === "object" && error !== null && "code" in error) {
+			const code = (error as { code?: string }).code;
+			if (code === "P2025") {
+				return NextResponse.json(
+					{ error: "You are not following this tag" },
+					{ status: 404 }
+				);
+			}
 		}
-
-		console.error("Error unfollowing tag:", error);
 		return NextResponse.json(
-			{ error: "Failed to unfollow tag" },
+			{ error: "Unexpected error occurred" },
 			{ status: 500 }
 		);
 	}

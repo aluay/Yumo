@@ -461,3 +461,29 @@ export async function deleteNotification(
 		return false;
 	}
 }
+
+/*-----------------------------------------------------------------*/
+/*--------------------GET TOP TAGS---------------------------------*/
+/*-----------------------------------------------------------------*/
+export async function getTopTags(
+	limit: number,
+	session: { user?: { id: number } } | null
+) {
+	const tags = await prisma.tag.findMany({
+		orderBy: { postCount: "desc" },
+		take: limit,
+		select: {
+			name: true,
+			postCount: true,
+			follows: { select: { userId: true } },
+		},
+	});
+
+	return tags.map((tag) => ({
+		name: tag.name,
+		postCount: tag.postCount,
+		isFollowing: tag.follows.some(
+			(follow) => follow.userId === session?.user?.id
+		),
+	}));
+}

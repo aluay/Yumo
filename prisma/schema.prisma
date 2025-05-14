@@ -259,8 +259,15 @@ model TagFollow {
   tag       String
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tagRelation Tag  @relation(fields: [tag], references: [name], onDelete: Cascade)
 
   @@id([userId, tag]) // composite primary key - one follow per tag per user
   @@index([tag]) // for efficient lookup by tag
+}
+
+model Tag {
+  name      String      @id
+  postCount Int         @default(0)
+  follows   TagFollow[]
 }
