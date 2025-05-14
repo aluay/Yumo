@@ -233,6 +233,7 @@ enum ActivityType {
   COMMENT_POSTED
   COMMENT_LIKED
   USER_MENTIONED
+  USER_FOLLOWED
 }
 
 enum TargetType {

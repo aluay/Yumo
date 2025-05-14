@@ -22,9 +22,6 @@ export function AvatarUpload({
 		currentImage || null
 	);
 
-	// For debugging
-	console.log("AvatarUpload initialized with image:", currentImage);
-
 	const handleFileChange = async (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {

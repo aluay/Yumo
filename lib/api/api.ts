@@ -142,6 +142,18 @@ export async function isUserFollowingTag(
 	}
 }
 
+// Check if user is following another user
+export async function isUserFollowingUser(
+	currentUserId: number,
+	targetUserId: number
+): Promise<boolean> {
+	if (!currentUserId || !targetUserId) return false;
+	const res = await fetch(`/api/v1/users/${targetUserId}/followers`);
+	if (!res.ok) return false;
+	const data = await res.json();
+	return data.followers.some((f: { id: number }) => f.id === currentUserId);
+}
+
 // Follow a tag
 export async function followTag(tag: string): Promise<boolean> {
 	try {
@@ -181,9 +193,15 @@ export async function getUserActivity(userId: number): Promise<ActivityLog[]> {
 /*-----------------------------------------------------------------*/
 /*---------------------GET USER PROFILE----------------------------*/
 /*-----------------------------------------------------------------*/
-export async function getUserProfile(
-	userId: number
-): Promise<UserProfileInterface | null> {
+export async function getUserProfile(userId: number): Promise<
+	| (UserProfileInterface & {
+			followerCount: number;
+			followingCount: number;
+			followers: { id: number; name: string; image: string | null }[];
+			following: { id: number; name: string; image: string | null }[];
+	  })
+	| null
+> {
 	if (isNaN(userId)) return null;
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
@@ -226,19 +244,8 @@ export async function getUserProfile(
 					replyCount: true,
 					reportCount: true,
 					authorId: true,
-					author: {
-						select: {
-							id: true,
-							name: true,
-							image: true,
-						},
-					},
-					post: {
-						select: {
-							id: true,
-							title: true,
-						},
-					},
+					author: { select: { id: true, name: true, image: true } },
+					post: { select: { id: true, title: true } },
 					likes: { select: { userId: true } },
 					reports: { select: { userId: true } },
 					replies: {
@@ -252,83 +259,112 @@ export async function getUserProfile(
 							replyCount: true,
 							reportCount: true,
 							authorId: true,
-							postId: true,
-							author: {
-								select: {
-									id: true,
-									name: true,
-									image: true,
-								},
-							},
-							post: {
-								select: {
-									id: true,
-									title: true,
-								},
-							},
-							likes: { select: { userId: true } },
-							reports: { select: { userId: true } },
 						},
 					},
+				},
+			},
+			followers: {
+				select: { follower: { select: { id: true, name: true, image: true } } },
+			},
+			following: {
+				select: {
+					following: { select: { id: true, name: true, image: true } },
 				},
 			},
 			createdAt: true,
 			updatedAt: true,
 		},
 	});
-
 	if (!user) return null;
+	// Fix pageContent type for compatibility
+	const pageContent = user.pageContent as JSONContent | null;
+	const followers = user.followers.map((f) => f.follower);
+	const following = user.following.map((f) => f.following);
+
+	// Fix posts type for compatibility
+	const posts = user.posts.map((post) => ({
+		...post,
+		content: post.content as JSONContent,
+		createdAt:
+			post.createdAt instanceof Date
+				? post.createdAt.toISOString()
+				: post.createdAt,
+		updatedAt:
+			post.updatedAt instanceof Date
+				? post.updatedAt.toISOString()
+				: post.updatedAt,
+	}));
+
+	// Fix comments type for compatibility
+	const comments = user.comments.map((comment) => ({
+		...comment,
+		content: comment.content as JSONContent,
+		createdAt:
+			comment.createdAt instanceof Date
+				? comment.createdAt.toISOString()
+				: comment.createdAt,
+		updatedAt:
+			comment.updatedAt instanceof Date
+				? comment.updatedAt.toISOString()
+				: comment.updatedAt,
+		deletedAt:
+			comment.deletedAt instanceof Date
+				? comment.deletedAt.toISOString()
+				: comment.deletedAt,
+		postId: comment.post?.id ?? 0,
+		post: comment.post,
+		author: comment.author,
+		likes: comment.likes,
+		reports: comment.reports,
+		replies: (comment.replies ?? []).map((reply) => ({
+			...reply,
+			content: reply.content as JSONContent,
+			createdAt:
+				reply.createdAt instanceof Date
+					? reply.createdAt.toISOString()
+					: reply.createdAt,
+			updatedAt:
+				reply.updatedAt instanceof Date
+					? reply.updatedAt.toISOString()
+					: reply.updatedAt,
+			deletedAt:
+				reply.deletedAt instanceof Date
+					? reply.deletedAt.toISOString()
+					: reply.deletedAt,
+			author: comment.author, // fallback, since reply author is not selected
+			post: comment.post, // fallback, since reply post is not selected
+			postId: comment.post?.id ?? 0,
+			likeCount: reply.likeCount,
+			replyCount: reply.replyCount,
+			reportCount: reply.reportCount,
+			authorId: reply.authorId,
+			likes: [],
+			reports: [],
+			replies: [],
+		})),
+	}));
+
+	// Ensure follower/following image is string|null
+	const followersFixed = followers.map((f) => ({
+		id: f.id,
+		name: f.name,
+		image: f.image ?? null,
+	}));
+	const followingFixed = following.map((f) => ({
+		id: f.id,
+		name: f.name,
+		image: f.image ?? null,
+	}));
 
 	return {
 		...user,
-		pageContent: user.pageContent as JSONContent | null,
-		posts: user.posts.map((p) => ({
-			...p,
-			content: p.content as JSONContent | null,
-			createdAt: p.createdAt.toISOString(),
-			updatedAt: p.updatedAt.toISOString(),
-		})),
-		comments: user.comments.map((c) => ({
-			id: c.id,
-			postId: c.post.id,
-			// parentId: c.parentId ?? null,
-			authorId: c.author.id,
-			content: c.content as JSONContent,
-			createdAt: c.createdAt.toISOString(),
-			updatedAt: c.updatedAt.toISOString(),
-			deletedAt: c.deletedAt ? c.deletedAt.toISOString() : null,
-			likeCount: c.likeCount ?? 0,
-			replyCount: c.replyCount ?? 0,
-			reportCount: c.reportCount ?? 0,
-			author: c.author,
-			post: {
-				id: c.post.id,
-				title: c.post.title,
-			},
-			likes: c.likes ?? [],
-			reports: c.reports ?? [],
-			replies: c.replies.map((r) => ({
-				id: r.id,
-				postId: r.post.id,
-				// parentId: r.parentId ?? null,
-				authorId: r.author.id,
-				content: r.content as JSONContent,
-				createdAt: r.createdAt.toISOString(),
-				updatedAt: r.updatedAt.toISOString(),
-				deletedAt: r.deletedAt ? r.deletedAt.toISOString() : null,
-				likeCount: r.likeCount ?? 0,
-				replyCount: r.replyCount ?? 0,
-				reportCount: r.reportCount ?? 0,
-				author: r.author,
-				post: {
-					id: r.post.id,
-					title: r.post.title,
-				},
-				likes: r.likes ?? [],
-				reports: r.reports ?? [],
-				replies: [],
-			})),
-		})),
+		pageContent,
+		posts,
+		comments,
+		followerCount: followers.length,
+		followingCount: following.length,
+		followers: followersFixed,
+		following: followingFixed,
 	};
 }
 

@@ -52,7 +52,6 @@ export default function UserRecentActivity(userId: UserRecentActivityProps) {
 			</h2>
 			{activities.map((activity) => {
 				const { icon: Icon, text } = getActivityStyle(activity.type);
-				console.log(activity);
 				return (
 					<Link key={activity.id} href={`/posts/${activity.Post?.id}`}>
 						<Alert className={`hover:bg-muted/50 ${text}`}>

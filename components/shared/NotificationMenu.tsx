@@ -66,7 +66,6 @@ export default function NotificationMenu() {
 		fetchNotifications();
 	}, [userId]);
 
-	console.log("Notifications:", notifications);
 	// Load more notifications
 	const loadMoreNotifications = async () => {
 		if (!userId || !cursor || loading) return;

@@ -15,7 +15,6 @@ export async function POST(req: Request) {
 		await writeFile(filePath, buffer);
 
 		const returnUrl = `/uploads/${filename}`;
-		console.log("Upload successful, returning URL:", returnUrl);
 
 		return NextResponse.json({
 			url: returnUrl, // ✅ relative URL

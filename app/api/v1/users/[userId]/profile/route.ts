@@ -61,16 +61,11 @@ export async function GET(
 			id: true,
 			name: true,
 			email: true,
-			// emailVerified: true,
-			image: true,			// Profile fields
+			image: true,
 			website: true,
 			bio: true,
 			pageContent: true,
 			showEmail: true,
-
-			// Relations
-			// accounts: true,
-			// sessions: true,
 			posts: {
 				select: {
 					id: true,
@@ -85,21 +80,22 @@ export async function GET(
 				},
 			},
 			comments: true,
-			// postLikes: true,
-			// postBookmarks: true,
-			// commentLikes: true,
-			// commentReports: true,
-			// Activity: true,
-			// ActivityMention: true,
-			// Notification: true,
-
+			followers: { select: { followerId: true } },
+			following: { select: { followingId: true } },
 			createdAt: true,
-			// updatedAt: true,
 		},
 	});
 
 	if (!profile) return notFound(userId);
-	return NextResponse.json(profile);
+
+	const followerCount = profile.followers.length;
+	const followingCount = profile.following.length;
+
+	return NextResponse.json({
+		...profile,
+		followerCount,
+		followingCount,
+	});
 }
 
 /* ================================================================== */
@@ -124,28 +120,25 @@ export async function PATCH(
 	// Only the profile owner may edit
 	if (numericUserId !== Number(session.user.id)) return forbidden();
 	const body = await req.json();
-	console.log("Received profile update request:", body);
 
 	const parsed = profileInputSchema.safeParse(body);
 	if (!parsed.success) {
 		return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
 	}
-	
-	console.log("Parsed data:", parsed.data);
-	console.log("showEmail value:", parsed.data.showEmail, typeof parsed.data.showEmail);	// Transform empty strings into null (optional cleanup)
+
 	const cleaned: Prisma.UserUpdateInput = {
 		name: parsed.data.name,
 		...(parsed.data.image !== null && { image: parsed.data.image }),
 		...(parsed.data.website !== null && { website: parsed.data.website }),
 		...(parsed.data.bio !== null && { bio: parsed.data.bio }),
-		showEmail: parsed.data.showEmail === undefined ? true : !!parsed.data.showEmail,
+		showEmail:
+			parsed.data.showEmail === undefined ? true : !!parsed.data.showEmail,
 		pageContent:
 			parsed.data.pageContent === null
 				? Prisma.JsonNull
 				: parsed.data.pageContent,
 	};
-	
-	console.log("Final cleaned data for DB update:", cleaned);
+
 	const updated = await prisma.user.update({
 		where: { id: numericUserId },
 		data: cleaned,

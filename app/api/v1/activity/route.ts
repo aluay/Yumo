@@ -60,7 +60,6 @@ export async function POST(req: Request) {
 
 	/* ---- Transaction: create activity, mentions, notifications ---- */
 	const result = await prisma.$transaction(async (tx) => {
-		console.log(targetType);
 		/* activity row */
 		const activity = await tx.activity.create({
 			data: {

@@ -174,6 +174,7 @@ export const deleteSchema = z.object({
 		"POST_BOOKMARKED",
 		"COMMENT_POSTED",
 		"COMMENT_LIKED",
+		"USER_FOLLOWED",
 	]),
 	targetId: z.number(),
 });
