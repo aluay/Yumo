@@ -15,6 +15,7 @@ import Link from "next/link";
 import DeletePostButton from "@/components/shared/DeletePostButton";
 import { Pencil } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { estimateReadingTime } from "@/lib/readingTime";
 
 // This function is used to generate metadata for the page
 export async function generateMetadata({
@@ -64,6 +65,8 @@ export default async function PostViewPage({
 	const userHasBookmarked =
 		post.bookmarks?.some((user) => user.userId === Number(session?.user?.id)) ??
 		false;
+
+	const readingTime = estimateReadingTime(post.content);
 
 	return (
 		<PageLayout>
@@ -126,9 +129,11 @@ export default async function PostViewPage({
 					</div>
 				</div>
 				<div className="flex flex-col gap-4">
-					<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-snug sm:leading-tight">
-						{post.title}
-					</h1>
+					<div className="flex items-center gap-2 mb-1.5">
+						<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-snug sm:leading-tight">
+							{post.title}
+						</h1>
+					</div>
 					<div className="mt-2 sm:mt-3">
 						{post.description && (
 							<p className="text-base text-muted-foreground sm:text-lg leading-relaxed">
@@ -137,15 +142,24 @@ export default async function PostViewPage({
 						)}
 					</div>
 
-					<div className="flex flex-wrap gap-2 mt-2 text-sm text-muted-foreground">
-						{post.tags.map((tag, index) => (
-							<Link
-								href={`/tags/${encodeURIComponent(tag)}`}
-								key={index}
-								className="hover:text-foreground transition-colors">
-								<span className="font-medium">#{tag}</span>
-							</Link>
-						))}
+					<div className="flex items-center flex-wrap justify-between gap-2 mt-2 text-sm text-muted-foreground">
+						<div className="flex items-center gap-2">
+							{post.tags.map((tag, index) => (
+								<Link
+									href={`/tags/${encodeURIComponent(tag)}`}
+									key={index}
+									className="hover:text-foreground transition-colors">
+									<span className="font-medium">#{tag}</span>
+								</Link>
+							))}
+						</div>
+						<div>
+							{readingTime.words > 0 && (
+								<span className="text-base text-muted-foreground whitespace-nowrap bg-muted/60 rounded px-2 py-0.5 ml-2">
+									{readingTime.display}
+								</span>
+							)}
+						</div>
 					</div>
 				</div>
 

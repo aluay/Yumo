@@ -10,6 +10,7 @@ import { Heart, MessageCircle, Clock, ArrowUpRight } from "lucide-react";
 import BookmarkPostButton from "./BookmarkPostButton";
 import LikePostButton from "@/components/shared/LikePostButton";
 import TagBadge from "@/components/shared/TagBadge";
+import { estimateReadingTime } from "@/lib/readingTime";
 
 interface PostCardProps {
 	post: PostPayload;
@@ -18,6 +19,7 @@ interface PostCardProps {
 export default function PostCard({ post }: PostCardProps) {
 	const { data: session } = useSession();
 	const userId = Number(session?.user?.id) ?? null;
+	const readingTime = estimateReadingTime(post.content);
 
 	const userHasBookmarked =
 		userId != null && post.bookmarks?.some((b) => b.userId === userId);
@@ -59,7 +61,7 @@ export default function PostCard({ post }: PostCardProps) {
 				<Link
 					href={`/posts/${post.id}`}
 					className="flex-1 flex flex-col p-3 hover:bg-accent/5 relative group/content flex-grow">
-					<div className="mb-1.5">
+					<div className="mb-1.5 flex items-center gap-2">
 						<h2 className="text-lg sm:text-xl font-bold tracking-tight leading-tight line-clamp-2 hover:text-primary/80">
 							{post.title}
 						</h2>
@@ -123,10 +125,17 @@ export default function PostCard({ post }: PostCardProps) {
 							</span>
 						</Link>
 					</div>
-					<BookmarkPostButton
-						postId={post.id}
-						initialBookmarked={userHasBookmarked}
-					/>
+					<div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+						<BookmarkPostButton
+							postId={post.id}
+							initialBookmarked={userHasBookmarked}
+						/>
+						{readingTime.words > 0 && (
+							<span className="text-xs text-muted-foreground whitespace-nowrap bg-muted/60 rounded px-2 py-0.5 ml-1">
+								{readingTime.display}
+							</span>
+						)}
+					</div>
 				</div>
 			</div>
 		</article>
