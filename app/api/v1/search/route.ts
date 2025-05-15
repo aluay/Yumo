@@ -1,70 +1,117 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q")?.trim() ?? "";
-  
-  if (q.length < 2) {
-    return NextResponse.json({ error: "Query too short" }, { status: 400 });
-  }
+	const { searchParams } = new URL(req.url);
+	const q = searchParams.get("q")?.trim() ?? "";
+	const limitParam = searchParams.get("limit");
+	const limit = limitParam ? parseInt(limitParam, 10) : 10;
 
-  try {
-    // Simple search without pg_trgm or custom functions
-    const posts = await prisma.post.findMany({
-      where: {
-        OR: [
-          { title: { contains: q, mode: 'insensitive' } },
-          { description: { contains: q, mode: 'insensitive' } },
-        ],
-        status: 'PUBLISHED',
-        deletedAt: null
-      },
-      select: {
-        id: true,
-        title: true,
-        tags: true,
-        likeCount: true,
-        bookmarkCount: true,
-        createdAt: true,
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 10
-    });
+	if (q.length < 2) {
+		return NextResponse.json({ error: "Query too short" }, { status: 400 });
+	}
 
-    const users = await prisma.user.findMany({
-      where: {
-        OR: [
-          { name: { contains: q, mode: 'insensitive' } },
-          { email: { contains: q, mode: 'insensitive' } },
-        ]
-      },
-      select: {
-        id: true,
-        name: true,
-        image: true,
-      },
-      take: 10
-    });
+	try {
+		// Use raw SQL with trigram similarity for fuzzy search on posts
+		// The pg_trgm extension allows for more efficient fuzzy matching
+		const postsQuery = Prisma.sql`
+      SELECT 
+        id, 
+        title, 
+        tags, 
+        "likeCount", 
+        "bookmarkCount", 
+        "createdAt",
+        (similarity(title, ${q}) * 1.5) + similarity(description, ${q}) + 
+        CASE WHEN title % ${q} THEN 0.3 ELSE 0 END +
+        CASE WHEN description % ${q} THEN 0.2 ELSE 0 END +
+        CASE WHEN title ILIKE ${`%${q}%`} THEN 0.4 ELSE 0 END as score
+      FROM "Post"
+      WHERE 
+        status = 'PUBLISHED' 
+        AND "deletedAt" IS NULL
+        AND (
+          title % ${q} 
+          OR description % ${q}
+          OR similarity(title, ${q}) > 0.2 
+          OR similarity(description, ${q}) > 0.2
+          OR title ILIKE ${`%${q}%`} 
+          OR description ILIKE ${`%${q}%`}
+          OR EXISTS (
+            SELECT 1 FROM unnest(tags) as tag 
+            WHERE tag ILIKE ${`%${q}%`} OR similarity(tag, ${q}) > 0.3
+          )
+        )
+      ORDER BY score DESC, "createdAt" DESC
+      LIMIT ${limit};
+    `;
 
-    // Extract tags from posts that contain the search query
-    const allTags = new Set<string>();
-    posts.forEach(post => {
-      post.tags.forEach(tag => {
-        if (tag.toLowerCase().includes(q.toLowerCase())) {
-          allTags.add(tag);
-        }
-      });
-    });
-    
-    const tags = Array.from(allTags).slice(0, 10);
+		const posts = await prisma.$queryRaw(postsQuery);
 
-    return NextResponse.json({ posts, users, tags });
-  } catch (error) {
-    console.error("Search error:", error);
-    return NextResponse.json(
-      { error: "Failed to perform search" },
-      { status: 500 }
-    );
-  }
+		// Enhanced fuzzy search for users with trigram similarity
+		const usersQuery = Prisma.sql`
+      SELECT 
+        id, 
+        name, 
+        image,
+        similarity(name, ${q}) * 2 + 
+        CASE WHEN name % ${q} THEN 0.5 ELSE 0 END +
+        CASE WHEN email % ${q} THEN 0.3 ELSE 0 END + 
+        CASE WHEN name ILIKE ${`%${q}%`} THEN 0.4 ELSE 0 END as score
+      FROM "User"
+      WHERE 
+        name % ${q}
+        OR email % ${q}
+        OR similarity(name, ${q}) > 0.2
+        OR name ILIKE ${`%${q}%`} 
+        OR email ILIKE ${`%${q}%`}
+      ORDER BY score DESC
+      LIMIT ${limit};
+    `;
+
+		const users = await prisma.$queryRaw(usersQuery);
+
+		// Improved tag search using PostgreSQL's array functions with trigram similarity
+		const tagsQuery = Prisma.sql`
+      WITH post_tags AS (
+        SELECT DISTINCT unnest(tags) as tag
+        FROM "Post"
+        WHERE 
+          status = 'PUBLISHED' 
+          AND "deletedAt" IS NULL
+      )
+      SELECT 
+        tag,
+        similarity(tag, ${q}) + 
+        CASE WHEN tag % ${q} THEN 0.3 ELSE 0 END +
+        CASE WHEN tag ILIKE ${`%${q}%`} THEN 0.3 ELSE 0 END as score
+      FROM post_tags
+      WHERE 
+        tag % ${q}
+        OR similarity(tag, ${q}) > 0.2
+        OR tag ILIKE ${`%${q}%`}
+      ORDER BY score DESC
+      LIMIT ${limit};
+    `;
+
+		const tagResults = await prisma.$queryRaw(tagsQuery);
+		const tags = (tagResults as Array<{ tag: string; score: number }>).map(
+			(result) => result.tag
+		);
+
+		return NextResponse.json({ posts, users, tags });
+	} catch (error: unknown) {
+		console.error("Search error:", error);
+		return NextResponse.json(
+			{
+				error: "Failed to perform search",
+				details:
+					typeof error === "object"
+						? (error as Error).message || "Unknown error"
+						: String(error),
+			},
+			{ status: 500 }
+		);
+	}
 }

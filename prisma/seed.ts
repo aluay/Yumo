@@ -3,26 +3,26 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 // Seed test users
-// async function seedTestUsers() {
-// 	const totalUsers = 5;
+async function seedTestUsers() {
+	const totalUsers = 5;
 
-// 	for (let i = 1; i <= totalUsers; i++) {
-// 		const username = `test${i}`;
-// 		const email = `${username}@dev.local`;
+	for (let i = 1; i <= totalUsers; i++) {
+		const username = `test${i}`;
+		const email = `${username}@dev.local`;
 
-// 		await prisma.user.upsert({
-// 			where: { email },
-// 			update: {},
-// 			create: {
-// 				email,
-// 				name: `Test User ${i}`,
-// 				image: `https://i.pravatar.cc/150?u=test${i}`,
-// 			},
-// 		});
+		await prisma.user.upsert({
+			where: { email },
+			update: {},
+			create: {
+				email,
+				name: `Test User ${i}`,
+				image: `https://i.pravatar.cc/150?u=test${i}`,
+			},
+		});
 
-// 		console.log(`Seeded user: ${email}`);
-// 	}
-// }
+		console.log(`Seeded user: ${email}`);
+	}
+}
 
 import { faker } from "@faker-js/faker";
 import { JSONContent } from "@tiptap/react";
@@ -162,7 +162,7 @@ export async function seedPostsForUsers() {
 // }
 
 async function main() {
-	// await seedTestUsers();
+	await seedTestUsers();
 	await seedPostsForUsers();
 	console.log("Seeding complete.");
 }
