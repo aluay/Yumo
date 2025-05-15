@@ -2,6 +2,7 @@ import { UserProfileInterface, type PostPayload } from "@/lib/validation/post";
 import { prisma } from "../db";
 import { JSONContent } from "novel";
 import { NotificationPayload } from "@/lib/validation/post";
+import { Prisma } from "@prisma/client";
 
 const BASE_URL =
 	typeof window === "undefined"
@@ -10,10 +11,23 @@ const BASE_URL =
 /*-----------------------------------------------------------------*/
 /*--------------GET ALL PUBLISHED POSTS----------------------------*/
 /*-----------------------------------------------------------------*/
-export async function getPosts(): Promise<PostPayload[]> {
+export async function getPosts({
+	limit = 10,
+	cursor,
+	sort = "new",
+}: {
+	limit?: number;
+	cursor?: number | null;
+	sort?: "new" | "top";
+}): Promise<{ posts: PostPayload[]; nextCursor: number | null }> {
+	const orderBy: Prisma.PostOrderByWithRelationInput =
+		sort === "top" ? { likeCount: "desc" } : { createdAt: "desc" };
+
 	const posts = await prisma.post.findMany({
 		where: { status: "PUBLISHED", deletedAt: null },
-		orderBy: { createdAt: "desc" },
+		orderBy,
+		take: limit + 1,
+		...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
 		select: {
 			id: true,
 			title: true,
@@ -27,21 +41,55 @@ export async function getPosts(): Promise<PostPayload[]> {
 			bookmarkCount: true,
 			createdAt: true,
 			updatedAt: true,
-			author: {
-				select: { id: true, name: true, image: true },
-			},
+			author: { select: { id: true, name: true, image: true } },
 			_count: { select: { comments: true } },
 		},
 	});
 
-	// Fix types
-	return posts.map((post) => ({
-		...post,
-		content: post.content as JSONContent,
-		createdAt: post.createdAt.toISOString(),
-		updatedAt: post.updatedAt.toISOString(),
-	}));
+	const nextCursor = posts.length > limit ? posts.pop()!.id : null;
+
+	return {
+		posts: posts.map((post) => ({
+			...post,
+			content: post.content as JSONContent,
+			createdAt: post.createdAt.toISOString(),
+			updatedAt: post.updatedAt.toISOString(),
+		})),
+		nextCursor,
+	};
 }
+// export async function getPosts(): Promise<PostPayload[]> {
+// 	const posts = await prisma.post.findMany({
+// 		where: { status: "PUBLISHED", deletedAt: null },
+// 		orderBy: { createdAt: "desc" },
+// 		select: {
+// 			id: true,
+// 			title: true,
+// 			description: true,
+// 			tags: true,
+// 			content: true,
+// 			status: true,
+// 			likes: { select: { userId: true } },
+// 			likeCount: true,
+// 			bookmarks: { select: { userId: true } },
+// 			bookmarkCount: true,
+// 			createdAt: true,
+// 			updatedAt: true,
+// 			author: {
+// 				select: { id: true, name: true, image: true },
+// 			},
+// 			_count: { select: { comments: true } },
+// 		},
+// 	});
+
+// 	// Fix types
+// 	return posts.map((post) => ({
+// 		...post,
+// 		content: post.content as JSONContent,
+// 		createdAt: post.createdAt.toISOString(),
+// 		updatedAt: post.updatedAt.toISOString(),
+// 	}));
+// }
 
 /*-----------------------------------------------------------------*/
 /*--------GET ALL POSTS THAT CONTAIN A SPECIFIC TAG----------------*/

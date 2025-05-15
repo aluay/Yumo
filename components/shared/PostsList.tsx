@@ -1,26 +1,9 @@
 import { getPosts } from "@/lib/api/api";
-import PostCard from "@/components/shared/PostCard";
+import PostsListClient from "@/components/shared/PostsListClient";
 
 export default async function PostsList() {
-	const posts = await getPosts();
+	// Fetch posts based on the limit and sort
+	const { posts, nextCursor } = await getPosts({ limit: 2, sort: "new" });
 
-	if (!posts.length) {
-		return (
-			<div className="text-center py-20">
-				<h2 className="text-lg font-semibold">No results found</h2>
-				<p className="text-sm text-muted-foreground mt-2">
-					No posts to show here.
-				</p>
-			</div>
-		);
-	}
-	return (
-		<div className="space-y-6 mx-auto w-full max-w-xl flex flex-col items-center">
-			{posts.map((post) => (
-				<div key={post.id} className="w-full">
-					<PostCard post={post} />
-				</div>
-			))}
-		</div>
-	);
+	return <PostsListClient initialPosts={posts} initialCursor={nextCursor} />;
 }

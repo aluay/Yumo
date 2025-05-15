@@ -12,7 +12,8 @@ import { JSONContent } from "novel";
 export async function GET(req: Request) {
 	const { searchParams } = new URL(req.url);
 
-	const limit = Math.min(Number(searchParams.get("limit") ?? 20), 50);
+	// 10 posts per page, max 50
+	const limit = Math.min(Number(searchParams.get("limit") ?? 10), 50);
 	const cursor = searchParams.get("cursor"); // post.id of last page
 	const sort = searchParams.get("sort") ?? "new"; // new | top
 
@@ -44,7 +45,16 @@ export async function GET(req: Request) {
 
 	const nextCursor = posts.length > limit ? posts.pop()!.id : null;
 
-	return NextResponse.json({ data: posts, nextCursor });
+	// return NextResponse.json({ data: posts, nextCursor });
+	return NextResponse.json({
+		data: posts.map((post) => ({
+			...post,
+			content: post.content as JSONContent,
+			createdAt: post.createdAt.toISOString(),
+			updatedAt: post.updatedAt.toISOString(),
+		})),
+		nextCursor,
+	});
 }
 
 /* ------------------------------------------------------------------ */
