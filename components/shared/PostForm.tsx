@@ -208,7 +208,7 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 									</FormControl>
 									<FormDescription className="text-xs text-muted-foreground ml-1 mt-1.5">
 										Add relevant tags to help readers discover your post. Use
-										the Enter key to add each tag.
+										the Enter key to add each tag. Maximum 5 tags allowed
 									</FormDescription>
 									<FormMessage />
 								</FormItem>

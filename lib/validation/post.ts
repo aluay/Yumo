@@ -17,7 +17,7 @@ export const postInputSchema = z.object({
 		},
 		{ message: "Invalid Novel document" }
 	),
-	tags: z.array(z.string()),
+	tags: z.array(z.string()).max(5, "You can add up to 5 tags only"),
 	status: z.enum(["DRAFT", "PUBLISHED"]),
 });
 

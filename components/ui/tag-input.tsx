@@ -113,6 +113,8 @@ function getTagVariant(tag: string): BadgeVariant {
 		: "outline";
 }
 
+const MAX_TAGS = 5;
+
 export default function TagInput({
 	value,
 	onChange,
@@ -124,7 +126,7 @@ export default function TagInput({
 
 	const addTag = (tag: string) => {
 		const newTag = tag.trim();
-		if (!newTag || value.includes(newTag)) return;
+		if (!newTag || value.includes(newTag) || value.length >= MAX_TAGS) return;
 		onChange([...value, newTag]);
 		setInputValue("");
 	};
@@ -173,8 +175,13 @@ export default function TagInput({
 				onKeyDown={handleKeyDown}
 				className="flex-1 dark:bg-transparent outline-none text-sm min-w-[100px]"
 				placeholder={placeholder}
-				disabled={disabled}
+				disabled={disabled || value.length >= MAX_TAGS}
 			/>
+			{value.length >= MAX_TAGS && (
+				<span className="text-xs text-destructive ml-2">
+					Maximum 5 tags allowed
+				</span>
+			)}
 		</div>
 	);
 }
