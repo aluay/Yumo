@@ -27,6 +27,16 @@ export function truncateText(text: string, maxLength = 100): string {
 	return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
 }
 
+// Slugify a string for SEO-friendly URLs
+export function slugify(text: string): string {
+	return text
+		.toLowerCase()
+		.replace(/[^a-z0-9\s-]/g, "") // Remove special chars
+		.replace(/\s+/g, "-") // Replace spaces with hyphens
+		.replace(/-+/g, "-") // Collapse multiple hyphens
+		.replace(/^-+|-+$/g, ""); // Trim hyphens
+}
+
 // Style activity entries based on type
 export function getActivityStyle(type: ActivityLog["type"]) {
 	switch (type) {

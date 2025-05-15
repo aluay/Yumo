@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { slugify } from "../lib/utils";
+import { nanoid } from "nanoid";
 
 const prisma = new PrismaClient();
 
@@ -109,6 +111,7 @@ export async function seedPostsForUsers() {
 				data: {
 					...post,
 					authorId: user.id,
+					slug: slugify(post.title),
 				},
 			});
 		}
@@ -117,53 +120,25 @@ export async function seedPostsForUsers() {
 	}
 }
 
-// import { faker } from "@faker-js/faker";
-
-// async function seedPostsForUsers() {
-// 	const users = await prisma.user.findMany({
-// 		where: {
-// 			email: {
-// 				endsWith: "@dev.local",
-// 			},
-// 		},
-// 	});
-
-// 	for (const user of users) {
-// 		for (let i = 1; i <= 5; i++) {
-// 			await prisma.post.create({
-// 				data: {
-// 					// Generate a random, realistic-looking title
-// 					title: faker.lorem.sentence(),
-
-// 					// Short random description
-// 					description: faker.lorem.sentences(2),
-
-// 					// Fake TipTap JSON content (simplified)
-// 					content: {
-// 						type: "doc",
-// 						content: [
-// 							{
-// 								type: "paragraph",
-// 								content: [{ type: "text", text: faker.lorem.paragraph() }],
-// 							},
-// 						],
-// 					},
-
-// 					// Generate random tags (pick from predefined or faker words)
-// 					tags: [faker.hacker.noun(), faker.hacker.verb()],
-
-// 					authorId: user.id,
-// 				},
-// 			});
-// 		}
-
-// 		console.log(`Seeded posts for ${user.email}`);
-// 	}
-// }
+export async function backfillSlugs() {
+	const posts = await prisma.post.findMany({ where: { slug: undefined } });
+	for (const post of posts) {
+		const baseSlug = slugify(post.title);
+		let slug = baseSlug;
+		while (
+			await prisma.post.findFirst({ where: { slug, NOT: { id: post.id } } })
+		) {
+			slug = `${baseSlug}-${nanoid(6)}`;
+		}
+		await prisma.post.update({ where: { id: post.id }, data: { slug } });
+		console.log(`Backfilled slug for post ${post.id}: ${slug}`);
+	}
+}
 
 async function main() {
 	await seedTestUsers();
 	await seedPostsForUsers();
+	await backfillSlugs();
 	console.log("Seeding complete.");
 }
 

@@ -32,6 +32,7 @@ export async function GET(
 			updatedAt: true,
 			author: { select: { id: true, name: true, image: true } },
 			_count: { select: { comments: true } },
+			slug: true,
 		},
 	});
 	return NextResponse.json({ data: posts });

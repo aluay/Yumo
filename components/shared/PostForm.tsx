@@ -73,7 +73,7 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 		try {
 			const endpoint = isEditing
 				? `/api/v1/posts/${defaultValues.id}`
-				: "/api/v1//posts";
+				: "/api/v1/posts";
 			const method = isEditing ? "PATCH" : "POST";
 
 			const res = await fetch(endpoint, {
@@ -82,10 +82,21 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 			});
 
 			if (method === "PATCH") {
-				if (res.ok) router.push(`/posts/${defaultValues?.id}`);
+				if (res.ok) {
+					const data = await res.json();
+					if (data.slug) {
+						router.push(`/posts/${data.id}-${data.slug}`);
+					} else {
+						router.push(`/posts/${defaultValues?.id}`);
+					}
+				}
 			} else {
 				const data = await res.json();
-				router.push(`/posts/${data.id}`);
+				if (data.slug) {
+					router.push(`/posts/${data.id}-${data.slug}`);
+				} else {
+					router.push(`/posts/${data.id}`);
+				}
 			}
 		} catch (err) {
 			console.error("Update failed", err);

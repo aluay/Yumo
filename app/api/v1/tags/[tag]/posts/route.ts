@@ -57,6 +57,7 @@ export async function GET(
 			createdAt: true,
 			author: { select: { id: true, name: true, image: true } },
 			_count: { select: { comments: true } },
+			slug: true,
 		},
 	});
 

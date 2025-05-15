@@ -13,7 +13,7 @@ import TagBadge from "@/components/shared/TagBadge";
 import { estimateReadingTime } from "@/lib/readingTime";
 
 interface PostCardProps {
-	post: PostPayload;
+	post: PostPayload & { slug?: string };
 }
 
 export default function PostCard({ post }: PostCardProps) {
@@ -25,6 +25,10 @@ export default function PostCard({ post }: PostCardProps) {
 		userId != null && post.bookmarks?.some((b) => b.userId === userId);
 	const userHasLiked =
 		userId != null && post.likes?.some((like) => like.userId === userId);
+
+	const postUrl = post.slug
+		? `/posts/${post.id}-${post.slug}`
+		: `/posts/${post.id}`;
 
 	return (
 		<article className="group relative overflow-hidden border border-border/50 rounded-lg bg-card shadow-sm max-w-xl min-h-[220px] w-full flex flex-col">
@@ -59,7 +63,7 @@ export default function PostCard({ post }: PostCardProps) {
 				</div>
 
 				<Link
-					href={`/posts/${post.id}`}
+					href={postUrl}
 					className="flex-1 flex flex-col p-3 hover:bg-accent/5 relative group/content flex-grow">
 					<div className="mb-1.5 flex items-center gap-2">
 						<h2 className="text-lg sm:text-xl font-bold tracking-tight leading-tight line-clamp-2 hover:text-primary/80">
@@ -116,7 +120,7 @@ export default function PostCard({ post }: PostCardProps) {
 						)}
 
 						<Link
-							href={`/posts/${post.id}#comments`}
+							href={`${postUrl}#comments`}
 							className="flex items-center gap-1.5 text-muted-foreground hover:text-blue-500 transition-colors duration-100 group/comments">
 							<MessageCircle className="w-3.5 h-3.5 transition-colors duration-100" />
 							<span className="group-hover/comments:text-blue-500 transition-colors duration-100 relative">

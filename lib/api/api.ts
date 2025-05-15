@@ -43,6 +43,7 @@ export async function getPosts({
 			updatedAt: true,
 			author: { select: { id: true, name: true, image: true } },
 			_count: { select: { comments: true } },
+			slug: true,
 		},
 	});
 
@@ -115,6 +116,7 @@ export async function getTagPosts(tagName: string): Promise<PostPayload[]> {
 				select: { id: true, name: true, image: true },
 			},
 			_count: { select: { comments: true } },
+			slug: true,
 		},
 	});
 
@@ -150,6 +152,7 @@ export async function getPostById(postId: number): Promise<PostPayload | null> {
 				select: { id: true, name: true, image: true },
 			},
 			_count: { select: { comments: true } },
+			slug: true,
 		},
 	});
 	if (!post) return null;
@@ -303,6 +306,7 @@ export async function getUserProfile(userId: number): Promise<
 					bookmarkCount: true,
 					author: { select: { id: true, name: true, image: true } },
 					_count: { select: { comments: true } },
+					slug: true,
 				},
 			},
 			comments: {

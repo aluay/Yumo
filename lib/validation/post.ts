@@ -40,6 +40,7 @@ export const postPayloadSchema = postInputSchema.extend({
 	_count: z.object({
 		comments: z.number(),
 	}),
+	slug: z.string(),
 });
 
 // Types inferred from the schemas

@@ -85,6 +85,7 @@ model Post {
   content     Json // TipTap JSON
   tags        String[]
   status      PostStatus @default(PUBLISHED)
+  slug        String     @unique
 
   // denormalised stats – cheap sort/filter
   likeCount     Int @default(0)

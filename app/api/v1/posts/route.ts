@@ -5,6 +5,8 @@ import { postInputSchema } from "@/lib/validation/post";
 import { Prisma } from "@prisma/client";
 import { extractMentionedUserIds, recordActivity } from "@/lib/logActivity";
 import { JSONContent } from "novel";
+import { slugify } from "@/lib/utils";
+import { nanoid } from "nanoid";
 
 /* ------------------------------------------------------------------ */
 /* GET  /api/v1/posts                                                  */
@@ -75,6 +77,12 @@ export async function POST(req: Request) {
 
 	try {
 		const newPost = await prisma.$transaction(async (tx) => {
+			const baseSlug = slugify(title);
+			let slug = baseSlug;
+			while (await tx.post.findUnique({ where: { slug } })) {
+				slug = `${baseSlug}-${nanoid(6)}`;
+			}
+
 			const createdPost = await tx.post.create({
 				data: {
 					title,
@@ -83,6 +91,7 @@ export async function POST(req: Request) {
 					status,
 					content: content ?? { type: "doc", content: [] },
 					authorId: Number(session.user.id),
+					slug,
 				},
 			});
 
@@ -121,6 +130,63 @@ export async function POST(req: Request) {
 		});
 	} catch (err) {
 		console.error("Error creating post or logging activity:", err);
+		return NextResponse.json(
+			{ error: "Internal Server Error" },
+			{ status: 500 }
+		);
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* PATCH  /api/v1/posts/:id                                            */
+/* ------------------------------------------------------------------ */
+export async function PATCH(
+	req: Request,
+	{ params }: { params: { id: string } }
+) {
+	const session = await auth();
+	if (!session?.user)
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+	const body = await req.json();
+	const parsed = postInputSchema.safeParse(body);
+
+	if (!parsed.success)
+		return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
+
+	const { title, description, tags, status, content } = parsed.data;
+	const postId = Number(params.id);
+	if (isNaN(postId))
+		return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+
+	try {
+		const updatedPost = await prisma.$transaction(async (tx) => {
+			const baseSlug = slugify(title);
+			let slug = baseSlug;
+			while (
+				await tx.post.findFirst({ where: { slug, NOT: { id: postId } } })
+			) {
+				slug = `${baseSlug}-${nanoid(6)}`;
+			}
+
+			const post = await tx.post.update({
+				where: { id: postId },
+				data: {
+					title,
+					description,
+					tags,
+					status,
+					content: content ?? { type: "doc", content: [] },
+					slug,
+				},
+			});
+
+			// ...existing tag upsert logic if present...
+			return post;
+		});
+		return NextResponse.json(updatedPost);
+	} catch (err) {
+		console.error("Error updating post:", err);
 		return NextResponse.json(
 			{ error: "Internal Server Error" },
 			{ status: 500 }

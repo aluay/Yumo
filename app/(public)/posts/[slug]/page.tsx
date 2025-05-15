@@ -1,11 +1,10 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import RichContentViewer from "@/components/shared/RichContentViewer";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import type { JSONContent } from "@tiptap/react";
 import { getPostById } from "@/lib/api/api";
 import PageLayout from "@/components/layouts/PageLayout";
-// import { getTagColorClasses } from "@/lib/badgeVariants";
 import { auth } from "@/lib/auth";
 import LikePostButton from "@/components/shared/LikePostButton";
 import CommentThread from "@/components/shared/CommentThread";
@@ -18,19 +17,17 @@ import { formatDistanceToNow } from "date-fns";
 import { estimateReadingTime } from "@/lib/readingTime";
 import TagBadge from "@/components/shared/TagBadge";
 
-// This function is used to generate metadata for the page
 export async function generateMetadata({
 	params,
 }: {
-	params: Promise<{ postId: string }>;
+	params: Promise<{ slug?: string }>;
 }) {
-	const { postId } = await params;
-	const numericPostId = Number(postId);
+	const { slug = "" } = await params;
+	const [id] = slug.split("-");
+	const numericPostId = Number(id);
 	if (isNaN(numericPostId)) return {};
-
 	const post = await getPostById(numericPostId);
 	if (!post) return {};
-
 	return {
 		title: `Yumo | ${post.title}`,
 		description: post.description,
@@ -40,35 +37,29 @@ export async function generateMetadata({
 export default async function PostViewPage({
 	params,
 }: {
-	params: Promise<{ postId: string }>;
+	params: Promise<{ slug?: string }>;
 }) {
-	const { postId } = await params;
-	const numericPostId = Number(postId);
+	const { slug = "" } = await params;
+	const [id] = slug.split("-");
+	const numericPostId = Number(id);
 	const session = await auth();
-
-	if (isNaN(numericPostId)) {
-		notFound();
-	}
-
+	if (isNaN(numericPostId)) notFound();
 	const post = await getPostById(numericPostId);
-
 	if (!post) notFound();
-
-	// If a user tries to access /post/[id] and it's a draft and they're not the author, they see a 404 page.
 	if (post.status === "DRAFT" && Number(session?.user?.id) !== post.author.id) {
 		return notFound();
 	}
-
+	// Validate slug and redirect if not canonical
+	if (slug !== `${post.id}-${post.slug}`) {
+		redirect(`/posts/${post.id}-${post.slug}`);
+	}
 	const userHasLiked =
 		post.likes?.some((user) => user.userId === Number(session?.user?.id)) ??
 		false;
-
 	const userHasBookmarked =
 		post.bookmarks?.some((user) => user.userId === Number(session?.user?.id)) ??
 		false;
-
 	const readingTime = estimateReadingTime(post.content);
-
 	return (
 		<PageLayout>
 			<div className="space-y-6 px-2">
@@ -105,7 +96,6 @@ export default async function PostViewPage({
 								className="hover:underline">
 								<span>{post.author?.name}</span>
 							</Link>
-
 							<span>
 								Posted&nbsp;
 								{formatDistanceToNow(new Date(post.createdAt), {
@@ -142,7 +132,6 @@ export default async function PostViewPage({
 							</p>
 						)}
 					</div>
-
 					<div className="flex items-center justify-between flex-wrap gap-2 mt-2 text-sm text-muted-foreground">
 						<div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
 							{post.tags.map((tag, index) => (
@@ -160,7 +149,6 @@ export default async function PostViewPage({
 						)}
 					</div>
 				</div>
-
 				{post.content && (
 					<div>
 						<RichContentViewer content={post.content as JSONContent} />
