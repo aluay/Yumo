@@ -8,7 +8,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, House, PlusCircle } from "lucide-react";
+import { LogOut, House, PlusCircle } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -28,7 +28,9 @@ export default function UserDropdown({
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-56 p-0 overflow-hidden shadow-lg border-border">
 				{/* User info header */}
-				<div className="p-3 border-b bg-muted/50">
+				<div
+					className="p-3 border-b bg-muted/50 cursor-pointer hover:underline"
+					onClick={() => router.push(`/users/${user.id}`)}>
 					<div className="font-medium">{user.name}</div>
 					<div className="text-xs text-muted-foreground mt-0.5">
 						View and edit your profile
@@ -42,13 +44,6 @@ export default function UserDropdown({
 						className="flex items-center gap-2.5 py-2 cursor-pointer">
 						<House className="h-4 w-4" />
 						<span>Home</span>
-					</DropdownMenuItem>
-
-					<DropdownMenuItem
-						onClick={() => router.push(`/users/${user.id}`)}
-						className="flex items-center gap-2.5 py-2 cursor-pointer">
-						<User className="h-4 w-4" />
-						<span>Profile</span>
 					</DropdownMenuItem>
 
 					<DropdownMenuSeparator />
