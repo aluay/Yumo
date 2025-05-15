@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import TagBadge from "@/components/shared/TagBadge";
 
 interface FollowedTag {
 	tag: string;
@@ -70,19 +69,9 @@ export default function UserFollowedTags({ userId }: UserFollowedTagsProps) {
 	return (
 		<div className="space-y-2">
 			<h3 className="text-lg font-medium">Followed Tags</h3>
-			<div className="flex flex-wrap gap-2 min-h-[50px] max-h-[150px] overflow-y-auto">
-				{followedTags.map((tagData) => (
-					<Link
-						key={tagData.tag}
-						href={`/tags/${encodeURIComponent(tagData.tag)}`}>
-						<Badge
-							variant="secondary"
-							className="hover:bg-secondary transition-colors">
-							#{tagData.tag}
-						</Badge>
-					</Link>
-				))}
-			</div>
+			{followedTags.map((tagData) => (
+				<TagBadge key={tagData.tag} tag={tagData.tag} />
+			))}
 		</div>
 	);
 }

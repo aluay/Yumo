@@ -1,15 +1,116 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Badge } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { VariantProps } from "class-variance-authority";
 
 interface TagInputProps {
 	value: string[];
 	onChange: (tags: string[]) => void;
 	placeholder?: string;
 	disabled?: boolean;
+}
+
+// Helper to get a safe variant for Badge
+type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
+
+function getTagVariant(tag: string): BadgeVariant {
+	const allowedVariants: BadgeVariant[] = [
+		"javascript",
+		"typescript",
+		"python",
+		"ruby",
+		"java",
+		"go",
+		"rust",
+		"php",
+		"csharp",
+		"react",
+		"vue",
+		"angular",
+		"svelte",
+		"nextjs",
+		"node",
+		"tailwindcss",
+		"css",
+		"html",
+		"graphql",
+		"docker",
+		"kubernetes",
+		"git",
+		"github",
+		"vscode",
+		"linux",
+		"aws",
+		"firebase",
+		"mongodb",
+		"sql",
+		"webdev",
+		"backend",
+		"frontend",
+		"opensource",
+		"devops",
+		"career",
+		"learning",
+		"productivity",
+		"beginners",
+		"testing",
+		"design",
+		"ux",
+		"ai",
+		"machinelearning",
+		"datascience",
+		"security",
+		"encryption",
+		"serverless",
+		"cloud",
+		"ci",
+		"cd",
+		"blockchain",
+		"nft",
+		"crypto",
+		"webassembly",
+		"pwa",
+		"restapi",
+		"microservices",
+		"observability",
+		"monitoring",
+		"logging",
+		"analytics",
+		"bigdata",
+		"elasticsearch",
+		"redis",
+		"postgres",
+		"mysql",
+		"sqlite",
+		"artificialintelligence",
+		"deeplearning",
+		"reinforcementlearning",
+		"devcommunity",
+		"mentoring",
+		"hackathon",
+		"codingchallenge",
+		"freelancing",
+		"startup",
+		"entrepreneurship",
+		"leadership",
+		"documentation",
+		"api",
+		"cli",
+		"desktop",
+		"mobile",
+		"system",
+		"web",
+		"parse",
+		"published",
+		"draft",
+	];
+	const lower = tag.toLowerCase();
+	return allowedVariants.includes(lower as BadgeVariant)
+		? (lower as BadgeVariant)
+		: "outline";
 }
 
 export default function TagInput({
@@ -50,7 +151,7 @@ export default function TagInput({
 			{value.map((tag) => (
 				<Badge
 					key={tag}
-					variant="secondary"
+					variant={getTagVariant(tag)}
 					className="flex items-center gap-1">
 					{tag}
 					{!disabled && (

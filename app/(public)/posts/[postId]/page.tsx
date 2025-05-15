@@ -16,6 +16,7 @@ import DeletePostButton from "@/components/shared/DeletePostButton";
 import { Pencil } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { estimateReadingTime } from "@/lib/readingTime";
+import TagBadge from "@/components/shared/TagBadge";
 
 // This function is used to generate metadata for the page
 export async function generateMetadata({
@@ -145,12 +146,11 @@ export default async function PostViewPage({
 					<div className="flex items-center flex-wrap justify-between gap-2 mt-2 text-sm text-muted-foreground">
 						<div className="flex items-center gap-2">
 							{post.tags.map((tag, index) => (
-								<Link
-									href={`/tags/${encodeURIComponent(tag)}`}
+								<TagBadge
+									tag={tag}
 									key={index}
-									className="hover:text-foreground transition-colors">
-									<span className="font-medium">#{tag}</span>
-								</Link>
+									className="hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-150 text-xs py-0.5 px-1.5"
+								/>
 							))}
 						</div>
 						<div>
