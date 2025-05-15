@@ -50,7 +50,6 @@ export default function SearchPage() {
 			setResults({ posts: [], users: [], tags: [] });
 			return;
 		}
-
 		fetchSearchResults(debouncedQuery);
 	}, [debouncedQuery]);
 
@@ -58,7 +57,7 @@ export default function SearchPage() {
 		setLoading(true);
 		try {
 			const res = await fetch(
-				`/api/v1/search?q=${encodeURIComponent(searchQuery)}`
+				`/api/v1/search?q=${encodeURIComponent(searchQuery)}&limit=10`
 			);
 
 			if (!res.ok) {

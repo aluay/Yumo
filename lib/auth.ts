@@ -87,10 +87,6 @@ export const authOptions: AuthOptions = {
 		updateAge: 24 * 60 * 60, // 24 hours
 	},
 
-	jwt: {
-		secret: checkEnv("NEXTAUTH_SECRET")!,
-	},
-
 	secret: checkEnv("NEXTAUTH_SECRET")!,
 
 	callbacks: {
@@ -121,6 +117,7 @@ export const authOptions: AuthOptions = {
 						id: Number(user.id),
 						email: user.email!,
 						name: user.name!,
+						image: user.image || "https://i.pravatar.cc/150",
 					},
 				});
 			}
