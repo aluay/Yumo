@@ -75,9 +75,13 @@ export default async function userPage({
 				{/* Follow button (not own profile) */}
 				{!isOwnProfile && profile?.id && (
 					<div className="absolute top-4 right-4">
-						<FollowUserButton 
-							userId={profile.id} 
-							initialIsFollowing={Array.isArray(profile.followers) && !!session?.user?.id && profile.followers.some(f => f.id === Number(session.user.id))}
+						<FollowUserButton
+							userId={profile.id}
+							initialIsFollowing={
+								Array.isArray(profile.followers) &&
+								!!session?.user?.id &&
+								profile.followers.some((f) => f.id === Number(session.user.id))
+							}
 						/>
 					</div>
 				)}
@@ -154,12 +158,9 @@ export default async function userPage({
 						className="mt-4 sm:mt-6 space-y-4 animate-fade-up">
 						<h2 className="text-xl font-semibold">Posts</h2>{" "}
 						{profile?.posts?.length ? (
-							<div className="mx-auto w-full max-w-xl grid gap-4 place-items-center">
-								{profile.posts.map((post, index) => (
-									<div
-										key={post.id}
-										className="transition-all duration-300 hover:translate-y-[-2px] hover:shadow-md w-full"
-										style={{ animationDelay: `${index * 50}ms` }}>
+							<div className="space-y-6">
+								{profile.posts.map((post) => (
+									<div key={post.id}>
 										<PostCard post={post} />
 									</div>
 								))}
@@ -279,20 +280,20 @@ export default async function userPage({
 }
 
 function FollowerFollowingStats({
-  followerCount,
-  followingCount,
+	followerCount,
+	followingCount,
 }: {
-  followerCount: number;
-  followingCount: number;
+	followerCount: number;
+	followingCount: number;
 }) {
-  return (
-    <>
-      <span className="text-sm">
-        <b>{followerCount}</b> Followers
-      </span>
-      <span className="text-sm">
-        <b>{followingCount}</b> Following
-      </span>
-    </>
-  );
+	return (
+		<>
+			<span className="text-sm">
+				<b>{followerCount}</b> Followers
+			</span>
+			<span className="text-sm">
+				<b>{followingCount}</b> Following
+			</span>
+		</>
+	);
 }

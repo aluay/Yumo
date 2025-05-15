@@ -31,7 +31,7 @@ export default function PostCard({ post }: PostCardProps) {
 		: `/posts/${post.id}`;
 
 	return (
-		<article className="group relative overflow-hidden border border-border/50 rounded-lg bg-card shadow-sm max-w-xl min-h-[220px] w-full flex flex-col">
+		<article className="group relative overflow-hidden border border-border/50 rounded-lg bg-card shadow-sm min-h-[220px] w-full flex flex-col">
 			<div className="flex flex-col h-full relative z-0 flex-grow">
 				<div className="flex items-center justify-between p-2.5 border-b border-border/40">
 					<Link

@@ -16,37 +16,42 @@ export async function GET(req: Request) {
 		// Use raw SQL with trigram similarity for fuzzy search on posts
 		// The pg_trgm extension allows for more efficient fuzzy matching
 		const postsQuery = Prisma.sql`
-      SELECT 
-        id, 
-        title, 
-        tags, 
-        "likeCount", 
-        "bookmarkCount", 
-        "createdAt",
-        (similarity(title, ${q}) * 1.5) + similarity(description, ${q}) + 
-        CASE WHEN title % ${q} THEN 0.3 ELSE 0 END +
-        CASE WHEN description % ${q} THEN 0.2 ELSE 0 END +
-        CASE WHEN title ILIKE ${`%${q}%`} THEN 0.4 ELSE 0 END as score
-      FROM "Post"
-      WHERE 
-        status = 'PUBLISHED' 
-        AND "deletedAt" IS NULL
-        AND (
-          title % ${q} 
-          OR description % ${q}
-          OR similarity(title, ${q}) > 0.2 
-          OR similarity(description, ${q}) > 0.2
-          OR title ILIKE ${`%${q}%`} 
-          OR description ILIKE ${`%${q}%`}
-          OR EXISTS (
-            SELECT 1 FROM unnest(tags) as tag 
-            WHERE tag ILIKE ${`%${q}%`} OR similarity(tag, ${q}) > 0.3
-          )
-        )
-      ORDER BY score DESC, "createdAt" DESC
-      LIMIT ${limit};
-    `;
-
+  SELECT 
+    p.id, 
+    p.title, 
+    p.tags, 
+    p."likeCount", 
+    p."bookmarkCount", 
+    p."createdAt",
+    u.name AS "authorName",
+    (
+      (similarity(p.title, ${q}) * 1.5) + similarity(p.description, ${q}) + 
+      CASE WHEN p.title % ${q} THEN 0.3 ELSE 0 END +
+      CASE WHEN p.description % ${q} THEN 0.2 ELSE 0 END +
+      CASE WHEN p.title ILIKE ${`%${q}%`} THEN 0.4 ELSE 0 END +
+      CASE WHEN u.name ILIKE ${`%${q}%`} THEN 0.3 ELSE 0 END
+    ) as score
+  FROM "Post" p
+  JOIN "User" u ON u.id = p."authorId"
+  WHERE 
+    p.status = 'PUBLISHED' 
+    AND p."deletedAt" IS NULL
+    AND (
+      p.title % ${q} 
+      OR p.description % ${q}
+      OR similarity(p.title, ${q}) > 0.2 
+      OR similarity(p.description, ${q}) > 0.2
+      OR p.title ILIKE ${`%${q}%`} 
+      OR p.description ILIKE ${`%${q}%`}
+      OR u.name ILIKE ${`%${q}%`}
+      OR EXISTS (
+        SELECT 1 FROM unnest(p.tags) as tag 
+        WHERE tag ILIKE ${`%${q}%`} OR similarity(tag, ${q}) > 0.3
+      )
+    )
+  ORDER BY score DESC, p."createdAt" DESC
+  LIMIT ${limit};
+`;
 		const posts = await prisma.$queryRaw(postsQuery);
 
 		// Enhanced fuzzy search for users with trigram similarity

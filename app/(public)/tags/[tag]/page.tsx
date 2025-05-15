@@ -47,7 +47,7 @@ export default async function TagsPage({
 					<FollowTagButton tag={tagName} initialIsFollowing={isFollowing} />
 				)}{" "}
 			</div>
-			<div className="space-y-6 mx-auto w-full max-w-xl flex flex-col items-center">
+			<div className="space-y-6">
 				{posts.map((post) => (
 					<div key={post.id} className="w-full">
 						<PostCard post={post} />

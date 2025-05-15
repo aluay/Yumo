@@ -6,12 +6,15 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
 
 // Search result types
 interface PostResult {
 	id: number;
 	title: string;
+	authorName: string;
 	tags: string[];
+	createdAt: string;
 }
 
 interface UserResult {
@@ -60,8 +63,8 @@ export default function SearchBar() {
 				if (!res.ok) {
 					throw new Error(`Error ${res.status}: ${res.statusText}`);
 				}
-
 				const data = await res.json();
+				console.log("Search results:", data);
 				setResults(data);
 			} catch (error) {
 				console.error("Search error:", error);
@@ -159,37 +162,47 @@ export default function SearchBar() {
 							{/* Posts */}
 							{results.posts.length > 0 && (
 								<div className="mb-4">
-									<h3 className="text-sm font-medium text-muted-foreground px-2 mb-1">
+									<h3 className="text-sm font-medium text-muted-foreground px-2 mb-1 border-b">
 										Posts
 									</h3>
-									{results.posts.map((post) => (
-										<Link
-											href={`/posts/${post.id}`}
-											key={post.id}
-											className="block p-2 hover:bg-muted rounded-sm"
-											onClick={() => setOpen(false)}>
-											<div className="font-medium">{post.title}</div>
-											{post.tags.length > 0 && (
-												<div className="flex flex-wrap gap-1 mt-1">
-													{post.tags.slice(0, 3).map((tag) => (
-														<Badge
-															key={tag}
-															variant="outline"
-															className="text-xs">
-															{tag}
-														</Badge>
-													))}
+									<div className="space-y-2">
+										{results.posts.map((post) => (
+											<Link
+												href={`/posts/${post.id}`}
+												key={post.id}
+												className="block p-2 hover:bg-muted rounded-sm"
+												onClick={() => setOpen(false)}>
+												<div className="flex items-center gap-2 mb-1 text-muted-foreground text-xs">
+													<span>{post.authorName}</span>
+													<span className="text-muted-foreground">•</span>
+													<time dateTime={post.createdAt}>
+														{formatDistanceToNow(new Date(post.createdAt), {
+															addSuffix: true,
+														})}
+													</time>
 												</div>
-											)}
-										</Link>
-									))}
+												<div className="font-bold">{post.title}</div>
+												{/* {post.tags.length > 0 && (
+													<div className="flex flex-wrap gap-1 mt-1">
+														{post.tags.slice(0, 3).map((tag) => (
+															<TagBadge
+																key={tag}
+																tag={tag}
+																className="hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-150 text-xs py-0.5 px-1.5"
+															/>
+														))}
+													</div>
+												)} */}
+											</Link>
+										))}
+									</div>
 								</div>
 							)}
 
 							{/* Users */}
 							{results.users.length > 0 && (
 								<div className="mb-4">
-									<h3 className="text-sm font-medium text-muted-foreground px-2 mb-1">
+									<h3 className="text-sm font-medium text-muted-foreground px-2 mb-1 border-b">
 										Users
 									</h3>
 									{results.users.map((user) => (
@@ -211,7 +224,7 @@ export default function SearchBar() {
 							{/* Tags */}
 							{results.tags.length > 0 && (
 								<div className="mb-2">
-									<h3 className="text-sm font-medium text-muted-foreground px-2 mb-1">
+									<h3 className="text-sm font-medium text-muted-foreground px-2 mb-1 border-b">
 										Tags
 									</h3>
 									<div className="flex flex-wrap gap-2 p-2">
