@@ -25,7 +25,10 @@ export default function NavBar() {
 	}, [pathname]);
 	const navLinks = [
 		{ href: "/", label: "Home", icon: <Home /> },
-		{ href: "/posts/new", label: "Create", icon: <Edit /> },
+		// Only show Create if user is logged in
+		...(session?.user
+			? [{ href: "/posts/new", label: "Create", icon: <Edit /> }]
+			: []),
 		{ href: "/tags", label: "Tags", icon: <Tag /> },
 		{ href: "/users", label: "Users", icon: <Users /> },
 	];
