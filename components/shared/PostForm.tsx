@@ -36,6 +36,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import PostPreviewDialog from "@/components/shared/PostPreviewDialog";
 
 interface PostFormProps {
 	defaultValues?: Partial<PostPayload>;
@@ -46,6 +47,7 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 	const isEditing = !!defaultValues?.id;
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [previewOpen, setPreviewOpen] = useState(false);
 
 	const form = useForm<PostInput>({
 		resolver: zodResolver(postInputSchema),
@@ -258,9 +260,26 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 							<SendIcon className="h-4 w-4" />
 							{submitting ? "Publishing..." : "Publish"}
 						</Button>
+
+						<Button
+							type="button"
+							variant="secondary"
+							className="flex-1 sm:flex-auto gap-2 border-primary/30"
+							onClick={() => setPreviewOpen(true)}>
+							<FileText className="h-4 w-4" />
+							Preview
+						</Button>
 					</div>
 				</CardFooter>
 			</Form>
+			<PostPreviewDialog
+				open={previewOpen}
+				onOpenChange={setPreviewOpen}
+				title={form.watch("title")}
+				description={form.watch("description")}
+				tags={form.watch("tags")}
+				content={form.watch("content") || { type: "doc", content: [] }}
+			/>
 		</Card>
 	);
 }
