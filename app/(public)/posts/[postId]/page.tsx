@@ -143,8 +143,8 @@ export default async function PostViewPage({
 						)}
 					</div>
 
-					<div className="flex items-center flex-wrap justify-between gap-2 mt-2 text-sm text-muted-foreground">
-						<div className="flex items-center gap-2">
+					<div className="flex items-center justify-between flex-wrap gap-2 mt-2 text-sm text-muted-foreground">
+						<div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
 							{post.tags.map((tag, index) => (
 								<TagBadge
 									tag={tag}
@@ -153,13 +153,11 @@ export default async function PostViewPage({
 								/>
 							))}
 						</div>
-						<div>
-							{readingTime.words > 0 && (
-								<span className="text-base text-muted-foreground whitespace-nowrap bg-muted/60 rounded px-2 py-0.5 ml-2">
-									{readingTime.display}
-								</span>
-							)}
-						</div>
+						{readingTime.words > 0 && (
+							<span className="text-xs text-muted-foreground whitespace-nowrap bg-muted/60 rounded px-2 py-0.5 ml-1">
+								{readingTime.display}
+							</span>
+						)}
 					</div>
 				</div>
 
