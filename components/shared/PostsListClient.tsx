@@ -42,11 +42,13 @@ export default function PostsListClient({
 					<PostCard post={post} />
 				</div>
 			))}
-			{cursor && (
-				<Button onClick={loadMore} disabled={loading}>
-					{loading ? "Loading..." : "Load more"}
-				</Button>
-			)}
+			<div className="flex justify-center">
+				{cursor && (
+					<Button variant="link" onClick={loadMore} disabled={loading}>
+						{loading ? "Loading..." : "Load more"}
+					</Button>
+				)}
+			</div>
 		</div>
 	);
 }
