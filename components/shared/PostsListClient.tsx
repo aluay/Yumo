@@ -36,9 +36,9 @@ export default function PostsListClient({
 	};
 
 	return (
-		<div className="space-y-6 flex flex-col">
+		<div className="space-y-6 max-w-7xl mx-auto">
 			{posts.map((post) => (
-				<div key={post.id} className="w-full">
+				<div key={post.id}>
 					<PostCard post={post} />
 				</div>
 			))}

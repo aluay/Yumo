@@ -47,7 +47,7 @@ export default function NavBar() {
 						<Link href="/" className="flex items-center group">
 							<div
 								className={cn(
-									"bg-black text-white dark:bg-white dark:text-black rounded-md font-bold mr-1",
+									"bg-black text-white dark:bg-white dark:text-black rounded-lg font-bold mr-1",
 									"px-3 py-1.5 text-lg"
 								)}>
 								Y
@@ -62,13 +62,13 @@ export default function NavBar() {
 						</Link>
 					</div>
 					{/* Desktop Navigation */}
-					<div className="hidden md:flex md:items-center md:space-x-1 lg:space-x-2">
+					<div className="hidden lg:flex lg:items-center lg:space-x-1 lg:space-x-2">
 						{navLinks.map((link) => (
 							<Link
 								key={link.href}
 								href={link.href}
 								className={cn(
-									"text-sm font-medium px-3 py-2 rounded-md flex items-center",
+									"text-sm font-medium px-3 py-2 rounded-lg flex items-center",
 									pathname === link.href
 										? "bg-primary/10 text-primary"
 										: "text-muted-foreground hover:text-foreground hover:bg-accent"
@@ -79,11 +79,11 @@ export default function NavBar() {
 						))}
 					</div>
 					{/* Search Bar - Desktop */}
-					<div className="hidden md:block md:flex-1 max-w-md mx-8">
+					<div className="hidden lg:block lg:flex-1 max-w-lg mx-8">
 						<SearchBar />
 					</div>{" "}
 					{/* Right Actions */}
-					<div className="flex items-center space-x-2 md:space-x-3">
+					<div className="flex items-center space-x-2 lg:space-x-3">
 						<NotificationMenu />
 						<ModeToggle />
 
@@ -106,7 +106,7 @@ export default function NavBar() {
 						<Button
 							variant="ghost"
 							size="icon"
-							className="md:hidden rounded-full h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent"
+							className="lg:hidden rounded-full h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-accent"
 							onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
 							aria-label="Toggle menu">
 							{mobileMenuOpen ? (
@@ -121,7 +121,7 @@ export default function NavBar() {
 			{/* Mobile Menu */}
 			<div
 				className={cn(
-					"fixed inset-0 z-40 bg-background/95 backdrop-blur-md md:hidden overflow-y-auto",
+					"fixed inset-0 z-40 bg-background/95 backdrop-blur-lg lg:hidden overflow-y-auto",
 					mobileMenuOpen ? "block" : "hidden"
 				)}
 				style={{ top: "3.5rem", height: "calc(100% - 3.5rem)" }}>
@@ -137,7 +137,7 @@ export default function NavBar() {
 								key={link.href}
 								href={link.href}
 								className={cn(
-									"flex items-center px-4 py-3 text-base font-medium rounded-md",
+									"flex items-center px-4 py-3 text-base font-medium rounded-lg",
 									pathname === link.href
 										? "bg-primary/10 text-primary"
 										: "text-muted-foreground hover:bg-accent hover:text-foreground"

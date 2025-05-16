@@ -13,9 +13,7 @@ export default function PageLayout({
 					<NavBar />
 				</div>
 			</header>
-			<main className="pt-24 mx-auto w-full max-w-[860px] px-4 py-8">
-				{children}
-			</main>
+			<main className="pt-24 w-full px-4 sm:px-6 lg:px-8 py-8">{children}</main>
 		</div>
 	);
 }
