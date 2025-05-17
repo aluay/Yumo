@@ -118,16 +118,13 @@ export default function PostCard({ post }: PostCardProps) {
 								</span>
 							</div>
 						)}
-
-						<Link
-							href={`${postUrl}#comments`}
-							className="flex items-center gap-1.5 text-muted-foreground hover:text-blue-500 transition-colors duration-100 group/comments">
+						<div className="flex items-center gap-1.5 text-muted-foreground hover:text-blue-500 transition-colors duration-100 group/comments">
 							<MessageCircle className="w-3.5 h-3.5 transition-colors duration-100" />
 							<span className="group-hover/comments:text-blue-500 transition-colors duration-100 relative">
-								{formatNumber(post._count.comments)}
+								{formatNumber(post.commentCount ?? 0)}
 								<span className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-200/20 to-transparent opacity-0 group-hover/comments:opacity-100 animate-shine"></span>
 							</span>
-						</Link>
+						</div>
 					</div>
 					<div className="flex items-center gap-1.5 text-xs text-muted-foreground">
 						<BookmarkPostButton

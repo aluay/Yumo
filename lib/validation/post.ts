@@ -31,14 +31,11 @@ export const postPayloadSchema = postInputSchema.extend({
 	likeCount: z.number(),
 	bookmarks: z.array(z.object({ userId: z.number() })),
 	bookmarkCount: z.number(),
+	commentCount: z.number().optional().default(0),
 	author: z.object({
 		id: z.number(),
 		name: z.string(),
 		image: z.string(),
-	}),
-	/* comment counter via Prisma’s _count include */
-	_count: z.object({
-		comments: z.number(),
 	}),
 	slug: z.string(),
 });

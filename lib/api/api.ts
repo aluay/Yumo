@@ -18,8 +18,15 @@ export async function getPosts({
 }: {
 	limit?: number;
 	cursor?: number | null;
-	sort?: "new" | "top";
+	sort?: "new" | "top" | "hot";
 }): Promise<{ posts: PostPayload[]; nextCursor: number | null }> {
+	// If sort is "hot", use the hot posts algorithm
+	if (sort === "hot") {
+		return import("./hotPosts").then((module) =>
+			module.getHotPosts({ limit, cursor })
+		);
+	}
+
 	const orderBy: Prisma.PostOrderByWithRelationInput =
 		sort === "top" ? { likeCount: "desc" } : { createdAt: "desc" };
 
@@ -39,10 +46,10 @@ export async function getPosts({
 			likeCount: true,
 			bookmarks: { select: { userId: true } },
 			bookmarkCount: true,
+			commentCount: true,
 			createdAt: true,
 			updatedAt: true,
 			author: { select: { id: true, name: true, image: true } },
-			_count: { select: { comments: true } },
 			slug: true,
 		},
 	});
@@ -59,38 +66,6 @@ export async function getPosts({
 		nextCursor,
 	};
 }
-// export async function getPosts(): Promise<PostPayload[]> {
-// 	const posts = await prisma.post.findMany({
-// 		where: { status: "PUBLISHED", deletedAt: null },
-// 		orderBy: { createdAt: "desc" },
-// 		select: {
-// 			id: true,
-// 			title: true,
-// 			description: true,
-// 			tags: true,
-// 			content: true,
-// 			status: true,
-// 			likes: { select: { userId: true } },
-// 			likeCount: true,
-// 			bookmarks: { select: { userId: true } },
-// 			bookmarkCount: true,
-// 			createdAt: true,
-// 			updatedAt: true,
-// 			author: {
-// 				select: { id: true, name: true, image: true },
-// 			},
-// 			_count: { select: { comments: true } },
-// 		},
-// 	});
-
-// 	// Fix types
-// 	return posts.map((post) => ({
-// 		...post,
-// 		content: post.content as JSONContent,
-// 		createdAt: post.createdAt.toISOString(),
-// 		updatedAt: post.updatedAt.toISOString(),
-// 	}));
-// }
 
 /*-----------------------------------------------------------------*/
 /*--------GET ALL POSTS THAT CONTAIN A SPECIFIC TAG----------------*/
@@ -126,6 +101,7 @@ export async function getTagPosts(tagName: string): Promise<PostPayload[]> {
 		content: post.content as JSONContent,
 		createdAt: post.createdAt.toISOString(),
 		updatedAt: post.updatedAt.toISOString(),
+		commentCount: post._count.comments,
 	}));
 }
 
@@ -161,6 +137,7 @@ export async function getPostById(postId: number): Promise<PostPayload | null> {
 		content: post.content as JSONContent,
 		createdAt: post.createdAt.toISOString(),
 		updatedAt: post.updatedAt.toISOString(),
+		commentCount: post._count.comments,
 	};
 }
 
@@ -369,6 +346,7 @@ export async function getUserProfile(userId: number): Promise<
 			post.updatedAt instanceof Date
 				? post.updatedAt.toISOString()
 				: post.updatedAt,
+		commentCount: post._count.comments,
 	}));
 
 	// Fix comments type for compatibility

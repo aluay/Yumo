@@ -16,8 +16,24 @@ export async function GET(req: Request) {
 
 	// 10 posts per page, max 50
 	const limit = Math.min(Number(searchParams.get("limit") ?? 10), 50);
-	const cursor = searchParams.get("cursor"); // post.id of last page
-	const sort = searchParams.get("sort") ?? "new"; // new | top
+	const cursor = searchParams.get("cursor")
+		? Number(searchParams.get("cursor"))
+		: null; // post.id of last page
+	const sort = searchParams.get("sort") ?? "new"; // new | top | hot
+	// If sort is "hot", use our custom hot sort logic
+	if (sort === "hot") {
+		// Import and use the dedicated hot posts module
+		const { getHotPosts } = await import("@/lib/api/hotPosts");
+		const { posts: hotPosts, nextCursor } = await getHotPosts({
+			limit,
+			cursor,
+		});
+
+		return NextResponse.json({
+			data: hotPosts,
+			nextCursor,
+		});
+	}
 
 	const orderBy: Prisma.PostOrderByWithRelationInput =
 		sort === "top" ? { likeCount: "desc" } : { createdAt: "desc" };
@@ -44,14 +60,13 @@ export async function GET(req: Request) {
 			_count: { select: { comments: true } },
 		},
 	});
-
 	const nextCursor = posts.length > limit ? posts.pop()!.id : null;
 
-	// return NextResponse.json({ data: posts, nextCursor });
 	return NextResponse.json({
 		data: posts.map((post) => ({
 			...post,
 			content: post.content as JSONContent,
+			commentCount: post._count?.comments ?? 0,
 			createdAt: post.createdAt.toISOString(),
 			updatedAt: post.updatedAt.toISOString(),
 		})),
