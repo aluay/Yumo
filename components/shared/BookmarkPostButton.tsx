@@ -5,7 +5,7 @@ import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
-// import { formatNumber } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 
 interface BookmarkButtonProps {
 	postId: number;
@@ -16,11 +16,11 @@ interface BookmarkButtonProps {
 export default function BookmarkPostButton({
 	postId,
 	initialBookmarked,
-}: // initialCount,
-BookmarkButtonProps) {
+	initialCount,
+}: BookmarkButtonProps) {
 	const { data: session } = useSession();
 	const [bookmarked, setBookmarked] = useState(initialBookmarked);
-	// const [count, setCount] = useState(initialCount);
+	const [count, setCount] = useState(initialCount);
 	const [loading, setLoading] = useState(false);
 	const [animating, setAnimating] = useState(false);
 
@@ -39,7 +39,7 @@ BookmarkButtonProps) {
 
 		if (res.ok) {
 			setBookmarked(!bookmarked);
-			// setCount((c) => c + (bookmarked ? -1 : 1));
+			setCount((c) => c + (bookmarked ? -1 : 1));
 			// Clear posts and cursor from session storage but keep sort preference
 			sessionStorage.removeItem("paginatedPosts_posts");
 			sessionStorage.removeItem("paginatedPosts_cursor");
@@ -74,14 +74,14 @@ BookmarkButtonProps) {
 					!bookmarked && "group-hover/bookmark-btn:text-amber-500"
 				)}
 			/>{" "}
-			{/* <span
+			<span
 				className={cn(
 					"text-xs relative z-10 transition-colors duration-150",
 					bookmarked && "text-amber-500",
 					!bookmarked && "group-hover/bookmark-btn:text-amber-500"
 				)}>
 				{formatNumber(count)}
-			</span> */}
+			</span>
 		</Button>
 	);
 }

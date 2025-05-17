@@ -6,7 +6,13 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { PostPayload } from "@/lib/validation/post";
 import { formatDistanceToNow } from "date-fns";
 import { formatNumber, cn } from "@/lib/utils";
-import { Heart, MessageCircle, Clock, ArrowUpRight } from "lucide-react";
+import {
+	Heart,
+	MessageCircle,
+	Clock,
+	ArrowUpRight,
+	Bookmark,
+} from "lucide-react";
 import BookmarkPostButton from "./BookmarkPostButton";
 import LikePostButton from "@/components/shared/LikePostButton";
 import TagBadge from "@/components/shared/TagBadge";
@@ -134,8 +140,8 @@ export default function PostCard({ post }: PostCardProps) {
 								initialCount={post.bookmarkCount}
 							/>
 						) : (
-							<div className="flex items-center gap-1.5 text-muted-foreground group/likes">
-								<Heart
+							<div className="flex items-center gap-1.5 text-muted-foreground group/bookmarks">
+								<Bookmark
 									className={cn(
 										"w-3.5 h-3.5",
 										userHasBookmarked && "fill-rose-500 text-rose-500"
