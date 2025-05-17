@@ -9,6 +9,22 @@ body {
 	text-rendering: optimizeLegibility;
 }
 
+@layer components {
+	/* Gradient text for post titles */
+	.gradient-text {
+		@apply bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400;
+	}
+
+	/* Enhanced prose styles for post content */
+	.prose img {
+		@apply rounded-lg shadow-md my-6;
+	}
+
+	.prose pre {
+		@apply bg-muted rounded-lg shadow-sm border border-border/40;
+	}
+}
+
 @layer base {
 	:root {
 		--background: 0 0% 100%;
