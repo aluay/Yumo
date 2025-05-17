@@ -84,18 +84,43 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 			if (method === "PATCH") {
 				if (res.ok) {
 					const data = await res.json();
+					// Clear sessionStorage on successful PATCH to ensure fresh data on next list view
+					if (typeof window !== "undefined") {
+						sessionStorage.removeItem("paginatedPosts_posts");
+						sessionStorage.removeItem("paginatedPosts_cursor");
+					}
 					if (data.slug) {
 						router.push(`/posts/${data.id}-${data.slug}`);
 					} else {
 						router.push(`/posts/${defaultValues?.id}`);
 					}
+				} else {
+					// Handle server-side error for post update
+					const errorData = await res.json();
+					setError(errorData.message || "Failed to update post.");
+					setSubmitting(false);
+					return;
 				}
 			} else {
-				const data = await res.json();
-				if (data.slug) {
-					router.push(`/posts/${data.id}-${data.slug}`);
+				// Successfully created a new post
+				if (res.ok) {
+					// Clear the cached posts list from sessionStorage using the correct keys
+					if (typeof window !== "undefined") {
+						sessionStorage.removeItem("paginatedPosts_posts");
+						sessionStorage.removeItem("paginatedPosts_cursor");
+					}
+					const data = await res.json();
+					if (data.slug) {
+						router.push(`/posts/${data.id}-${data.slug}`);
+					} else {
+						router.push(`/posts/${data.id}`);
+					}
 				} else {
-					router.push(`/posts/${data.id}`);
+					// Handle server-side error for new post creation
+					const errorData = await res.json();
+					setError(errorData.message || "Failed to create post.");
+					setSubmitting(false);
+					return; // Stop execution if post creation failed
 				}
 			}
 		} catch (err) {

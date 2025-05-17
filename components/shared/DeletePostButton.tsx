@@ -5,7 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { useTransition, useState } from "react";
 
-export default function DeletePostButton({ postId }: { postId: number }) {
+interface DeletePostButtonProps {
+	postId: number;
+	onDeleteSuccess?: () => void; // Make onDeleteSuccess optional
+}
+
+export default function DeletePostButton({
+	postId,
+	onDeleteSuccess,
+}: DeletePostButtonProps) {
 	const router = useRouter();
 	const [pending, startTransition] = useTransition();
 	const [error, setError] = useState("");
@@ -26,8 +34,21 @@ export default function DeletePostButton({ postId }: { postId: number }) {
 				throw new Error(data.error || "Something went wrong");
 			}
 
+			// Call onDeleteSuccess if it was provided (though not used in current setup from post page)
+			if (onDeleteSuccess) {
+				onDeleteSuccess();
+			}
+
+			// Clear session storage for paginated posts directly
+			if (typeof window !== "undefined") {
+				sessionStorage.removeItem("paginatedPosts_posts");
+				sessionStorage.removeItem("paginatedPosts_cursor");
+			}
+
 			startTransition(() => {
-				router.back();
+				// Navigate away since the post is deleted.
+				// Homepage is a sensible default.
+				router.push("/");
 			});
 		} catch (err) {
 			if (err instanceof Error) {
