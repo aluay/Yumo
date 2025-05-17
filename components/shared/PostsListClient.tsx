@@ -90,12 +90,46 @@ export default function PostsListClient({
 				sessionStorage.removeItem(SESSION_STORAGE_CURSOR_KEY);
 				sessionStorage.removeItem(SESSION_STORAGE_SORT_KEY);
 			}
+		} else {
+			// If posts aren't in storage (possibly cleared by like/bookmark),
+			// but sort preference is available, use that sort and fetch posts
+			if (storedSortValue && ["new", "top", "hot"].includes(storedSortValue)) {
+				const sortPref = storedSortValue as SortOption;
+				setSort(sortPref);
+
+				// Only fetch if the sort preference is different from initialSort
+				if (sortPref !== initialSort) {
+					// Fetch posts with the saved sort preference
+					const fetchPosts = async () => {
+						setLoading(true);
+						try {
+							const res = await fetch(
+								`/api/v1/posts?sort=${sortPref}&limit=10`
+							);
+							const json = await res.json();
+
+							if (res.ok && Array.isArray(json.data)) {
+								setPosts(json.data);
+								setCursor(json.nextCursor);
+							} else {
+								console.error("Failed to load posts with saved sort", json);
+							}
+						} catch (err) {
+							console.error("Failed to load posts with saved sort", err);
+						} finally {
+							setLoading(false);
+						}
+					};
+
+					fetchPosts();
+				}
+			}
 		}
 
 		if (!loadedFromStorage) {
 			// If nothing valid in sessionStorage, state already holds initialPosts/initialCursor from useState.
 		}
-	}, []); // Empty dependency array: runs only once on client-side mount
+	}, [initialSort]); // Include initialSort as a dependency
 	// Effect to save posts, cursor, and sort to sessionStorage when they change, only after hydration
 	useEffect(() => {
 		if (!hydrated) {

@@ -25,7 +25,7 @@ export default function LikePostButton({
 	const [animating, setAnimating] = useState(false);
 
 	const toggleLike = async () => {
-		if (!session?.user) return; // Animation effect when liking
+		if (!session?.user) return;
 		if (!liked) {
 			setAnimating(true);
 			setTimeout(() => setAnimating(false), 600);
@@ -40,6 +40,9 @@ export default function LikePostButton({
 		if (res.ok) {
 			setLiked(!liked);
 			setCount((c) => c + (liked ? -1 : 1));
+			// Clear posts and cursor from session storage but keep sort preference
+			sessionStorage.removeItem("paginatedPosts_posts");
+			sessionStorage.removeItem("paginatedPosts_cursor");
 		}
 
 		setLoading(false);

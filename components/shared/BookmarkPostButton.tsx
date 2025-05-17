@@ -5,29 +5,44 @@ import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
+// import { formatNumber } from "@/lib/utils";
 
 interface BookmarkButtonProps {
 	postId: number;
 	initialBookmarked: boolean;
+	initialCount: number;
 }
 
 export default function BookmarkPostButton({
 	postId,
 	initialBookmarked,
-}: BookmarkButtonProps) {
-	const [bookmarked, setBookmarked] = useState(initialBookmarked);
-	const [loading, setLoading] = useState(false);
+}: // initialCount,
+BookmarkButtonProps) {
 	const { data: session } = useSession();
+	const [bookmarked, setBookmarked] = useState(initialBookmarked);
+	// const [count, setCount] = useState(initialCount);
+	const [loading, setLoading] = useState(false);
+	const [animating, setAnimating] = useState(false);
 
 	const toggleBookmark = async () => {
 		if (!session?.user) return;
+		if (!bookmarked) {
+			setAnimating(true);
+			setTimeout(() => setAnimating(false), 600);
+		}
+
 		setLoading(true);
+		const method = bookmarked ? "DELETE" : "POST";
 		const res = await fetch(`/api/v1/posts/${postId}/bookmark`, {
-			method: bookmarked ? "DELETE" : "POST",
+			method,
 		});
 
 		if (res.ok) {
 			setBookmarked(!bookmarked);
+			// setCount((c) => c + (bookmarked ? -1 : 1));
+			// Clear posts and cursor from session storage but keep sort preference
+			sessionStorage.removeItem("paginatedPosts_posts");
+			sessionStorage.removeItem("paginatedPosts_cursor");
 		}
 
 		setLoading(false);
@@ -51,14 +66,22 @@ export default function BookmarkPostButton({
 					"absolute inset-0 bg-amber-500/10 rounded-md opacity-0 transition-opacity duration-150",
 					bookmarked ? "opacity-100" : "group-hover/bookmark-btn:opacity-70"
 				)}></span>
-			{bookmarked ? (
-				<Bookmark className="h-3.5 w-3.5 fill-amber-500 relative z-10 transition-colors duration-150 ease-in-out" />
-			) : (
-				<Bookmark className="h-3.5 w-3.5 relative z-10 transition-colors duration-150 ease-in-out group-hover/bookmark-btn:text-amber-500" />
-			)}
-			<span className="sr-only">
-				{bookmarked ? "Remove Bookmark" : "Save Post"}
-			</span>
+			<Bookmark
+				className={cn(
+					"h-3.5 w-3.5 relative z-10 transition-colors duration-150",
+					bookmarked && "fill-amber-500",
+					animating && "animate-heartbeat",
+					!bookmarked && "group-hover/bookmark-btn:text-amber-500"
+				)}
+			/>{" "}
+			{/* <span
+				className={cn(
+					"text-xs relative z-10 transition-colors duration-150",
+					bookmarked && "text-amber-500",
+					!bookmarked && "group-hover/bookmark-btn:text-amber-500"
+				)}>
+				{formatNumber(count)}
+			</span> */}
 		</Button>
 	);
 }

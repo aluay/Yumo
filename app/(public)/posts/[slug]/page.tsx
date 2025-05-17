@@ -141,6 +141,7 @@ export default async function PostViewPage({
 								<BookmarkPostButton
 									postId={post.id}
 									initialBookmarked={userHasBookmarked}
+									initialCount={post.bookmarkCount}
 								/>
 								{readingTime.words > 0 && (
 									<div className="flex items-center gap-1.5 text-xs text-muted-foreground border-l border-border/60 pl-2">

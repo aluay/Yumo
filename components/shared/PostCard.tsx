@@ -127,10 +127,30 @@ export default function PostCard({ post }: PostCardProps) {
 						</div>
 					</div>
 					<div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-						<BookmarkPostButton
-							postId={post.id}
-							initialBookmarked={userHasBookmarked}
-						/>
+						{userId ? (
+							<BookmarkPostButton
+								postId={post.id}
+								initialBookmarked={userHasBookmarked}
+								initialCount={post.bookmarkCount}
+							/>
+						) : (
+							<div className="flex items-center gap-1.5 text-muted-foreground group/likes">
+								<Heart
+									className={cn(
+										"w-3.5 h-3.5",
+										userHasBookmarked && "fill-rose-500 text-rose-500"
+									)}
+								/>
+								<span
+									className={cn(
+										"relative",
+										userHasBookmarked && "text-rose-500"
+									)}>
+									{formatNumber(post.bookmarkCount)}
+									<span className="absolute inset-0 bg-gradient-to-r from-transparent via-rose-200/20 to-transparent opacity-0 group-hover/likes:opacity-100 animate-shine"></span>
+								</span>
+							</div>
+						)}
 						{readingTime.words > 0 && (
 							<span className="text-xs text-muted-foreground whitespace-nowrap bg-muted/60 rounded px-2 py-0.5 ml-1">
 								{readingTime.display}
