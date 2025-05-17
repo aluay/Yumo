@@ -7,7 +7,7 @@ import ProfileDropdown from "@/components/shared/ProfileDropdown";
 import { useSession, signOut } from "next-auth/react";
 import SearchBar from "./SearchBar";
 import NotificationMenu from "@/components/shared/NotificationMenu";
-import { Menu, X, Edit, Home, Tag, Users } from "lucide-react";
+import { Menu, X, Edit, Home, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,7 +30,6 @@ export default function NavBar() {
 			? [{ href: "/posts/new", label: "Create", icon: <Edit /> }]
 			: []),
 		{ href: "/tags", label: "Tags", icon: <Tag /> },
-		{ href: "/users", label: "Users", icon: <Users /> },
 	];
 	return (
 		<>

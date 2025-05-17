@@ -23,7 +23,7 @@ export default async function TagsPage({
 	if (!posts.length) {
 		return (
 			<PageLayout>
-				<div className="flex items-center justify-between mb-6">
+				<div className="space-y-6 max-w-7xl mx-auto mb-6">
 					<h1 className="text-2xl font-bold">#{tagName}</h1>
 					{session?.user && (
 						<FollowTagButton tag={tagName} initialIsFollowing={isFollowing} />
@@ -41,15 +41,15 @@ export default async function TagsPage({
 
 	return (
 		<PageLayout>
-			<div className="flex items-center justify-between mb-6">
+			<div className="space-y-6 max-w-7xl mx-auto mb-6">
 				<h1 className="text-2xl font-bold">#{tagName}</h1>
 				{session?.user && (
 					<FollowTagButton tag={tagName} initialIsFollowing={isFollowing} />
 				)}{" "}
 			</div>
-			<div className="space-y-6">
+			<div className="space-y-6 max-w-7xl mx-auto">
 				{posts.map((post) => (
-					<div key={post.id} className="w-full">
+					<div key={post.id}>
 						<PostCard post={post} />
 					</div>
 				))}

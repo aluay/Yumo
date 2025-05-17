@@ -23,6 +23,57 @@ body {
 	.prose pre {
 		@apply bg-muted rounded-lg shadow-sm border border-border/40;
 	}
+
+	/* Tag card styles */
+	.tag-card {
+		@apply transition-all duration-300;
+	}
+
+	.tag-card:hover {
+		@apply translate-y-[-3px];
+	}
+
+	/* Tag badge enhancements */
+	.tag-badge {
+		@apply relative overflow-hidden transition-all duration-300 ease-in-out;
+	}
+
+	.tag-badge:hover {
+		@apply shadow-md scale-[1.03];
+	}
+
+	/* Search field styling */
+	.tag-search-field {
+		@apply relative transition-all duration-200;
+	}
+
+	.tag-search-field:focus-within {
+		@apply ring-2 ring-primary/30 ring-offset-1;
+	}
+
+	/* Tag page additional styles */
+	@keyframes pulse-subtle {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.7;
+		}
+	}
+
+	.animate-pulse-subtle {
+		animation: pulse-subtle 3s infinite;
+	}
+
+	/* Tag cards hover states */
+	.tag-card .tag-hover-effect {
+		@apply absolute bottom-0 left-0 w-full h-0 bg-gradient-to-t from-primary/5 to-transparent transition-all duration-300;
+	}
+
+	.tag-card:hover .tag-hover-effect {
+		@apply h-full;
+	}
 }
 
 @layer base {

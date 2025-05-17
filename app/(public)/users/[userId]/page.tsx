@@ -47,7 +47,7 @@ export default async function userPage({
 	return (
 		<PageLayout>
 			{/* Hero section with profile cover */}
-			<div className="relative w-full h-24 sm:h-34 md:h-44 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg mb-16 overflow-visible">
+			<div className="relative max-w-7xl mx-auto h-24 sm:h-34 md:h-44 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg mb-16 overflow-visible">
 				{/* Background pattern overlay */}
 				<div
 					className="absolute inset-0 opacity-10"
