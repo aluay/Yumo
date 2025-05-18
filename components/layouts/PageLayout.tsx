@@ -28,7 +28,7 @@ export default function PageLayout({
 					<main className="flex-1">{children}</main>
 
 					{sidebarRight && (
-						<aside className="hidden xl:block w-64">{sidebarRight}</aside>
+						<aside className="hidden xl:block w-64 h-fit">{sidebarRight}</aside>
 					)}
 				</div>
 			</div>
