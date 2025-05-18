@@ -1,19 +1,37 @@
 import NavBar from "@/components/shared/NavBar";
 
+type PageLayoutProps = {
+	children: React.ReactNode;
+	sidebarLeft?: React.ReactNode;
+	sidebarRight?: React.ReactNode;
+};
+
 export default function PageLayout({
 	children,
-}: {
-	children: React.ReactNode;
-}) {
+	sidebarLeft,
+	sidebarRight,
+}: PageLayoutProps) {
 	return (
-		<div className="min-h-screen">
-			{" "}
+		<div className="min-h-screen flex flex-col">
 			<header className="fixed top-0 z-50 w-full border-b bg-background">
-				<div className="mx-auto w-full px-4 flex items-center justify-between h-12">
+				<div className="mx-auto w-full px-4 h-12 flex items-center justify-between">
 					<NavBar />
 				</div>
 			</header>
-			<main className="pt-24 px-4 sm:px-6 lg:px-8 py-8">{children}</main>
+
+			<div className="flex-grow flex flex-col pt-16">
+				<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex gap-4 py-8">
+					{sidebarLeft && (
+						<aside className="hidden lg:block w-64">{sidebarLeft}</aside>
+					)}
+
+					<main className="flex-1">{children}</main>
+
+					{sidebarRight && (
+						<aside className="hidden xl:block w-64">{sidebarRight}</aside>
+					)}
+				</div>
+			</div>
 		</div>
 	);
 }
