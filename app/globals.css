@@ -23,10 +23,30 @@ body {
 	.prose pre {
 		@apply bg-muted rounded-lg shadow-sm border border-border/40;
 	}
-
 	/* Tag card styles */
 	.tag-card {
 		@apply transition-all duration-300;
+	}
+
+	/* Pulse animation for sign-in button */
+	.pulse-animation {
+		@apply relative overflow-hidden;
+	}
+
+	.pulse-animation::after {
+		content: "";
+		@apply absolute inset-0 bg-primary/10 rounded-full;
+		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+
+	@keyframes pulse {
+		0%,
+		100% {
+			opacity: 0;
+		}
+		50% {
+			opacity: 1;
+		}
 	}
 
 	.tag-card:hover {

@@ -1,8 +1,9 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-export default function SignInButton() {
+export default function SignInButton({ className, ...props }: ButtonProps) {
 	// Handle sign in
 	const handleSignIn = async () => {
 		const result = await signIn("google", { callbackUrl: "/" });
@@ -14,8 +15,12 @@ export default function SignInButton() {
 		<Button
 			size="sm"
 			onClick={handleSignIn}
-			className="font-medium rounded-full px-4 py-2 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary">
-			Sign In
+			className={cn(
+				"font-medium rounded-full px-4 py-2 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary",
+				className
+			)}
+			{...props}>
+			Sign In With Google
 		</Button>
 	);
 }
