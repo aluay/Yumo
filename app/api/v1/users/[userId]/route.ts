@@ -43,9 +43,7 @@ export async function GET(
 			email: true,
 			image: true,
 			createdAt: true,
-			// aggregate counts if you like:
 			_count: { select: { posts: true, comments: true } },
-			// Add follower/following counts
 			followers: { select: { followerId: true } },
 			following: { select: { followingId: true } },
 		},

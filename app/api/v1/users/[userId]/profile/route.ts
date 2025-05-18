@@ -4,29 +4,6 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { profileInputSchema } from "@/lib/validation/post";
 
-// import { z } from "zod";
-// import type { JSONContent } from "@tiptap/react";
-
-/* ------------------------------------------------------------------ */
-/* Validation for PATCH                                               */
-/* ------------------------------------------------------------------ */
-// const jsonDoc = z
-// 	.custom<JSONContent | null>((val) => {
-// 		if (val === null) return true;
-// 		return typeof val === "object" && (val as JSONContent).type === "doc";
-// 	})
-// 	.optional();
-
-// const patchSchema = z
-// 	.object({
-// 		name: z.string().min(2).max(60),
-// 		email: z.string().email(),
-// 		website: z.string().max(120).optional(),
-// 		bio: z.string().max(1000).optional(),
-// 		pageContent: jsonDoc,
-// 	})
-// 	.refine((v) => Object.keys(v).length > 0, { message: "No fields provided" });
-
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */
 /* ------------------------------------------------------------------ */

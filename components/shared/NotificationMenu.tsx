@@ -166,9 +166,6 @@ export default function NotificationMenu() {
 			await handleMarkAsRead(notification.id);
 		}
 
-		// Close the dropdown menu programmatically if needed
-		// For example, you might need to set some state to close it
-
 		// Navigate to the target URL if available
 		if (notification.actionUrl) {
 			router.push(notification.actionUrl);

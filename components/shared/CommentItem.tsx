@@ -7,7 +7,6 @@ import CommentForm from "./CommentForm";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import RichContentViewer from "@/components/shared/RichContentViewer";
-// import { PostCommentsInterface } from "@/lib/validation/post";
 import { cn } from "@/lib/utils";
 import { JSONContent } from "novel";
 

@@ -196,7 +196,6 @@ export async function PATCH(
 				},
 			});
 
-			// ...existing tag upsert logic if present...
 			return post;
 		});
 		return NextResponse.json(updatedPost);
