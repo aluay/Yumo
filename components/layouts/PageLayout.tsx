@@ -14,13 +14,13 @@ export default function PageLayout({
 	return (
 		<div className="min-h-screen flex flex-col">
 			<header className="fixed top-0 z-50 w-full border-b bg-background">
-				<div className="mx-auto w-full px-4 h-12 flex items-center justify-between">
+				<div className="mx-auto w-full h-12 flex items-center justify-between">
 					<NavBar />
 				</div>
 			</header>
 
-			<div className="flex-grow flex flex-col pt-16">
-				<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex gap-4 py-8">
+			<div className="flex-grow flex flex-col pt-16 px-4">
+				<div className="mx-auto w-full max-w-7xl flex gap-4 py-8">
 					{sidebarLeft && (
 						<aside className="hidden lg:block w-64">{sidebarLeft}</aside>
 					)}

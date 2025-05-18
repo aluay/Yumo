@@ -5,7 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, FileText } from "lucide-react";
+import { Loader2, FileText, Timer, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUserActivities } from "@/lib/api/getUserActivities";
 import { ActivityLog } from "@/lib/validation/post";
@@ -129,12 +129,13 @@ export default function RecentActivity() {
 	if (!session?.user?.id) {
 		return (
 			<Card className="border h-full">
-				<CardHeader className="pb-3">
-					<CardTitle className="text-lg font-medium flex items-center">
-						<FileText className="h-4 w-4 mr-2" />
+				<CardHeader className="pt-3 pb-3 mb-4 border-b">
+					<CardTitle className="flex items-center text-base text-muted-foreground flex items-center gap-2">
+						<Users className="w-4 h-4" />
 						Join Our Community
 					</CardTitle>
 				</CardHeader>
+
 				<CardContent>
 					<div className="flex flex-col items-center justify-center py-6 gap-5 text-center">
 						<div className="space-y-3">
@@ -161,9 +162,9 @@ export default function RecentActivity() {
 	}
 	return (
 		<Card className="border h-full overflow-hidden flex flex-col">
-			<CardHeader className="pb-3 flex-shrink-0">
-				<CardTitle className="text-lg font-medium flex items-center">
-					<FileText className="h-4 w-4 mr-2" />
+			<CardHeader className="pt-3 pb-3 mb-4 border-b">
+				<CardTitle className="flex items-center text-base text-muted-foreground flex items-center gap-2">
+					<Timer className="w-4 h-4" />
 					Recent Activity
 				</CardTitle>
 			</CardHeader>
