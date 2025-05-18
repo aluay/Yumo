@@ -46,37 +46,36 @@ export default function RecentActivity() {
 			console.error("Error formatting timestamp:", err);
 			return "Unknown time";
 		}
-	};
-	// Get subtle background color based on activity type
+	};	// Get gradient background for activity type - very subtle
 	const getActivityStyle = (type: string) => {
 		switch (type) {
 			case "POST_CREATED":
 				return {
-					bg: "bg-green-500/5",
+					gradient: "bg-gradient-to-r from-green-500/5 to-emerald-500/3",
 				};
 			case "POST_LIKED":
 				return {
-					bg: "bg-red-500/5",
+					gradient: "bg-gradient-to-r from-red-500/5 to-pink-500/3",
 				};
 			case "POST_BOOKMARKED":
 				return {
-					bg: "bg-blue-500/5",
+					gradient: "bg-gradient-to-r from-blue-500/5 to-cyan-500/3",
 				};
 			case "COMMENT_POSTED":
 				return {
-					bg: "bg-yellow-500/5",
+					gradient: "bg-gradient-to-r from-yellow-500/5 to-amber-500/3",
 				};
 			case "COMMENT_LIKED":
 				return {
-					bg: "bg-purple-500/5",
+					gradient: "bg-gradient-to-r from-purple-500/5 to-fuchsia-500/3",
 				};
 			case "USER_FOLLOWED":
 				return {
-					bg: "bg-indigo-500/5",
+					gradient: "bg-gradient-to-r from-indigo-500/5 to-violet-500/3",
 				};
 			default:
 				return {
-					bg: "bg-gray-500/5",
+					gradient: "bg-gradient-to-r from-gray-500/5 to-slate-500/3",
 				};
 		}
 	};
@@ -185,12 +184,11 @@ export default function RecentActivity() {
 
 							return (
 								<div key={activity.id} className="group relative w-full">
-									<Link href={url} className="w-full block">
-										<div
+									<Link href={url} className="w-full block">										<div
 											className={cn(
 												"flex flex-col items-start gap-3 p-3 rounded-md transition-colors w-full",
 												"hover:bg-accent/50 cursor-pointer border border-transparent hover:border-border",
-												style.bg
+												style.gradient
 											)}>
 											<p className="text-sm font-medium break-words hyphens-auto overflow-wrap-anywhere">
 												{message}
