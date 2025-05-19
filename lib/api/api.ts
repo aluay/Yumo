@@ -3,6 +3,7 @@ import { prisma } from "../db";
 import { JSONContent } from "novel";
 import { NotificationPayload } from "@/lib/validation/post";
 import { Prisma } from "@prisma/client";
+import { subDays } from "date-fns";
 
 const BASE_URL =
 	typeof window === "undefined"
@@ -643,4 +644,84 @@ export async function getUserBookmarkedPosts({
 		console.error("Error fetching bookmarked posts:", error);
 		return { data: [], totalCount: 0 };
 	}
+}
+
+/*-----------------------------------------------------------------*/
+/*-----------------GET FEATURED POSTS (for FeaturedPosts)----------*/
+/*-----------------------------------------------------------------*/
+export async function getFeaturedPosts({ limit = 5 }: { limit?: number } = {}) {
+	const MAX_FEATURED_POSTS = limit;
+	const last7Days = subDays(new Date(), 7);
+	const last14Days = subDays(new Date(), 14);
+
+	// Fetch posts with all the metrics we need for scoring
+	const posts = await prisma.post.findMany({
+		where: {
+			status: "PUBLISHED",
+			deletedAt: null,
+			reportCount: {
+				lt: 4, // Exclude posts with high report count
+			},
+		},
+		orderBy: {
+			createdAt: "desc", // Initially sort by recency
+		},
+		take: 30, // Get more than we need to apply our scoring algorithm
+		select: {
+			id: true,
+			title: true,
+			slug: true,
+			likeCount: true,
+			bookmarkCount: true,
+			commentCount: true,
+			viewCount: true,
+			reportCount: true,
+			createdAt: true,
+			tags: true,
+			author: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+		},
+	});
+
+	// Score and sort posts
+	const scoredPosts = posts
+		.map((post) => {
+			const createdAt = new Date(post.createdAt);
+			let score = 0;
+			score += post.likeCount * 0.4;
+			score += post.bookmarkCount * 0.25;
+			score += post.commentCount * 0.2;
+			score += post.viewCount * 0.1;
+			score -= post.reportCount * 1.0;
+			if (createdAt >= last7Days) {
+				score *= 1.25;
+			} else if (createdAt >= last14Days) {
+				score *= 1.1;
+			}
+			return {
+				...post,
+				score,
+				createdAt:
+					post.createdAt instanceof Date
+						? post.createdAt.toISOString()
+						: post.createdAt,
+			};
+		})
+		.sort((a, b) => b.score - a.score)
+		.slice(0, MAX_FEATURED_POSTS);
+
+	return scoredPosts.map((post) => ({
+		id: post.id,
+		title: post.title,
+		slug: post.slug,
+		likeCount: post.likeCount,
+		commentCount: post.commentCount ?? 0,
+		createdAt: post.createdAt,
+		tags: post.tags && post.tags.length > 0 ? [post.tags[0]] : [],
+		author: post.author,
+	}));
 }
