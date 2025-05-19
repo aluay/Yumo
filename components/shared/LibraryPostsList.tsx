@@ -55,12 +55,11 @@ export default function LibraryPostsList({
 		});
 		return Array.from(tagSet).sort();
 	}, [posts]);
-
 	// Filter posts based on selected tags
 	const filteredPosts = useMemo(() => {
 		if (selectedTags.length === 0) return posts;
 		return posts.filter((bookmarkedPost) =>
-			selectedTags.every((tag) => bookmarkedPost.post.tags?.includes(tag))
+			selectedTags.some((tag) => bookmarkedPost.post.tags?.includes(tag))
 		);
 	}, [posts, selectedTags]);
 
