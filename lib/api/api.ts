@@ -593,112 +593,42 @@ export async function getTopTags(
 /*-----------------------------------------------------------------*/
 export async function getUserBookmarkedPosts({
 	userId,
-	sort = "recent",
-	limit = 10,
-	cursor,
 	includeCount = false,
 }: {
 	userId: number;
-	sort?: "recent" | "oldest";
-	limit?: number;
-	cursor?: string | null;
 	includeCount?: boolean;
 }) {
-	// Define the order based on sort parameter
-	const orderBy: Prisma.PostBookmarkOrderByWithRelationInput = {
-		createdAt: sort === "oldest" ? "asc" : "desc",
-	};
-
-	// Parse cursor if provided
-	let cursorData: { createdAt: Date; postId: number } | undefined;
-	if (cursor) {
-		const [timestamp, postId] = cursor.split("_");
-		cursorData = {
-			createdAt: new Date(Number(timestamp)),
-			postId: Number(postId),
-		};
-	}
-
 	try {
 		// Get total count if requested
 		const totalCount = includeCount
 			? await prisma.postBookmark.count({ where: { userId } })
 			: undefined;
 
-		// Get bookmarks with their associated posts directly from the database
+		// Get all bookmarks with minimal post data
 		const bookmarks = await prisma.postBookmark.findMany({
-			where: {
-				userId,
-				...(cursorData
-					? {
-							// Filter for cursor-based pagination
-							OR: [
-								{
-									createdAt: {
-										[sort === "oldest" ? "gt" : "lt"]: cursorData.createdAt,
-									},
-								},
-								{
-									AND: [
-										{ createdAt: cursorData.createdAt },
-										{
-											postId: {
-												[sort === "oldest" ? "gt" : "lt"]: cursorData.postId,
-											},
-										},
-									],
-								},
-							],
-					  }
-					: {}),
-			},
-			orderBy: [
-				orderBy,
-				{ postId: sort === "oldest" ? "asc" : "desc" }, // Secondary sort for stable pagination
-			],
-			take: limit + 1, // +1 to check if there's more
+			where: { userId },
+			orderBy: { createdAt: "desc" },
 			include: {
 				post: {
 					select: {
 						id: true,
 						title: true,
-						description: true,
 						tags: true,
-						content: true,
-						status: true,
-						likeCount: true,
-						bookmarkCount: true,
-						commentCount: true,
 						createdAt: true,
 						updatedAt: true,
 						author: {
 							select: { id: true, name: true, image: true },
 						},
-						likes: { select: { userId: true } },
-						bookmarks: { select: { userId: true } },
 						slug: true,
 					},
 				},
 			},
 		});
 
-		// Check if there are more results
-		const hasMore = bookmarks.length > limit;
-		if (hasMore) bookmarks.pop(); // Remove the extra item
-
-		// Format the next cursor
-		const nextCursor =
-			hasMore && bookmarks.length > 0
-				? `${bookmarks[bookmarks.length - 1].createdAt.getTime()}_${
-						bookmarks[bookmarks.length - 1].postId
-				  }`
-				: null;
-
 		// Transform results to include bookmark date and post data
 		const results = bookmarks.map((bookmark) => ({
 			post: {
 				...bookmark.post,
-				content: bookmark.post.content as JSONContent,
 				createdAt: bookmark.post.createdAt.toISOString(),
 				updatedAt: bookmark.post.updatedAt.toISOString(),
 			},
@@ -707,11 +637,10 @@ export async function getUserBookmarkedPosts({
 
 		return {
 			data: results,
-			nextCursor,
 			totalCount,
 		};
 	} catch (error) {
 		console.error("Error fetching bookmarked posts:", error);
-		return { data: [], nextCursor: null, totalCount: 0 };
+		return { data: [], totalCount: 0 };
 	}
 }

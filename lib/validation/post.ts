@@ -40,9 +40,25 @@ export const postPayloadSchema = postInputSchema.extend({
 	slug: z.string(),
 });
 
+// MINIMAL LIBRARY POST PAYLOAD – for library/bookmarked posts only
+export const libraryPostPayloadSchema = z.object({
+	id: z.number(),
+	title: z.string(),
+	tags: z.array(z.string()),
+	createdAt: z.string(),
+	updatedAt: z.string(),
+	author: z.object({
+		id: z.number(),
+		name: z.string(),
+		image: z.string().nullable(),
+	}),
+	slug: z.string(),
+});
+
 // Types inferred from the schemas
 export type PostInput = z.infer<typeof postInputSchema>;
 export type PostPayload = z.infer<typeof postPayloadSchema>;
+export type LibraryPostPayload = z.infer<typeof libraryPostPayloadSchema>;
 
 /*-----------------------------------------------------------------*/
 /*-----------------------------COMMENTS----------------------------*/

@@ -4,10 +4,7 @@ import LibraryPostsList from "@/components/shared/LibraryPostsList";
 import PageLayout from "@/components/layouts/PageLayout";
 import { getUserBookmarkedPosts } from "@/lib/api/api";
 
-async function getBookmarkedPosts({
-	sort = "recent" as const,
-	limit = 10,
-} = {}) {
+async function getBookmarkedPosts() {
 	// Get the session directly
 	const session = await auth();
 	if (!session?.user) {
@@ -21,7 +18,7 @@ async function getBookmarkedPosts({
 
 	// Get user's bookmarked posts from the API and handle pagination
 	// Include the total count of bookmarks
-	return getUserBookmarkedPosts({ userId, sort, limit, includeCount: true });
+	return getUserBookmarkedPosts({ userId, includeCount: true });
 }
 
 export default async function LibraryPage() {
@@ -32,7 +29,7 @@ export default async function LibraryPage() {
 		redirect("/");
 	}
 	// Fetch bookmarked posts
-	const { data: posts, nextCursor } = await getBookmarkedPosts();
+	const { data: posts } = await getBookmarkedPosts();
 
 	return (
 		<PageLayout>
@@ -48,11 +45,7 @@ export default async function LibraryPage() {
 						{"A collection of posts you've bookmarked for later."}
 					</p>
 				</div>
-				<LibraryPostsList
-					initialPosts={posts}
-					initialCursor={nextCursor}
-					initialSort="recent"
-				/>
+				<LibraryPostsList initialPosts={posts} initialSort="recent" />
 			</div>
 		</PageLayout>
 	);
