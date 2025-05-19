@@ -1,66 +1,52 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import { auth } from "@/lib/auth";
 import { formatDistanceToNow } from "date-fns";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, FileText, Timer } from "lucide-react";
+import { FileText, Timer } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getUserActivities } from "@/lib/api/getUserActivities";
-import { ActivityLog } from "@/lib/validation/post";
+import { getUserActivities } from "@/lib/api/api";
 import JoinCommunityCard from "./JoinCommunityCard";
+import { ActivityLog } from "@/lib/validation/post";
 
-export default function RecentActivity() {
-	const { data: session } = useSession();
-	const [activities, setActivities] = useState<ActivityLog[]>([]);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+export default async function RecentActivity() {
+	const session = await auth();
+	if (!session?.user?.id) {
+		return <JoinCommunityCard />;
+	}
 
-	useEffect(() => {
-		const fetchActivities = async () => {
-			if (!session?.user?.id) return;
+	let activities: ActivityLog[] = [];
+	let error: string | null = null;
+	try {
+		const response = await getUserActivities({
+			userId: Number(session.user.id),
+			limit: 10,
+		});
+		activities = response.activities.map((activity) => ({
+			...activity,
+			createdAt: new Date(activity.createdAt),
+		}));
+	} catch {
+		error = "Failed to load activities";
+	}
 
-			setLoading(true);
-			setError(null);
-
-			try {
-				const response = await getUserActivities({ limit: 10 });
-				setActivities(response.activities);
-			} catch (err) {
-				console.error("Failed to fetch activities:", err);
-				setError("Failed to load activities");
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchActivities();
-	}, [session?.user?.id]);
-
-	// Format timestamp to relative time
 	const formatTimestamp = (timestamp: string) => {
 		try {
 			return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
-		} catch (err) {
-			console.error("Error formatting timestamp:", err);
+		} catch {
 			return "Unknown time";
 		}
-	}; // Get gradient background for activity type - very subtle
-	const getActivityStyle = (type: string) => {
+	};
+
+	const getActivityStyle = (type: ActivityLog["type"]) => {
 		switch (type) {
 			case "POST_CREATED":
 				return {
 					gradient: "bg-gradient-to-r from-green-500/5 to-emerald-500/3",
 				};
 			case "POST_LIKED":
-				return {
-					gradient: "bg-gradient-to-r from-red-500/5 to-pink-500/3",
-				};
+				return { gradient: "bg-gradient-to-r from-red-500/5 to-pink-500/3" };
 			case "POST_BOOKMARKED":
-				return {
-					gradient: "bg-gradient-to-r from-blue-500/5 to-cyan-500/3",
-				};
+				return { gradient: "bg-gradient-to-r from-blue-500/5 to-cyan-500/3" };
 			case "COMMENT_POSTED":
 				return {
 					gradient: "bg-gradient-to-r from-yellow-500/5 to-amber-500/3",
@@ -74,21 +60,13 @@ export default function RecentActivity() {
 					gradient: "bg-gradient-to-r from-indigo-500/5 to-violet-500/3",
 				};
 			default:
-				return {
-					gradient: "bg-gradient-to-r from-gray-500/5 to-slate-500/3",
-				};
+				return { gradient: "bg-gradient-to-r from-gray-500/5 to-slate-500/3" };
 		}
 	};
-	// Generate activity message
+
 	const getActivityMessage = (activity: ActivityLog) => {
 		const { type, Post } = activity;
-
-		// Ensure post title isn't too long
-		const formatTitle = (title: string | undefined) => {
-			const postTitle = title || "Untitled";
-			return postTitle;
-		};
-
+		const formatTitle = (title?: string) => title || "Untitled";
 		switch (type) {
 			case "POST_CREATED":
 				return `You created a new post "${formatTitle(Post?.title)}"`;
@@ -107,27 +85,22 @@ export default function RecentActivity() {
 		}
 	};
 
-	// Get URL for the activity
 	const getActivityUrl = (activity: ActivityLog) => {
 		const { type, Post, targetId } = activity;
-
 		if (Post) {
-			if ("slug" in Post && Post.slug) {
-				return `/posts/${Post.slug}`;
+			// Post may or may not have a slug
+			const postWithSlug = Post as { id: number; title: string; slug?: string };
+			if (postWithSlug.slug) {
+				return `/posts/${postWithSlug.slug}`;
 			}
-			return `/posts/${Post.id}`;
+			return `/posts/${postWithSlug.id}`;
 		}
-
 		if (type === "USER_FOLLOWED" && targetId) {
 			return `/users/${targetId}`;
 		}
-
 		return "#";
 	};
-	// If no session, show welcome message
-	if (!session?.user?.id) {
-		return <JoinCommunityCard />;
-	}
+
 	return (
 		<Card className="border h-full overflow-hidden flex flex-col">
 			<CardHeader className="pt-3 pb-3 mb-4 border-b">
@@ -136,13 +109,8 @@ export default function RecentActivity() {
 					Recent Activity
 				</CardTitle>
 			</CardHeader>
-
 			<CardContent className="overflow-y-auto flex-grow p-2">
-				{loading && activities.length === 0 ? (
-					<div className="flex justify-center items-center py-10">
-						<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-					</div>
-				) : error ? (
+				{error ? (
 					<div className="text-center text-red-500 py-6">{error}</div>
 				) : activities.length > 0 ? (
 					<div className="space-y-2">
@@ -150,11 +118,9 @@ export default function RecentActivity() {
 							const style = getActivityStyle(activity.type);
 							const message = getActivityMessage(activity);
 							const url = getActivityUrl(activity);
-
 							return (
 								<div key={activity.id} className="group relative w-full">
 									<Link href={url} className="w-full block">
-										{" "}
 										<div
 											className={cn(
 												"flex flex-col items-start gap-3 p-3 rounded-md transition-colors w-full",
@@ -164,7 +130,6 @@ export default function RecentActivity() {
 											<p className="text-sm font-medium break-words hyphens-auto overflow-wrap-anywhere">
 												{message}
 											</p>
-
 											<div className="flex flex-wrap items-center gap-2 mt-1">
 												<span className="text-xs text-muted-foreground flex-shrink-0">
 													{formatTimestamp(activity.createdAt.toString())}

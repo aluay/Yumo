@@ -725,3 +725,50 @@ export async function getFeaturedPosts({ limit = 5 }: { limit?: number } = {}) {
 		author: post.author,
 	}));
 }
+
+/*-----------------------------------------------------------------*/
+/*-----------------GET USER ACTIVITY LOG---------------------------*/
+/*-----------------------------------------------------------------*/
+export async function getUserActivities({
+	userId,
+	limit = 10,
+}: {
+	userId: number;
+	limit?: number;
+}) {
+	const activities = await prisma.activity.findMany({
+		where: {
+			OR: [
+				{ userId }, // their own actions
+				{ mentions: { some: { userId } } }, // @mentions
+			],
+		},
+		orderBy: { id: "desc" },
+		take: limit,
+		select: {
+			id: true,
+			userId: true,
+			type: true,
+			targetId: true,
+			message: true,
+			createdAt: true,
+			Post: { select: { id: true, title: true, slug: true } },
+		},
+	});
+	return {
+		activities: activities.map((activity) => ({
+			...activity,
+			createdAt:
+				activity.createdAt instanceof Date
+					? activity.createdAt.toISOString()
+					: activity.createdAt,
+			Post: activity.Post
+				? {
+						id: activity.Post.id,
+						title: activity.Post.title,
+						slug: activity.Post.slug,
+				  }
+				: undefined,
+		})),
+	};
+}
