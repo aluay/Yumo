@@ -29,7 +29,7 @@ export default async function LibraryPage() {
 
 	// Redirect to login if not authenticated
 	if (!session?.user) {
-		redirect("/api/auth/signin");
+		redirect("/");
 	}
 	// Fetch bookmarked posts
 	const { data: posts, nextCursor } = await getBookmarkedPosts();
