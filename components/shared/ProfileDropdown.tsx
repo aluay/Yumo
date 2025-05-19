@@ -8,7 +8,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, House, PlusCircle } from "lucide-react";
+import { LogOut, House, PlusCircle, Bookmark } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -46,13 +46,18 @@ export default function UserDropdown({
 						<span>Home</span>
 					</DropdownMenuItem>
 
-					<DropdownMenuSeparator />
-
-					<DropdownMenuItem
+					<DropdownMenuSeparator />					<DropdownMenuItem
 						onClick={() => router.push("/posts/new")}
 						className="flex items-center gap-2.5 py-2 cursor-pointer">
 						<PlusCircle className="h-4 w-4" />
 						<span>New Post</span>
+					</DropdownMenuItem>
+
+					<DropdownMenuItem
+						onClick={() => router.push("/library")}
+						className="flex items-center gap-2.5 py-2 cursor-pointer">
+						<Bookmark className="h-4 w-4" />
+						<span>Library</span>
 					</DropdownMenuItem>
 
 					<DropdownMenuSeparator />

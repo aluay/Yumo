@@ -36,13 +36,16 @@ export default function BookmarkPostButton({
 		const res = await fetch(`/api/v1/posts/${postId}/bookmark`, {
 			method,
 		});
-
 		if (res.ok) {
 			setBookmarked(!bookmarked);
 			setCount((c) => c + (bookmarked ? -1 : 1));
 			// Clear posts and cursor from session storage but keep sort preference
 			sessionStorage.removeItem("paginatedPosts_posts");
 			sessionStorage.removeItem("paginatedPosts_cursor");
+			
+			// Also clear library storage to force refresh of bookmarked posts
+			sessionStorage.removeItem("library_posts");
+			sessionStorage.removeItem("library_cursor");
 		}
 
 		setLoading(false);

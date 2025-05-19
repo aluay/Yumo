@@ -36,13 +36,16 @@ export default function LikePostButton({
 		const res = await fetch(`/api/v1/posts/${postId}/like`, {
 			method,
 		});
-
 		if (res.ok) {
 			setLiked(!liked);
 			setCount((c) => c + (liked ? -1 : 1));
 			// Clear posts and cursor from session storage but keep sort preference
 			sessionStorage.removeItem("paginatedPosts_posts");
 			sessionStorage.removeItem("paginatedPosts_cursor");
+			
+			// Also clear library storage to maintain consistency when post data changes
+			sessionStorage.removeItem("library_posts");
+			sessionStorage.removeItem("library_cursor");
 		}
 
 		setLoading(false);
