@@ -52,8 +52,8 @@ export default function FeaturedPosts() {
 	return (
 		<Card className="mb-6 overflow-hidden">
 			<CardHeader className="pt-3 pb-3 mb-4 border-b">
-				<CardTitle className="flex items-center text-base text-muted-foreground flex items-center gap-2">
-					<Flame className="w-4 h-4" />
+				<CardTitle className="font-normal flex items-center text-base text-muted-foreground flex items-center gap-2">
+					<Flame className="w-4 h-4 text-orange-500" />
 					Featured Posts
 				</CardTitle>
 			</CardHeader>

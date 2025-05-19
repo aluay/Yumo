@@ -24,12 +24,19 @@ export default function NavBar() {
 		setMobileMenuOpen(false);
 	}, [pathname]);
 	const navLinks = [
-		{ href: "/", label: "Home", icon: <Home /> },
+		{ href: "/", label: "Home", icon: <Home />, color: "text-blue-500" },
 		// Only show Create if user is logged in
 		...(session?.user
-			? [{ href: "/posts/new", label: "Create", icon: <Edit /> }]
+			? [
+					{
+						href: "/posts/new",
+						label: "Create",
+						icon: <Edit />,
+						color: "text-green-500",
+					},
+			  ]
 			: []),
-		{ href: "/tags", label: "Tags", icon: <Tag /> },
+		{ href: "/tags", label: "Tags", icon: <Tag />, color: "text-red-500" },
 	];
 	return (
 		<>
@@ -72,7 +79,9 @@ export default function NavBar() {
 										? "bg-primary/10 text-primary"
 										: "text-muted-foreground hover:text-foreground hover:bg-accent"
 								)}>
-								{React.cloneElement(link.icon, { className: "h-4 w-4 mr-2" })}
+								{React.cloneElement(link.icon, {
+									className: `h-4 w-4 mr-2 ${link.color}`,
+								})}
 								{link.label}
 							</Link>
 						))}

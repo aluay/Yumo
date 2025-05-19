@@ -5,11 +5,11 @@ import { formatDistanceToNow } from "date-fns";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, FileText, Timer, Users } from "lucide-react";
+import { Loader2, FileText, Timer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUserActivities } from "@/lib/api/getUserActivities";
 import { ActivityLog } from "@/lib/validation/post";
-import SignInButton from "../auth/SignInButton";
+import JoinCommunityCard from "./JoinCommunityCard";
 
 export default function RecentActivity() {
 	const { data: session } = useSession();
@@ -46,7 +46,7 @@ export default function RecentActivity() {
 			console.error("Error formatting timestamp:", err);
 			return "Unknown time";
 		}
-	};	// Get gradient background for activity type - very subtle
+	}; // Get gradient background for activity type - very subtle
 	const getActivityStyle = (type: string) => {
 		switch (type) {
 			case "POST_CREATED":
@@ -126,44 +126,13 @@ export default function RecentActivity() {
 	};
 	// If no session, show welcome message
 	if (!session?.user?.id) {
-		return (
-			<Card className="border h-full">
-				<CardHeader className="pt-3 pb-3 mb-4 border-b">
-					<CardTitle className="flex items-center text-base text-muted-foreground flex items-center gap-2">
-						<Users className="w-4 h-4" />
-						Join Our Community
-					</CardTitle>
-				</CardHeader>
-
-				<CardContent>
-					<div className="flex flex-col items-center justify-center py-6 gap-5 text-center">
-						<div className="space-y-3">
-							<p className="text-sm font-medium leading-relaxed">
-								Yumo is a creative space for developers, engineers, and curious
-								minds to share insights, teach what they know, and explore ideas
-								from others.
-							</p>
-							<p className="text-xs text-muted-foreground mt-2">
-								Sign in to follow creators, teach, learn, and save the content
-								that inspires you
-							</p>
-						</div>
-						<div className="w-full">
-							<SignInButton className="w-full pulse-animation shadow-sm" />
-							<p className="text-xs text-muted-foreground mt-3 italic">
-								Join our growing community of tech enthusiasts
-							</p>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-		);
+		return <JoinCommunityCard />;
 	}
 	return (
 		<Card className="border h-full overflow-hidden flex flex-col">
 			<CardHeader className="pt-3 pb-3 mb-4 border-b">
-				<CardTitle className="flex items-center text-base text-muted-foreground flex items-center gap-2">
-					<Timer className="w-4 h-4" />
+				<CardTitle className="font-normal flex items-center text-base text-muted-foreground flex items-center gap-2">
+					<Timer className="w-4 h-4 text-purple-500" />
 					Recent Activity
 				</CardTitle>
 			</CardHeader>
@@ -184,7 +153,9 @@ export default function RecentActivity() {
 
 							return (
 								<div key={activity.id} className="group relative w-full">
-									<Link href={url} className="w-full block">										<div
+									<Link href={url} className="w-full block">
+										{" "}
+										<div
 											className={cn(
 												"flex flex-col items-start gap-3 p-3 rounded-md transition-colors w-full",
 												"hover:bg-accent/50 cursor-pointer border border-transparent hover:border-border",
