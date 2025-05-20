@@ -6,9 +6,9 @@ export default function JoinCommunityCard() {
 	return (
 		<Card className="border h-full">
 			<CardHeader className="pt-3 pb-3 mb-4 border-b">
-				<CardTitle className="font-normal flex items-center text-base text-muted-foreground flex items-center gap-2">
-					<Users className="w-4 h-4 text-sky-500" />
-					Join Our Community
+				<CardTitle className="font-normal flex items-center text-sm text-muted-foreground gap-2">
+					<Users className="w-4 h-4 text-blue-500" />
+					<span className="tracking-tight">Join Our Community</span>
 				</CardTitle>
 			</CardHeader>
 

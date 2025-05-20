@@ -9,20 +9,20 @@ export default async function FeaturedPosts() {
 	const posts = await getFeaturedPosts({ limit: 5 });
 
 	return (
-		<Card className="mb-6 overflow-hidden">
-			<CardHeader className="pt-3 pb-3 mb-4 border-b">
-				<CardTitle className="font-normal flex items-center text-base text-muted-foreground flex items-center gap-2">
+		<Card className="mb-4 overflow-hidden border-muted">
+			<CardHeader className="pt-2 pb-2 mb-2 border-b border-muted">
+				<CardTitle className="font-normal flex items-center text-sm text-muted-foreground gap-2">
 					<Flame className="w-4 h-4 text-orange-500" />
-					Featured Posts
+					<span className="tracking-tight">Featured Posts</span>
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="px-6 pb-6 pt-0">
+			<CardContent className="px-3 pb-3 pt-0">
 				{posts.length === 0 ? (
-					<div className="text-center py-4 text-muted-foreground">
+					<div className="text-center py-2 text-xs text-muted-foreground">
 						No featured posts available
 					</div>
 				) : (
-					<div className="space-y-4">
+					<div className="space-y-2">
 						{posts.map((post) => {
 							const postUrl = post.slug
 								? `/posts/${post.id}-${post.slug}`
@@ -30,17 +30,17 @@ export default async function FeaturedPosts() {
 							return (
 								<div
 									key={post.id}
-									className="group rounded-md p-2 -mx-2 hover:bg-primary/5 transition-colors duration-200">
+									className="group rounded p-1 -mx-1 hover:bg-primary/5 transition-colors duration-200">
 									<Link href={postUrl} className="block">
-										<div className="space-y-2">
-											<h3 className="line-clamp-2 font-medium group-hover:text-primary transition-colors">
+										<div className="space-y-1 p-2">
+											<h3 className="line-clamp-2 font-normal text-xs group-hover:text-primary/80 transition-colors">
 												{post.title}
 											</h3>
-											<p className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+											<p className="text-[11px] text-muted-foreground/80 hover:text-foreground transition-colors">
 												{post.author.name}
 											</p>
 											<div className="flex items-center justify-between">
-												<div className="flex items-center gap-3 text-xs text-muted-foreground">
+												<div className="flex items-center gap-2 text-[10px] text-muted-foreground/70">
 													<span className="flex items-center gap-1">
 														<Heart className="h-3 w-3" />
 														{formatNumber(post.likeCount)}
@@ -56,7 +56,7 @@ export default async function FeaturedPosts() {
 															<Badge
 																key={tag}
 																variant="outline"
-																className="text-[0.65rem] px-1 py-0 h-auto">
+																className="text-[0.6rem] px-1 py-0 h-auto border-muted-foreground/30 text-muted-foreground/80">
 																{tag}
 															</Badge>
 														))}

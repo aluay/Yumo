@@ -72,7 +72,7 @@ export default function PostCard({ post }: PostCardProps) {
 					href={postUrl}
 					className="flex-1 flex flex-col p-3 hover:bg-accent/5 relative group/content flex-grow">
 					<div className="mb-1.5 flex items-center gap-2">
-						<h2 className="text-lg sm:text-xl font-bold tracking-tight leading-tight line-clamp-2 hover:text-primary/80">
+						<h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-tight line-clamp-2 hover:text-primary/80">
 							{post.title}
 						</h2>
 					</div>

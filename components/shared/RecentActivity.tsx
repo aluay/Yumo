@@ -2,8 +2,7 @@ import { auth } from "@/lib/auth";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Timer } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Timer } from "lucide-react";
 import { getUserActivities } from "@/lib/api/api";
 import JoinCommunityCard from "./JoinCommunityCard";
 import { ActivityLog } from "@/lib/validation/post";
@@ -34,33 +33,6 @@ export default async function RecentActivity() {
 			return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
 		} catch {
 			return "Unknown time";
-		}
-	};
-
-	const getActivityStyle = (type: ActivityLog["type"]) => {
-		switch (type) {
-			case "POST_CREATED":
-				return {
-					gradient: "bg-gradient-to-r from-green-500/5 to-emerald-500/3",
-				};
-			case "POST_LIKED":
-				return { gradient: "bg-gradient-to-r from-red-500/5 to-pink-500/3" };
-			case "POST_BOOKMARKED":
-				return { gradient: "bg-gradient-to-r from-blue-500/5 to-cyan-500/3" };
-			case "COMMENT_POSTED":
-				return {
-					gradient: "bg-gradient-to-r from-yellow-500/5 to-amber-500/3",
-				};
-			case "COMMENT_LIKED":
-				return {
-					gradient: "bg-gradient-to-r from-purple-500/5 to-fuchsia-500/3",
-				};
-			case "USER_FOLLOWED":
-				return {
-					gradient: "bg-gradient-to-r from-indigo-500/5 to-violet-500/3",
-				};
-			default:
-				return { gradient: "bg-gradient-to-r from-gray-500/5 to-slate-500/3" };
 		}
 	};
 
@@ -102,38 +74,37 @@ export default async function RecentActivity() {
 	};
 
 	return (
-		<Card className="border h-full overflow-hidden flex flex-col">
-			<CardHeader className="pt-3 pb-3 mb-4 border-b">
-				<CardTitle className="font-normal flex items-center text-base text-muted-foreground flex items-center gap-2">
+		<Card className="mb-4 overflow-hidden border-muted">
+			<CardHeader className="pt-2 pb-2 mb-2 border-b border-muted">
+				<CardTitle className="font-normal flex items-center text-sm text-muted-foreground gap-2">
 					<Timer className="w-4 h-4 text-purple-500" />
-					Recent Activity
+					<span className="tracking-tight">Recent Activity</span>
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="overflow-y-auto flex-grow p-2">
+			<CardContent className="px-3 pb-3 pt-0">
 				{error ? (
-					<div className="text-center text-red-500 py-6">{error}</div>
+					<div className="text-center text-xs text-red-500 py-2">{error}</div>
 				) : activities.length > 0 ? (
 					<div className="space-y-2">
 						{activities.map((activity) => {
-							const style = getActivityStyle(activity.type);
 							const message = getActivityMessage(activity);
 							const url = getActivityUrl(activity);
 							return (
-								<div key={activity.id} className="group relative w-full">
-									<Link href={url} className="w-full block">
-										<div
-											className={cn(
-												"flex flex-col items-start gap-3 p-3 rounded-md transition-colors w-full",
-												"hover:bg-accent/50 cursor-pointer border border-transparent hover:border-border",
-												style.gradient
-											)}>
-											<p className="text-sm font-medium break-words hyphens-auto overflow-wrap-anywhere">
+								<div
+									key={activity.id}
+									className="group rounded p-1 -mx-1 hover:bg-primary/5 transition-colors duration-200">
+									<Link href={url} className="block">
+										<div className="space-y-1 p-2">
+											<p className="line-clamp-2 font-normal text-xs group-hover:text-primary/80 transition-colors">
 												{message}
 											</p>
-											<div className="flex flex-wrap items-center gap-2 mt-1">
-												<span className="text-xs text-muted-foreground flex-shrink-0">
-													{formatTimestamp(activity.createdAt.toString())}
-												</span>
+											<div className="flex items-center justify-between">
+												<div className="flex items-center gap-2 text-[10px] text-muted-foreground/70">
+													<span className="flex items-center gap-1">
+														<Timer className="h-3 w-3" />
+														{formatTimestamp(activity.createdAt.toString())}
+													</span>
+												</div>
 											</div>
 										</div>
 									</Link>
@@ -142,9 +113,8 @@ export default async function RecentActivity() {
 						})}
 					</div>
 				) : (
-					<div className="flex flex-col items-center justify-center py-10 text-center text-muted-foreground">
-						<FileText className="h-12 w-12 mb-4 opacity-50" />
-						<p>No recent activity found</p>
+					<div className="text-center py-2 text-xs text-muted-foreground">
+						No recent activity found
 					</div>
 				)}
 			</CardContent>
