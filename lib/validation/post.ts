@@ -19,6 +19,7 @@ export const postInputSchema = z.object({
 	),
 	tags: z.array(z.string()).max(5, "You can add up to 5 tags only"),
 	status: z.enum(["DRAFT", "PUBLISHED"]),
+	category: z.enum(["TUTORIAL", "DISCUSSION", "SHOWCASE", "EXPERIENCE"]),
 });
 
 // PAYLOAD – what the API returns to the client

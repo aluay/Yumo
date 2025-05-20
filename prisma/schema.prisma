@@ -79,13 +79,14 @@ model VerificationToken {
 
 /// ----------  POST  ----------
 model Post {
-  id          Int        @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   title       String
   description String
   content     Json // TipTap JSON
   tags        String[]
-  status      PostStatus @default(PUBLISHED)
-  slug        String     @unique
+  status      PostStatus   @default(PUBLISHED)
+  category    PostCategory @default(DISCUSSION)
+  slug        String       @unique
 
   // denormalised stats – cheap sort/filter
   likeCount     Int @default(0)
@@ -117,6 +118,14 @@ model Post {
 enum PostStatus {
   DRAFT
   PUBLISHED
+}
+
+/// Post category
+enum PostCategory {
+  TUTORIAL // Structured, step-by-step learning content
+  DISCUSSION // Thoughts, opinions, rants, or prompts to engage others
+  SHOWCASE // Sharing side projects, experiments, cool builds
+  EXPERIENCE // Journey, retrospectives, lessons learned, "how I failed/succeeded" stories
 }
 
 /// Like toggle table

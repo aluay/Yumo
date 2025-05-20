@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { PostPayload } from "@/lib/validation/post";
 import { formatDistanceToNow } from "date-fns";
 import { formatNumber, cn } from "@/lib/utils";
@@ -12,6 +13,10 @@ import {
 	Clock,
 	ArrowUpRight,
 	Bookmark,
+	BookOpen,
+	MessageSquare,
+	Sparkles,
+	History,
 } from "lucide-react";
 import BookmarkPostButton from "./BookmarkPostButton";
 import LikePostButton from "@/components/shared/LikePostButton";
@@ -71,11 +76,36 @@ export default function PostCard({ post }: PostCardProps) {
 				<Link
 					href={postUrl}
 					className="flex-1 flex flex-col p-3 hover:bg-accent/5 relative group/content flex-grow">
+					{" "}
 					<div className="mb-1.5 flex items-center gap-2">
 						<h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-tight line-clamp-2 hover:text-primary/80">
 							{post.title}
 						</h2>
 					</div>
+					{post.category && (
+						<div className="mb-4 flex items-center">
+							<Badge
+								variant="outline"
+								className="bg-background/80 text-xs p-0 gap-1 mr-2">
+								{post.category === "TUTORIAL" && (
+									<BookOpen className="w-3 h-3" />
+								)}
+								{post.category === "DISCUSSION" && (
+									<MessageSquare className="w-3 h-3" />
+								)}
+								{post.category === "SHOWCASE" && (
+									<Sparkles className="w-3 h-3" />
+								)}
+								{post.category === "EXPERIENCE" && (
+									<History className="w-3 h-3" />
+								)}
+								<span>
+									{post.category.charAt(0) +
+										post.category.slice(1).toLowerCase()}
+								</span>
+							</Badge>
+						</div>
+					)}
 					<div className="flex-grow">
 						<p className="text-muted-foreground text-xs line-clamp-2">
 							{post.description}
@@ -87,7 +117,6 @@ export default function PostCard({ post }: PostCardProps) {
 							<ArrowUpRight className="w-2.5 h-2.5" />
 						</div>
 					</div>
-
 					{post.tags?.length > 0 && (
 						<div className="flex flex-wrap gap-1.5 mt-auto animate-stagger-fade-in">
 							{post.tags.map((tag, index) => (

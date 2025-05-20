@@ -17,6 +17,10 @@ import {
 	Save,
 	SendIcon,
 	Tag,
+	BookOpen,
+	MessageSquare,
+	Sparkles,
+	History,
 } from "lucide-react";
 import {
 	Form,
@@ -35,6 +39,13 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import PostPreviewDialog from "@/components/shared/PostPreviewDialog";
 
@@ -63,6 +74,8 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 					},
 				],
 			},
+			status: "DRAFT",
+			category: "DISCUSSION", // Default category
 			...defaultValues,
 		},
 	});
@@ -72,7 +85,7 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 		setError(null);
 		try {
 			const endpoint = isEditing
-				? `/api/v1/posts/${defaultValues.id}`
+				? `/api/v1/posts/${defaultValues!.id}`
 				: "/api/v1/posts";
 			const method = isEditing ? "PATCH" : "POST";
 
@@ -186,7 +199,6 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 								</FormItem>
 							)}
 						/>
-
 						<FormField
 							control={form.control}
 							name="description"
@@ -210,8 +222,7 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 									<FormMessage />
 								</FormItem>
 							)}
-						/>
-
+						/>{" "}
 						<FormField
 							control={form.control}
 							name="tags"
@@ -239,14 +250,78 @@ export default function PostForm({ defaultValues }: PostFormProps) {
 								</FormItem>
 							)}
 						/>
-
+						<FormField
+							control={form.control}
+							name="category"
+							render={({ field }) => (
+								<FormItem className="transition-all duration-200 hover:shadow-sm rounded-lg p-1">
+									<FormLabel className="text-base font-semibold flex items-center gap-2">
+										<span className="text-primary flex items-center">
+											<BookOpen className="w-4 h-4 mr-1.5" />
+											Category
+										</span>
+										<Separator className="flex-1 h-px" />
+									</FormLabel>
+									<FormControl>
+										<Select
+											onValueChange={field.onChange}
+											value={field.value || "DISCUSSION"}>
+											<SelectTrigger className="flex justify-between items-center py-8">
+												<SelectValue placeholder="Select a category" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="DISCUSSION">
+													<div className="flex items-center">
+														<MessageSquare className="w-4 h-4 mr-2" />
+														<span className="font-medium">Discussion</span>
+													</div>
+													<div className="mt-1 text-xs text-muted-foreground">
+														Thoughts, opinions, or prompts to engage others.
+													</div>
+												</SelectItem>
+												<SelectItem value="TUTORIAL">
+													<div className="flex items-center">
+														<BookOpen className="w-4 h-4 mr-2" />
+														<span className="font-medium">Tutorial</span>
+													</div>
+													<div className="mt-1 text-xs text-muted-foreground">
+														Structured, step-by-step learning content.
+													</div>
+												</SelectItem>
+												<SelectItem value="SHOWCASE">
+													<div className="flex items-center">
+														<Sparkles className="w-4 h-4 mr-2" />
+														<span className="font-medium">Showcase</span>
+													</div>
+													<div className="mt-1 text-xs text-muted-foreground">
+														Sharing side projects, experiments, cool builds.
+													</div>
+												</SelectItem>
+												<SelectItem value="EXPERIENCE">
+													<div className="flex items-center">
+														<History className="w-4 h-4 mr-2" />
+														<span className="font-medium">Experience</span>
+													</div>
+													<div className="mt-1 text-xs text-muted-foreground">
+														Journey, retrospectives, lessons learned.
+													</div>
+												</SelectItem>
+											</SelectContent>
+										</Select>
+									</FormControl>
+									<FormDescription className="text-xs text-muted-foreground ml-1 mt-1.5">
+										Select a category that best describes your post content.
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<div className="relative py-3">
 							<Separator className="absolute left-0 right-0" />
 							<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-xs text-muted-foreground">
 								Content Editor
 							</div>
 						</div>
-
 						<FormField
 							control={form.control}
 							name="content"

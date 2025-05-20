@@ -88,7 +88,7 @@ export async function POST(req: Request) {
 	if (!parsed.success)
 		return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
 
-	const { title, description, tags, status, content } = parsed.data;
+	const { title, description, tags, status, content, category } = parsed.data;
 
 	try {
 		const newPost = await prisma.$transaction(async (tx) => {
@@ -104,6 +104,7 @@ export async function POST(req: Request) {
 					description,
 					tags,
 					status,
+					category,
 					content: content ?? { type: "doc", content: [] },
 					authorId: Number(session.user.id),
 					slug,

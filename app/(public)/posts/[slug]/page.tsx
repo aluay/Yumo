@@ -11,7 +11,14 @@ import BookmarkPostButton from "@/components/shared/BookmarkPostButton";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import DeletePostButton from "@/components/shared/DeletePostButton";
-import { Pencil, Clock } from "lucide-react";
+import {
+	Pencil,
+	Clock,
+	MessageSquare,
+	Sparkles,
+	History,
+	Footprints,
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { estimateReadingTime } from "@/lib/readingTime";
 import TagBadge from "@/components/shared/TagBadge";
@@ -78,11 +85,33 @@ export default async function PostViewPage({
 							</Link>
 						</Button>
 					</div>
-				)}
+				)}{" "}
 				{/* Hero Section */}{" "}
 				<header className="mb-10 relative">
 					{/* Title and Description */}
 					<div className="space-y-4 mb-8">
+						<div className="flex items-center gap-3 mb-2">
+							{post.category && (
+								<Badge variant="outline" className="p-0 flex items-center">
+									{post.category === "TUTORIAL" && (
+										<Footprints className="w-3.5 h-3.5 mr-1" />
+									)}
+									{post.category === "DISCUSSION" && (
+										<MessageSquare className="w-3.5 h-3.5 mr-1" />
+									)}
+									{post.category === "SHOWCASE" && (
+										<Sparkles className="w-3.5 h-3.5 mr-1" />
+									)}
+									{post.category === "EXPERIENCE" && (
+										<History className="w-3.5 h-3.5 mr-1" />
+									)}
+									<span>
+										{post.category.charAt(0) +
+											post.category.slice(1).toLowerCase()}
+									</span>
+								</Badge>
+							)}
+						</div>
 						<h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">
 							{post.title}
 						</h1>

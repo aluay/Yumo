@@ -33,9 +33,20 @@ export default async function FeaturedPosts() {
 									className="group rounded p-1 -mx-1 hover:bg-primary/5 transition-colors duration-200">
 									<Link href={postUrl} className="block">
 										<div className="space-y-1 p-2">
+											{" "}
 											<h3 className="line-clamp-2 font-normal text-xs group-hover:text-primary/80 transition-colors">
 												{post.title}
 											</h3>
+											{post.category && (
+												<div className="flex items-center my-0.5">
+													<Badge
+														variant="outline"
+														className="text-[0.6rem] px-1 py-0 h-auto border-muted-foreground/30 text-muted-foreground/80">
+														{post.category.charAt(0) +
+															post.category.slice(1).toLowerCase()}
+													</Badge>
+												</div>
+											)}
 											<p className="text-[11px] text-muted-foreground/80 hover:text-foreground transition-colors">
 												{post.author.name}
 											</p>

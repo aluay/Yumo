@@ -17,6 +17,7 @@ interface PostResult {
 	likeCount: number;
 	bookmarkCount: number;
 	createdAt: string | Date;
+	category?: string;
 }
 
 interface UserResult {
@@ -145,9 +146,18 @@ export default function SearchPage() {
 													href={`/posts/${post.id}`}
 													key={post.id}
 													className="block p-4 hover:bg-muted rounded-md transition-colors">
+													{" "}
 													<div className="font-medium text-lg">
 														{post.title}
 													</div>
+													{post.category && (
+														<div className="flex mt-1 mb-1">
+															<Badge variant="outline" className="text-xs">
+																{post.category.charAt(0) +
+																	post.category.slice(1).toLowerCase()}
+															</Badge>
+														</div>
+													)}
 													<div className="flex items-center text-sm text-muted-foreground mt-2">
 														<span className="mr-4">
 															{formatDate(post.createdAt)}

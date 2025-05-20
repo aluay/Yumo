@@ -50,6 +50,7 @@ export async function getPosts({
 			commentCount: true,
 			createdAt: true,
 			updatedAt: true,
+			category: true,
 			author: { select: { id: true, name: true, image: true } },
 			slug: true,
 		},
@@ -88,6 +89,7 @@ export async function getTagPosts(tagName: string): Promise<PostPayload[]> {
 			bookmarkCount: true,
 			createdAt: true,
 			updatedAt: true,
+			category: true,
 			author: {
 				select: { id: true, name: true, image: true },
 			},
@@ -125,6 +127,7 @@ export async function getPostById(postId: number): Promise<PostPayload | null> {
 			bookmarkCount: true,
 			createdAt: true,
 			updatedAt: true,
+			category: true,
 			author: {
 				select: { id: true, name: true, image: true },
 			},
@@ -278,6 +281,7 @@ export async function getUserProfile(userId: number): Promise<
 					status: true,
 					createdAt: true,
 					updatedAt: true,
+					category: true,
 					likes: { select: { userId: true } },
 					bookmarks: { select: { userId: true } },
 					likeCount: true,
@@ -677,6 +681,7 @@ export async function getFeaturedPosts({ limit = 5 }: { limit?: number } = {}) {
 			viewCount: true,
 			reportCount: true,
 			createdAt: true,
+			category: true,
 			tags: true,
 			author: {
 				select: {
@@ -719,6 +724,7 @@ export async function getFeaturedPosts({ limit = 5 }: { limit?: number } = {}) {
 		title: post.title,
 		slug: post.slug,
 		likeCount: post.likeCount,
+		category: post.category,
 		commentCount: post.commentCount ?? 0,
 		createdAt: post.createdAt,
 		tags: post.tags && post.tags.length > 0 ? [post.tags[0]] : [],

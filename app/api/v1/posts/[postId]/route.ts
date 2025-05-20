@@ -76,7 +76,7 @@ export async function PATCH(
 	if (!parsed.success)
 		return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
 
-	const { title, description, tags, status, content } = parsed.data;
+	const { title, description, tags, status, content, category } = parsed.data;
 
 	const updated = await prisma.post.update({
 		where: { id: Number(numericUserId) },
@@ -85,6 +85,7 @@ export async function PATCH(
 			...(description !== undefined && { description }),
 			...(tags !== undefined && { tags }),
 			...(status !== undefined && { status }),
+			...(category !== undefined && { category }),
 			...(content !== undefined && {
 				content: content ?? { type: "doc", content: [] },
 			}),
