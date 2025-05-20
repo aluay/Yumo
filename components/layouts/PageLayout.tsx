@@ -12,7 +12,7 @@ export default function PageLayout({
 	sidebarRight,
 }: PageLayoutProps) {
 	return (
-		<div className="min-h-screen flex flex-col">
+		<div className="min-h-screen flex flex-col bg-accent dark:bg-background">
 			<header className="fixed top-0 z-50 w-full border-b bg-background">
 				<div className="mx-auto w-full h-12 flex items-center justify-between">
 					<NavBar />

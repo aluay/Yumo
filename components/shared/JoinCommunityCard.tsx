@@ -26,9 +26,10 @@ export default function JoinCommunityCard() {
 						</p>
 					</div>
 					<div className="w-full">
-						<SignInButton className="w-full pulse-animation shadow-sm" />
+						<SignInButton />
 						<p className="text-xs text-muted-foreground mt-3 italic">
-							Join our growing community of tech enthusiasts
+							Join our community and start sharing your knowledge with the
+							world!
 						</p>
 					</div>
 				</div>
