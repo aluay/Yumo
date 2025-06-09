@@ -33,9 +33,10 @@ const forbidden = () =>
 /* ──────────────────────────────────────────────────────────────────── */
 export async function GET(
 	_req: Request,
-	{ params }: { params: { commentId: string } }
+	{ params }: { params: Promise<{ commentId: string }> }
 ) {
-	const id = Number(params.commentId);
+	const resolvedParams = await params;
+	const id = Number(resolvedParams.commentId);
 	const comment = await prisma.comment.findFirst({
 		where: { id, deletedAt: null },
 		select: {
@@ -59,13 +60,14 @@ export async function GET(
 /* ──────────────────────────────────────────────────────────────────── */
 export async function PATCH(
 	req: Request,
-	{ params }: { params: { commentId: string } }
+	{ params }: { params: Promise<{ commentId: string }> }
 ) {
 	const session = await auth();
 	if (!session?.user)
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const id = Number(params.commentId);
+	const resolvedParams = await params;
+	const id = Number(resolvedParams.commentId);
 	const comment = await prisma.comment.findUnique({
 		where: { id },
 		select: { authorId: true, deletedAt: true },

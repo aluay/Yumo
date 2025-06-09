@@ -3,7 +3,12 @@ import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { postInputSchema } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
-import { extractMentionedUserIds, recordActivity } from "@/lib/logActivity";
+import {
+	extractMentionedUserIds,
+	recordActivity,
+	ActivityType,
+	TargetType,
+} from "@/lib/logActivity";
 import { JSONContent } from "novel";
 import { slugify } from "@/lib/utils";
 import { nanoid } from "nanoid";
@@ -125,11 +130,10 @@ export async function POST(req: Request) {
 			}
 
 			const mentionedUserIds = extractMentionedUserIds(content as JSONContent);
-
 			await recordActivity(tx, {
 				actorId: Number(session.user.id),
-				type: "POST_CREATED",
-				targetType: "POST",
+				type: ActivityType.POST_CREATED,
+				targetType: TargetType.POST,
 				targetId: Number(createdPost.id),
 				message: `created a post`,
 				mentions: mentionedUserIds,
@@ -158,11 +162,13 @@ export async function POST(req: Request) {
 /* ------------------------------------------------------------------ */
 export async function PATCH(
 	req: Request,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	const session = await auth();
 	if (!session?.user)
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+	const resolvedParams = await params;
 
 	const body = await req.json();
 	const parsed = postInputSchema.safeParse(body);
@@ -171,7 +177,7 @@ export async function PATCH(
 		return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
 
 	const { title, description, tags, status, content } = parsed.data;
-	const postId = Number(params.id);
+	const postId = Number(resolvedParams.id);
 	if (isNaN(postId))
 		return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
 

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useDebounce } from "use-debounce";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,45 @@ interface SearchResults {
 	tags: string[];
 }
 
-export default function SearchPage() {
+// Loading component for Suspense fallback
+function SearchLoading() {
+	return (
+		<PageLayout>
+			<div className="max-w-4xl mx-auto px-4">
+				<div className="relative mb-8">
+					<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+					<Input
+						className="pl-10 py-6 text-lg"
+						placeholder="Search posts, users, and tags..."
+						disabled
+					/>
+				</div>
+				<div className="flex justify-center items-center p-8">
+					<div className="h-8 w-8 animate-spin text-muted-foreground">
+						<svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+							<circle
+								className="opacity-25"
+								cx="12"
+								cy="12"
+								r="10"
+								stroke="currentColor"
+								strokeWidth="4"
+							/>
+							<path
+								className="opacity-75"
+								fill="currentColor"
+								d="M4 12a8 8 0 018-8v8z"
+							/>
+						</svg>
+					</div>
+				</div>
+			</div>
+		</PageLayout>
+	);
+}
+
+// Component that uses useSearchParams (needs to be in Suspense)
+function SearchPageContent() {
 	const searchParams = useSearchParams();
 	const initialQuery = searchParams.get("q") || "";
 
@@ -98,7 +136,6 @@ export default function SearchPage() {
 						onChange={(e) => {
 							const newValue = e.target.value;
 							setQuery(newValue);
-
 							// Update URL with new query
 							if (typeof window !== "undefined") {
 								const url = new URL(window.location.href);
@@ -256,5 +293,13 @@ export default function SearchPage() {
 					)}
 			</div>
 		</PageLayout>
+	);
+}
+
+export default function SearchPage() {
+	return (
+		<Suspense fallback={<SearchLoading />}>
+			<SearchPageContent />
+		</Suspense>
 	);
 }

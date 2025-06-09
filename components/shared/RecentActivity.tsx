@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Timer } from "lucide-react";
 import { getUserActivities } from "@/lib/api/api";
 import JoinCommunityCard from "./JoinCommunityCard";
-import { ActivityLog } from "@/lib/validation";
+import { ActivityLog } from "@/lib/validation/schemas/activity";
 
 export default async function RecentActivity() {
 	const session = await auth();
@@ -23,7 +23,7 @@ export default async function RecentActivity() {
 		activities = response.activities.map((activity) => ({
 			...activity,
 			createdAt: new Date(activity.createdAt),
-		}));
+		})) as ActivityLog[];
 	} catch {
 		error = "Failed to load activities";
 	}
@@ -35,23 +35,66 @@ export default async function RecentActivity() {
 			return "Unknown time";
 		}
 	};
-
 	const getActivityMessage = (activity: ActivityLog) => {
-		const { type, Post } = activity;
+		const { type, Post, targetType } = activity;
 		const formatTitle = (title?: string) => title || "Untitled";
+
 		switch (type) {
+			// Post Activities
 			case "POST_CREATED":
 				return `You created a new post "${formatTitle(Post?.title)}"`;
 			case "POST_LIKED":
 				return `You liked "${formatTitle(Post?.title)}"`;
+			case "POST_UNLIKED":
+				return `You unliked "${formatTitle(Post?.title)}"`;
 			case "POST_BOOKMARKED":
 				return `You bookmarked "${formatTitle(Post?.title)}"`;
+			case "POST_UNBOOKMARKED":
+				return `You removed bookmark from "${formatTitle(Post?.title)}"`;
+			case "POST_VIEWED":
+				return `You viewed "${formatTitle(Post?.title)}"`;
+			case "POST_SHARED":
+				return `You shared "${formatTitle(Post?.title)}"`;
+
+			// Comment Activities
 			case "COMMENT_POSTED":
 				return `You commented on "${formatTitle(Post?.title)}"`;
 			case "COMMENT_LIKED":
 				return `You liked a comment on "${formatTitle(Post?.title)}"`;
+			case "COMMENT_UNLIKED":
+				return `You unliked a comment on "${formatTitle(Post?.title)}"`;
+			case "COMMENT_REPLIED":
+				return `You replied to a comment on "${formatTitle(Post?.title)}"`;
+
+			// User Activities
 			case "USER_FOLLOWED":
 				return "You followed a user";
+			case "USER_UNFOLLOWED":
+				return "You unfollowed a user";
+			case "USER_MENTIONED":
+				if (targetType === "POST") {
+					return `You were mentioned in "${formatTitle(Post?.title)}"`;
+				} else if (targetType === "COMMENT") {
+					return `You were mentioned in a comment on "${formatTitle(
+						Post?.title
+					)}"`;
+				}
+				return "You were mentioned";
+			case "USER_PROFILE_UPDATED":
+				return "You updated your profile";
+
+			// Tag Activities
+			case "TAG_FOLLOWED":
+				return "You followed a tag";
+			case "TAG_UNFOLLOWED":
+				return "You unfollowed a tag";
+
+			// System Activities
+			case "ACCOUNT_CREATED":
+				return "Welcome! Your account was created";
+			case "LOGIN":
+				return "You signed in";
+
 			default:
 				return activity.message || "You performed an action";
 		}

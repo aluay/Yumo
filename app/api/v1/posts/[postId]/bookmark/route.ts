@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
-import { recordActivity } from "@/lib/logActivity";
+import { recordActivity, ActivityType, TargetType } from "@/lib/logActivity";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */
@@ -43,8 +43,8 @@ export async function POST(
 			});
 			await recordActivity(tx, {
 				actorId: userId,
-				type: "POST_BOOKMARKED",
-				targetType: "POST",
+				type: ActivityType.POST_BOOKMARKED,
+				targetType: TargetType.POST,
 				targetId: numericPostId,
 				message: `bookmarked your post`,
 				postId: numericPostId,

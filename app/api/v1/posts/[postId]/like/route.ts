@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@prisma/client";
-import { recordActivity } from "@/lib/logActivity";
+import { recordActivity, ActivityType, TargetType } from "@/lib/logActivity";
 
 /* ───────────────────────── helpers ─────────────────────────── */
 const unauth = () =>
@@ -38,8 +38,8 @@ export async function POST(
 			// 2) record the activity
 			await recordActivity(tx, {
 				actorId: userId,
-				type: "POST_LIKED",
-				targetType: "POST",
+				type: ActivityType.POST_LIKED,
+				targetType: TargetType.POST,
 				targetId: numericPostId,
 				message: `liked your post`,
 				mentions: [],

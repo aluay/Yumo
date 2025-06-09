@@ -3,9 +3,10 @@ import { prisma } from "@/lib/db";
 
 export async function GET(
 	_req: Request,
-	{ params }: { params: { userId: string } }
+	{ params }: { params: Promise<{ userId: string }> }
 ) {
-	const userId = Number(params.userId);
+	const resolvedParams = await params;
+	const userId = Number(resolvedParams.userId);
 	const comments = await prisma.comment.findMany({
 		where: { authorId: userId, deletedAt: null },
 		orderBy: { createdAt: "desc" },

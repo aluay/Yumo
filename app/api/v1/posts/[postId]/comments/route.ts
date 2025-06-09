@@ -4,7 +4,12 @@ import { prisma } from "@/lib/db";
 import { z } from "zod";
 import type { JSONContent } from "@tiptap/react";
 import { Prisma } from "@prisma/client";
-import { recordActivity, extractMentionedUserIds } from "@/lib/logActivity";
+import {
+	recordActivity,
+	extractMentionedUserIds,
+	ActivityType,
+	TargetType,
+} from "@/lib/logActivity";
 
 /* ------------------------------------------------------------------ */
 /* Validation schemas                                                 */
@@ -19,7 +24,7 @@ const jsonDoc = z.custom<JSONContent>(
 	{ message: "Invalid Novel document" }
 );
 
-export const commentInputSchema = z.object({
+const commentInputSchema = z.object({
 	content: jsonDoc,
 	parentId: z.number().int().positive().optional(), // when replying
 });
@@ -158,8 +163,8 @@ export async function POST(
 				// Create notification for comment reply (if author is not the same)
 				await recordActivity(tx, {
 					actorId: authorId,
-					type: "COMMENT_POSTED",
-					targetType: "COMMENT",
+					type: ActivityType.COMMENT_POSTED,
+					targetType: TargetType.COMMENT,
 					targetId: comment.id, // The new comment ID
 					postId: numericPostId,
 					message: `replied to your comment`,
@@ -175,8 +180,8 @@ export async function POST(
 		if (comment.post.authorId !== authorId && !parentId) {
 			await recordActivity(tx, {
 				actorId: authorId,
-				type: "COMMENT_POSTED",
-				targetType: "POST",
+				type: ActivityType.COMMENT_POSTED,
+				targetType: TargetType.POST,
 				targetId: numericPostId,
 				postId: numericPostId,
 				message: `commented on your post "${comment.post.title}"`,
@@ -195,8 +200,8 @@ export async function POST(
 		for (const mentionedUserId of filteredMentions) {
 			await recordActivity(tx, {
 				actorId: authorId,
-				type: "USER_MENTIONED", // Create a new activity type for mentions
-				targetType: parentId ? "COMMENT" : "POST",
+				type: ActivityType.USER_MENTIONED, // Create a new activity type for mentions
+				targetType: parentId ? TargetType.COMMENT : TargetType.POST,
 				targetId: comment.id,
 				postId: numericPostId,
 				message: parentId

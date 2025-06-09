@@ -210,51 +210,98 @@ model CommentReport {
 }
 
 model Activity {
-  id         Int          @id @default(autoincrement())
-  userId     Int
-  type       ActivityType
-  targetId   Int
-  targetType TargetType
-  message    String?
-  createdAt  DateTime     @default(now())
+  id          Int              @id @default(autoincrement())
+  userId      Int
+  type        ActivityType
+  targetId    Int
+  targetType  TargetType
+  message     String?
+  metadata    Json? // Store additional data as JSON
+  priority    ActivityPriority @default(NORMAL)
+  ipAddress   String? // Track IP for security/analytics
+  userAgent   String? // Track user agent
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  expiresAt   DateTime? // For cleanup/archival
+  actorName   String? // Cached actor name for performance
+  targetTitle String? // Cached target title for performance
+  postId      Int? // Link to related post
 
-  user User @relation(fields: [userId], references: [id])
+  user User  @relation(fields: [userId], references: [id])
+  Post Post? @relation(fields: [postId], references: [id])
 
   /**
    * reverse navigation for notifications & mentions *
    */
   mentions      ActivityMention[]
   notifications Notification[]
-  Post          Post?             @relation(fields: [postId], references: [id])
-  postId        Int?
+
+  @@index([userId, type])
+  @@index([type, createdAt])
+  @@index([targetType, targetId])
+  @@index([createdAt])
 }
 
 model ActivityMention {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   activityId Int
   userId     Int
-  createdAt  DateTime @default(now())
+  isRead     Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  readAt     DateTime?
 
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([activityId, userId]) // no dupes
+  @@index([userId, isRead])
 }
 
 enum ActivityType {
+  // Post Activities
   POST_CREATED
+  POST_UPDATED
   POST_LIKED
+  POST_UNLIKED
   POST_BOOKMARKED
+  POST_UNBOOKMARKED
+  POST_VIEWED
+  POST_SHARED
+
+  // Comment Activities
   COMMENT_POSTED
+  COMMENT_UPDATED
   COMMENT_LIKED
-  USER_MENTIONED
+  COMMENT_UNLIKED
+  COMMENT_REPLIED
+
+  // User Activities
   USER_FOLLOWED
+  USER_UNFOLLOWED
+  USER_MENTIONED
+  USER_PROFILE_UPDATED
+
+  // Tag Activities
+  TAG_FOLLOWED
+  TAG_UNFOLLOWED
+
+  // System Activities
+  ACCOUNT_CREATED
+  LOGIN
 }
 
 enum TargetType {
   POST
   COMMENT
   USER // e.g., follow
+  TAG
+}
+
+enum ActivityPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
 }
 
 model Notification {

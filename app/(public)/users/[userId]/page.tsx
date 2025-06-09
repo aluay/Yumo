@@ -1,4 +1,5 @@
 import { getUserProfile } from "@/lib/api/api";
+import { PostPayload } from "@/lib/validation";
 import PageLayout from "@/components/layouts/PageLayout";
 import RichContentViewer from "@/components/shared/RichContentViewer";
 import PostCard from "@/components/shared/PostCard";
@@ -159,7 +160,7 @@ export default async function userPage({
 						<h2 className="text-xl font-semibold">Posts</h2>{" "}
 						{profile?.posts?.length ? (
 							<div className="space-y-6">
-								{profile.posts.map((post) => (
+								{(profile.posts as PostPayload[]).map((post) => (
 									<div key={post.id}>
 										<PostCard post={post} />
 									</div>
@@ -190,7 +191,14 @@ export default async function userPage({
 						<h2 className="text-xl font-semibold">Recent Comments</h2>
 						{profile?.comments?.length ? (
 							<div className="grid gap-4">
-								{profile.comments.map((comment, index) => (
+								{(
+									profile.comments as Array<{
+										id: number;
+										content: JSONContent;
+										createdAt: string;
+										post: { id: number; title: string };
+									}>
+								).map((comment, index) => (
 									<Card
 										key={comment.id}
 										className="overflow-hidden border border-muted hover:border-muted-foreground/20 transition-all duration-300 hover:shadow-md"

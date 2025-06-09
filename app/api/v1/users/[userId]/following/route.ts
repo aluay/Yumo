@@ -3,9 +3,10 @@ import { prisma } from "@/lib/db";
 
 export async function GET(
 	req: Request,
-	{ params }: { params: { userId: string } }
+	{ params }: { params: Promise<{ userId: string }> }
 ) {
-	const userId = Number(params.userId);
+	const resolvedParams = await params;
+	const userId = Number(resolvedParams.userId);
 	if (isNaN(userId)) {
 		return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
 	}

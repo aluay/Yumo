@@ -1,6 +1,12 @@
 import { prisma } from "./db";
 import { JSONContent } from "@tiptap/react";
 import { ActivityLog } from "./validation";
+import {
+	activityService,
+	ActivityType,
+	TargetType,
+	ActivityPriority,
+} from "./services/ActivityService";
 
 const BASE_URL =
 	typeof window === "undefined"
@@ -10,21 +16,13 @@ const BASE_URL =
 import { Prisma } from "@prisma/client";
 
 /* ------------------------------------------------------------------ */
-/* Types                                                               */
+/* DEPRECATED: Legacy Types - Use ActivityService types instead       */
 /* ------------------------------------------------------------------ */
-export type ActivityType =
-	| "POST_CREATED"
-	| "POST_LIKED"
-	| "POST_BOOKMARKED"
-	| "COMMENT_POSTED"
-	| "USER_MENTIONED"
-	| "COMMENT_LIKED"
-	| "USER_FOLLOWED";
-
-export type TargetType = "POST" | "COMMENT" | "USER";
+// Export ActivityService types for backward compatibility
+export { ActivityType, TargetType, ActivityPriority };
 
 /* ------------------------------------------------------------------ */
-/* recordActivity                                                      */
+/* recordActivity - DEPRECATED: Use ActivityService.logActivity       */
 /* ------------------------------------------------------------------ */
 export async function recordActivity(
 	tx: Prisma.TransactionClient,
@@ -45,48 +43,28 @@ export async function recordActivity(
 		postId?: number;
 		message?: string;
 		mentions?: number[];
-		recipientId?: number; // Add this optional parameter
+		recipientId?: number;
 	}
 ) {
-	// Create the activity
-	const activity = await tx.activity.create({
-		data: {
+	// Use the new ActivityService for better functionality
+	return await activityService.createActivity(
+		{
 			userId: actorId,
-			type,
-			targetId,
-			targetType,
-			message,
-			postId,
+			timestamp: new Date(),
+			source: "legacy_recordActivity",
 		},
-	});
-
-	// Create a direct notification if recipientId is provided
-	if (recipientId && recipientId !== actorId) {
-		// Don't notify yourself
-		await tx.notification.create({
-			data: {
-				recipientId,
-				activityId: activity.id,
-			},
-		});
-	}
-
-	// Process mentions
-	if (mentions.length > 0) {
-		// Create records for all mentions
-		await Promise.all(
-			mentions.map((userId) =>
-				tx.activityMention.create({
-					data: {
-						activityId: activity.id,
-						userId,
-					},
-				})
-			)
-		);
-	}
-
-	return activity;
+		{
+			type,
+			targetType,
+			targetId,
+			message,
+			metadata: postId ? { postId } : null,
+			mentionedUserIds: mentions,
+			recipientIds: recipientId ? [recipientId] : undefined,
+			priority: ActivityPriority.NORMAL,
+		},
+		tx // Pass the transaction to the ActivityService
+	);
 }
 
 export async function deleteActivity(
@@ -95,10 +73,12 @@ export async function deleteActivity(
 	targetId: number
 ) {
 	try {
-		await fetch(`${BASE_URL}/api/activity`, {
+		await fetch(`${BASE_URL}/api/v1/activity`, {
 			method: "DELETE",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ userId, type, targetId }),
+			body: JSON.stringify({
+				activityId: targetId, // Note: This assumes targetId is actually the activityId
+			}),
 		});
 	} catch (err) {
 		console.error("Failed to delete activity:", err);

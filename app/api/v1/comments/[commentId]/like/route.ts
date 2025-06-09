@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@prisma/client";
-import { recordActivity } from "@/lib/logActivity";
+import { recordActivity, ActivityType, TargetType } from "@/lib/logActivity";
 
 /* -------------------------------------------------------------- */
 /* shared helpers                                                 */
@@ -39,8 +39,8 @@ export async function POST(
 			});
 			await recordActivity(tx, {
 				actorId: userId,
-				type: "COMMENT_LIKED",
-				targetType: "COMMENT",
+				type: ActivityType.COMMENT_LIKED,
+				targetType: TargetType.COMMENT,
 				targetId: Number(commentId),
 				message: `liked your comment`,
 				mentions: [],

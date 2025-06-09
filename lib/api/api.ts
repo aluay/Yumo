@@ -755,10 +755,31 @@ export async function getUserActivities({
 			id: true,
 			userId: true,
 			type: true,
+			targetType: true,
 			targetId: true,
 			message: true,
+			metadata: true,
+			priority: true,
 			createdAt: true,
+			user: {
+				select: {
+					id: true,
+					name: true,
+					image: true,
+				},
+			},
 			Post: { select: { id: true, title: true, slug: true } },
+			mentions: {
+				select: {
+					user: {
+						select: {
+							id: true,
+							name: true,
+							image: true,
+						},
+					},
+				},
+			},
 		},
 	});
 	return {

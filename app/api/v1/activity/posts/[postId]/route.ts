@@ -10,10 +10,11 @@ const MAX_LIMIT = 50;
 /* ------------------------------------------------------------------ */
 export async function GET(
 	req: Request,
-	{ params }: { params: { postId: string } }
+	{ params }: { params: Promise<{ postId: string }> }
 ) {
-	/* -------- validate postId ------------------------------------- */
-	const postId = Number(params.postId);
+	const resolvedParams =
+		await params; /* -------- validate postId ------------------------------------- */
+	const postId = Number(resolvedParams.postId);
 	if (Number.isNaN(postId)) {
 		return NextResponse.json({ error: "Invalid postId" }, { status: 400 });
 	}

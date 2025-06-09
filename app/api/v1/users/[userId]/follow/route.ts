@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
+import { ActivityType, TargetType } from "@/lib/logActivity";
 
 export async function POST(
 	req: Request,
@@ -48,9 +49,9 @@ export async function POST(
 		const { recordActivity } = await import("@/lib/logActivity");
 		await recordActivity(tx, {
 			actorId: followerId,
-			type: "USER_FOLLOWED",
+			type: ActivityType.USER_FOLLOWED,
 			targetId: followingId,
-			targetType: "USER",
+			targetType: TargetType.USER,
 			message: "started following you",
 			recipientId: followingId,
 		});
