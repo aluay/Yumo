@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Novel from "@/components/editor/Novel";
 import TagInput from "@/components/ui/tag-input";
-import { postInputSchema, PostInput, PostPayload } from "@/lib/validation/post";
+import { postInputSchema, PostInput, PostPayload } from "@/lib/validation";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import PostCard from "@/components/shared/PostCard";
 import { Button } from "@/components/ui/button";
-import { PostPayload } from "@/lib/validation/post";
+import { PostPayload } from "@/lib/validation";
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import CommentEditor from "@/components/editor/CommentEditor";
-import { commentInputSchema, CommentInput } from "@/lib/validation/post";
+import { commentInputSchema, CommentInput } from "@/lib/validation";
 import {
 	Form,
 	FormField,

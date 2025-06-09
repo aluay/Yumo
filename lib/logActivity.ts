@@ -1,6 +1,6 @@
 import { prisma } from "./db";
 import { JSONContent } from "@tiptap/react";
-import { ActivityLog } from "./validation/post";
+import { ActivityLog } from "./validation";
 
 const BASE_URL =
 	typeof window === "undefined"

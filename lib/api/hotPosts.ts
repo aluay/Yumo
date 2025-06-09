@@ -1,5 +1,5 @@
 import { prisma } from "../db";
-import type { PostPayload } from "@/lib/validation/post";
+import type { PostPayload } from "@/lib/validation";
 import { JSONContent } from "novel";
 
 /**

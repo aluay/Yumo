@@ -1,4 +1,4 @@
-// import { ActivityLog } from "@/lib/validation/post";
+// import { ActivityLog } from "@/lib/validation";
 
 // /**
 //  * Fetches recent activities of the current user.

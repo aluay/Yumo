@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Timer } from "lucide-react";
 import { getUserActivities } from "@/lib/api/api";
 import JoinCommunityCard from "./JoinCommunityCard";
-import { ActivityLog } from "@/lib/validation/post";
+import { ActivityLog } from "@/lib/validation";
 
 export default async function RecentActivity() {
 	const session = await auth();

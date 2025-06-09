@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
-import { profileInputSchema } from "@/lib/validation/post";
+import { profileInputSchema } from "@/lib/validation";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */

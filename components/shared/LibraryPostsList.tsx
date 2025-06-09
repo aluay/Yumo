@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { LibraryPostPayload } from "@/lib/validation/post";
+import { LibraryPostPayload } from "@/lib/validation";
 import {
 	Bookmark,
 	ChevronDown,

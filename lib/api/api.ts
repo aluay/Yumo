@@ -1,7 +1,7 @@
-import { UserProfileInterface, type PostPayload } from "@/lib/validation/post";
+import { UserProfileInterface, type PostPayload } from "@/lib/validation";
 import { prisma } from "../db";
 import { JSONContent } from "novel";
-import { NotificationPayload } from "@/lib/validation/post";
+import { NotificationPayload } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
 import { subDays } from "date-fns";
 

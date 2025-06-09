@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { PostPayload } from "@/lib/validation/post";
+import { PostPayload } from "@/lib/validation";
 import { formatDistanceToNow } from "date-fns";
 import { formatNumber, cn } from "@/lib/utils";
 import {

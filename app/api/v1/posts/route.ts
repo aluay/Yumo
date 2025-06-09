@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { postInputSchema } from "@/lib/validation/post";
+import { postInputSchema } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
 import { extractMentionedUserIds, recordActivity } from "@/lib/logActivity";
 import { JSONContent } from "novel";

@@ -22,7 +22,7 @@ import {
 	markAllNotificationsAsRead,
 	deleteNotification,
 } from "@/lib/api/api";
-import { NotificationPayload } from "@/lib/validation/post";
+import { NotificationPayload } from "@/lib/validation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

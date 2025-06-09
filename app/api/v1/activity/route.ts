@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { activitySchema } from "@/lib/validation/post";
+import { activityInputSchema } from "@/lib/validation";
 
 /* Utility to look up the owner of the target (for auto-notify) */
 async function getTargetOwner(targetType: string, targetId: number) {
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
 	/* ---- Validate ---- */
 	const body = await req.json();
-	const parsed = activitySchema.safeParse(body);
+	const parsed = activityInputSchema.safeParse(body);
 	if (!parsed.success)
 		return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
 
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
 	if (ownerId && ownerId !== actorId) recipients.add(ownerId);
 
 	// 2) mentioned users
-	mentionedUserIds.forEach((u) => {
+	mentionedUserIds.forEach((u: number) => {
 		if (u !== actorId) recipients.add(u);
 	});
 
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
 		/* mentions */
 		if (mentionedUserIds.length) {
 			await tx.activityMention.createMany({
-				data: mentionedUserIds.map((u) => ({
+				data: mentionedUserIds.map((u: number) => ({
 					userId: u,
 					activityId: activity.id,
 				})),
