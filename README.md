@@ -1,3 +1,21 @@
+# Yumo
+
+Yumo is a modern community platform built with [Next.js](https://nextjs.org), designed for sharing posts, discussions, and collaborative learning. It features a rich editor, user profiles, notifications, and more.
+
+## Features
+
+- User authentication (sign in/out)
+- Rich post editor with image upload and mentions
+- Tag and user following
+- Notifications and activity tracking
+- Library and featured posts
+- Search functionality
+- Profile management and avatar upload
+- Responsive, modern UI with Tailwind CSS
+- Admin panel for managing content
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
